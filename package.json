@@ -1,0 +1,17 @@
+{
+  "name": "photo-controller",
+  "version": "1.0.0",
+  "description": "Software para configuração do Photo Controller",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Alisson Souza",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^39.0.0"
+  },
+  "dependencies": {
+    "serialport": "^13.0.0"
+  }
+}
