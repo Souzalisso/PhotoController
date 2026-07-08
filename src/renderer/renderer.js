@@ -1,9 +1,5 @@
-async function testarIPC() {
+import App from "./app/App.js";
 
-    const resposta = await window.photoController.ping();
+const app = new App();
 
-    console.log(resposta);
-
-}
-
-testarIPC();
+document.body.innerHTML = app.render();
