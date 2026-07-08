@@ -1,12 +1,8 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 
-const { SerialPort } = require("serialport");
-const comandos = require("./commands");
+const HardwareService = require("../hardware/HardwareService");
 
-/**
- * Cria a janela principal da aplicação.
- */
 function createWindow() {
 
     const mainWindow = new BrowserWindow({
@@ -17,7 +13,7 @@ function createWindow() {
         minWidth: 1100,
         minHeight: 700,
 
-        title: "Photo Controller",
+        title: "KRONOS Controller",
 
         autoHideMenuBar: true,
 
@@ -35,44 +31,16 @@ function createWindow() {
 
 }
 
-let port;
-
-function conectarArduino() {
-
-    port = new SerialPort({
-        path: "COM3", // depois você ajusta isso
-        baudRate: 9600
-    });
-
-    port.on("open", () => {
-        console.log("🔌 Arduino conectado!");
-    });
-
-    port.on("data", (data) => {
-
-        const comando = data.toString().trim();
-
-        console.log("📩 Recebido:", comando);
-
-        if (comandos[comando]) {
-            comandos[comando]();
-        } else {
-            console.log("⚠️ Comando desconhecido:", comando);
-        }
-
-    });
-}
-
-/**
- * Canal de teste entre Renderer e Main
- */
 ipcMain.handle("ping", () => {
     return "Pong! Electron está funcionando.";
 });
 
 app.whenReady().then(() => {
+
     createWindow();
-    conectarArduino();
+
+    HardwareService.connect("COM3");
+
 });
 
 app.on("window-all-closed", () => {

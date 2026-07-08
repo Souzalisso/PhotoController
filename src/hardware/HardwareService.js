@@ -1,5 +1,6 @@
-const EventBus = require("./EventBus");
-const parser = require("../protocol/ProtocolParser");
+const EventBus = require("../core/EventBus");
+const parser = require("./ProtocolParser");
+const ArduinoProvider = require("./ArduinoProvider");
 
 class HardwareService {
 
@@ -9,9 +10,15 @@ class HardwareService {
 
     }
 
-    connect() {
+    connect(port = "COM3") {
 
-        console.log("Conectando ao KRONOS...");
+        ArduinoProvider.connect(port);
+
+        ArduinoProvider.onData((message) => {
+
+            this.receive(message);
+
+        });
 
         this.connected = true;
 
@@ -21,7 +28,7 @@ class HardwareService {
 
     disconnect() {
 
-        console.log("KRONOS desconectado.");
+        ArduinoProvider.disconnect();
 
         this.connected = false;
 
