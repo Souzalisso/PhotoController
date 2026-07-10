@@ -18,7 +18,7 @@ class EventBus {
 
     }
 
-    emit(eventName, data) {
+    emit(eventName, data = null) {
 
         if (!this.listeners[eventName]) return;
 

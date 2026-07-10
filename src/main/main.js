@@ -1,13 +1,11 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 
+const EventBus = require("../core/EventBus");
 const HardwareService = require("../hardware/HardwareService");
 
 let mainWindow;
 
-/**
- * Cria a janela principal da aplicação.
- */
 function createWindow() {
 
     mainWindow = new BrowserWindow({
@@ -40,30 +38,32 @@ function createWindow() {
 
 }
 
-/**
- * Canal de teste
- */
 ipcMain.handle("ping", async () => {
 
     return "Pong! Electron está funcionando.";
 
 });
 
-/**
- * Inicialização
- */
 app.whenReady().then(() => {
 
     createWindow();
 
-    // Futuramente essa porta será detectada automaticamente.
-    HardwareService.connect("COM3");
+    console.log("KRONOS iniciado.");
+
+    EventBus.on("hardware-event", (event) => {
+
+        console.log("Evento recebido:", event);
+
+        if (mainWindow) {
+
+            mainWindow.webContents.send("hardware-event", event);
+
+        }
+
+    });
 
 });
 
-/**
- * Fecha aplicação
- */
 app.on("window-all-closed", () => {
 
     if (process.platform !== "darwin") {

@@ -1,5 +1,5 @@
 const EventBus = require("../core/EventBus");
-const parser = require("./ProtocolParser");
+const ProtocolParser = require("../protocol/ProtocolParser");
 const ArduinoProvider = require("./ArduinoProvider");
 
 class HardwareService {
@@ -12,17 +12,29 @@ class HardwareService {
 
     connect(port = "COM3") {
 
-        ArduinoProvider.connect(port);
+        try {
 
-        ArduinoProvider.onData((message) => {
+            ArduinoProvider.connect(port);
 
-            this.receive(message);
+            ArduinoProvider.onData((message) => {
 
-        });
+                this.receive(message);
 
-        this.connected = true;
+            });
 
-        EventBus.emit("hardware-connected");
+            this.connected = true;
+
+            EventBus.emit("hardware-connected");
+
+            console.log("Hardware conectado.");
+
+        } catch (error) {
+
+            console.log("Nenhum Arduino encontrado.");
+
+            this.connected = false;
+
+        }
 
     }
 
@@ -38,11 +50,17 @@ class HardwareService {
 
     receive(message) {
 
-        const event = parser.parse(message);
+        const event = ProtocolParser.parse(message);
 
         if (!event) return;
 
         EventBus.emit("hardware-event", event);
+
+    }
+
+    isConnected() {
+
+        return this.connected;
 
     }
 
