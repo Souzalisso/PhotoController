@@ -1,4 +1,4 @@
-import Sidebar from "../components/Sidebar.js";
+import Sidebar from "../components/Sidebar/Sidebar.js";
 import DashboardPage from "../pages/DashboardPage.js";
 
 export default class App {
@@ -6,7 +6,6 @@ export default class App {
     constructor() {
 
         this.sidebar = new Sidebar();
-
         this.dashboard = new DashboardPage();
 
         console.log("KRONOS iniciado.");
@@ -22,8 +21,6 @@ export default class App {
             ${this.sidebar.render()}
 
             ${this.dashboard.render()}
-
-        </div>
 
         `;
 
