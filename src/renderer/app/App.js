@@ -1,15 +1,12 @@
-import Sidebar from "../components/Sidebar/Sidebar.js";
-import PageManager from "./PageManager.js";
+import Sidebar from "../components/sidebar/Sidebar.js";
+import DashboardPage from "../pages/Dashboard/DashboardPage.js";
 
 export default class App {
 
     constructor() {
 
         this.sidebar = new Sidebar();
-
-        this.pageManager = new PageManager();
-
-        console.log("KRONOS iniciado.");
+        this.dashboard = new DashboardPage();
 
     }
 
@@ -17,15 +14,21 @@ export default class App {
 
         return `
 
-            <div class="layout">
+        <div class="layout">
 
-                ${this.sidebar.render()}
+            ${this.sidebar.render()}
 
-                ${this.pageManager.getCurrentPage().render()}
+            ${this.dashboard.render()}
 
-            </div>
+        </div>
 
         `;
+
+    }
+
+    init() {
+
+        this.sidebar.init();
 
     }
 

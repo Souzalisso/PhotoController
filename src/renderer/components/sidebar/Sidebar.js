@@ -9,7 +9,6 @@ export default class Sidebar {
             <div class="logo">
 
                 <h1>KRONOS</h1>
-
                 <span>Controller</span>
 
             </div>
@@ -45,6 +44,28 @@ export default class Sidebar {
         </aside>
 
         `;
+
+    }
+
+    init() {
+
+        document.querySelectorAll(".menu").forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                document.querySelectorAll(".menu").forEach(btn => {
+
+                    btn.classList.remove("active");
+
+                });
+
+                button.classList.add("active");
+
+                console.log(button.dataset.page);
+
+            });
+
+        });
 
     }
 
