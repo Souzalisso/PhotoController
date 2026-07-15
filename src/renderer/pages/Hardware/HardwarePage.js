@@ -13,9 +13,7 @@ export default class HardwarePage {
                 <h2>Status</h2>
 
                 <p id="hardwareStatus">
-
                     Desconectado
-
                 </p>
 
             </div>
@@ -25,9 +23,7 @@ export default class HardwarePage {
                 <h2>Porta</h2>
 
                 <p id="hardwarePort">
-
                     --
-
                 </p>
 
             </div>
@@ -37,9 +33,7 @@ export default class HardwarePage {
                 <h2>Último Evento</h2>
 
                 <p id="hardwareLastEvent">
-
-                    Nenhum
-
+                    Nenhum evento
                 </p>
 
             </div>
@@ -53,6 +47,23 @@ export default class HardwarePage {
     init() {
 
         console.log("Hardware carregado.");
+
+        window.photoController.onHardwareStatus((status) => {
+
+            document.getElementById("hardwareStatus").textContent =
+                status.connected ? "🟢 Conectado" : "🔴 Desconectado";
+
+            document.getElementById("hardwarePort").textContent =
+                status.port || "--";
+
+        });
+
+        window.photoController.onHardwareEvent((event) => {
+
+            document.getElementById("hardwareLastEvent").textContent =
+                `${event.type} ${event.id} → ${event.value}`;
+
+        });
 
     }
 

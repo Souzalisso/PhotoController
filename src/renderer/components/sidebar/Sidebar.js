@@ -45,24 +45,26 @@ export default class Sidebar {
 
     }
 
-    init() {
+   init() {
 
-        document.querySelectorAll(".menu").forEach(button => {
+    const buttons = document.querySelectorAll(".menu");
 
-            button.addEventListener("click", () => {
+    buttons.forEach(button => {
 
-                const page = button.dataset.page;
+        button.addEventListener("click", () => {
 
-                document.dispatchEvent(
-                    new CustomEvent("change-page", {
-                        detail: page
-                    })
-                );
+            buttons.forEach(btn => btn.classList.remove("active"));
 
-            });
+            button.classList.add("active");
+
+            document.dispatchEvent(
+                new CustomEvent("change-page", {
+                    detail: button.dataset.page
+                })
+            );
 
         });
 
-    }
+    });
 
 }

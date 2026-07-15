@@ -41,11 +41,41 @@ app.whenReady().then(() => {
 
     createWindow();
 
-    console.log("KRONOS iniciado.");
+    HardwareService.connect("COM3");
+
+    EventBus.on("hardware-connected", () => {
+
+        if (mainWindow) {
+
+            mainWindow.webContents.send("hardware-status", {
+
+                connected: true,
+                port: "COM3"
+
+            });
+
+        }
+
+    });
+
+    EventBus.on("hardware-disconnected", () => {
+
+        if (mainWindow) {
+
+            mainWindow.webContents.send("hardware-status", {
+
+                connected: false,
+                port: "--"
+
+            });
+
+        }
+
+    });
 
     EventBus.on("hardware-event", (event) => {
 
-        console.log("Evento recebido:", event);
+        console.log("Evento:", event);
 
         if (mainWindow) {
 
