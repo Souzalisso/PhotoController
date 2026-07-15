@@ -1,13 +1,14 @@
 import Sidebar from "../components/sidebar/Sidebar.js";
+import DashboardPage from "../pages/dashboard/DashboardPage.js";
 import PageManager from "./PageManager.js";
 
 export default class App {
 
     constructor() {
 
-        this.pageManager = new PageManager();
-
         this.sidebar = new Sidebar();
+
+        this.pageManager = new PageManager();
 
     }
 

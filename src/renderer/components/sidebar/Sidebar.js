@@ -7,10 +7,8 @@ export default class Sidebar {
         <aside class="sidebar">
 
             <div class="logo">
-
                 <h1>KRONOS</h1>
                 <span>Controller</span>
-
             </div>
 
             <nav>
@@ -53,15 +51,13 @@ export default class Sidebar {
 
             button.addEventListener("click", () => {
 
-                document.querySelectorAll(".menu").forEach(btn => {
+                const page = button.dataset.page;
 
-                    btn.classList.remove("active");
-
-                });
-
-                button.classList.add("active");
-
-                console.log(button.dataset.page);
+                document.dispatchEvent(
+                    new CustomEvent("change-page", {
+                        detail: page
+                    })
+                );
 
             });
 

@@ -10,31 +10,24 @@ function createWindow() {
 
     mainWindow = new BrowserWindow({
 
-        width: 1400,
-        height: 850,
-
-        minWidth: 1100,
-        minHeight: 700,
-
-        title: "KRONOS Controller",
-
-        autoHideMenuBar: true,
-
-        webPreferences: {
-
-            preload: path.join(__dirname, "../preload/preload.js"),
-
-            contextIsolation: true,
-
-            nodeIntegration: false
-
-        }
+        // ...
 
     });
 
     mainWindow.loadFile(
         path.join(__dirname, "../renderer/index.html")
     );
+
+    mainWindow.webContents.once("did-finish-load", () => {
+
+        mainWindow.webContents.send("hardware-status", {
+
+            connected: false,
+            port: "COM3"
+
+        });
+
+    });
 
 }
 
