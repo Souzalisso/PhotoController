@@ -1,5 +1,4 @@
 import Sidebar from "../components/sidebar/Sidebar.js";
-import DashboardPage from "../pages/dashboard/DashboardPage.js";
 import PageManager from "./PageManager.js";
 
 export default class App {
@@ -35,6 +34,24 @@ export default class App {
     init() {
 
         this.sidebar.init();
+
+        this.pageManager.getCurrentPage().init();
+
+        document.addEventListener("change-page", (event) => {
+
+            this.changePage(event.detail);
+
+        });
+
+    }
+
+    changePage(page) {
+
+        this.pageManager.setCurrentPage(page);
+
+        const container = document.getElementById("page-content");
+
+        container.innerHTML = this.pageManager.getCurrentPage().render();
 
         this.pageManager.getCurrentPage().init();
 

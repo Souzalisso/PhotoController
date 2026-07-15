@@ -16,4 +16,7 @@ export default class LightroomPage {
 
     }
 
+    init() {
+
+    }
 }
