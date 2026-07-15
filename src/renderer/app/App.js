@@ -1,12 +1,13 @@
 import Sidebar from "../components/sidebar/Sidebar.js";
-import DashboardPage from "../pages/Dashboard/DashboardPage.js";
+import PageManager from "./PageManager.js";
 
 export default class App {
 
     constructor() {
 
+        this.pageManager = new PageManager();
+
         this.sidebar = new Sidebar();
-        this.dashboard = new DashboardPage();
 
     }
 
@@ -18,7 +19,11 @@ export default class App {
 
             ${this.sidebar.render()}
 
-            ${this.dashboard.render()}
+            <div id="page-content">
+
+                ${this.pageManager.getCurrentPage().render()}
+
+            </div>
 
         </div>
 
@@ -29,6 +34,8 @@ export default class App {
     init() {
 
         this.sidebar.init();
+
+        this.pageManager.getCurrentPage().init();
 
     }
 

@@ -31,8 +31,8 @@ export default class Sidebar {
                     🖥 Display
                 </button>
 
-                <button class="menu" data-page="shortcuts">
-                    ⌨ Atalhos
+                <button class="menu" data-page="lightroom">
+                    📷 Lightroom
                 </button>
 
                 <button class="menu" data-page="about">

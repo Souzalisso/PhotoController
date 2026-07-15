@@ -10,13 +10,14 @@ export default class PageManager {
     constructor() {
 
         this.pages = {
+
             dashboard: new DashboardPage(),
             controls: new ControlsPage(),
             hardware: new HardwarePage(),
             display: new DisplayPage(),
             lightroom: new LightroomPage(),
-            shortcuts: new ShortcutsPage(),
             about: new AboutPage()
+
         };
 
         this.currentPage = "dashboard";
@@ -36,12 +37,6 @@ export default class PageManager {
             this.currentPage = page;
 
         }
-
-    }
-
-    render() {
-
-        return this.getCurrentPage().render();
 
     }
 

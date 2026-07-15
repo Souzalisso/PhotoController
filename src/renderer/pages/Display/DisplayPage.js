@@ -8,6 +8,8 @@ export default class DisplayPage {
 
             <h1>Display</h1>
 
+            <p>Configuração do display do KRONOS.</p>
+
         </main>
 
         `;

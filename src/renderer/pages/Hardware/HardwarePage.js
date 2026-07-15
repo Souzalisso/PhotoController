@@ -8,6 +8,8 @@ export default class HardwarePage {
 
             <h1>Hardware</h1>
 
+            <p>Configuração do dispositivo.</p>
+
         </main>
 
         `;

@@ -13,9 +13,7 @@ export default class DashboardPage {
                 <h2>Hardware</h2>
 
                 <p id="hardwareStatus">
-
                     Desconectado
-
                 </p>
 
             </div>
@@ -25,9 +23,7 @@ export default class DashboardPage {
                 <h2>Último Evento</h2>
 
                 <p id="lastEvent">
-
                     Nenhum evento
-
                 </p>
 
             </div>
@@ -35,6 +31,12 @@ export default class DashboardPage {
         </main>
 
         `;
+
+    }
+
+    init() {
+
+        console.log("Dashboard carregado.");
 
     }
 

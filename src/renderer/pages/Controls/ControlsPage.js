@@ -8,6 +8,8 @@ export default class ControlsPage {
 
             <h1>Controles</h1>
 
+            <p>Configuração dos botões, encoders e potenciômetros.</p>
+
         </main>
 
         `;

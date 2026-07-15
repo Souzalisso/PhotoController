@@ -1,4 +1,4 @@
-export default class ShortcutsPage {
+export default class LightroomPage {
 
     render() {
 
@@ -6,7 +6,9 @@ export default class ShortcutsPage {
 
         <main class="content">
 
-            <h1>Atalhos</h1>
+            <h1>Adobe Lightroom Classic</h1>
+
+            <p>Mapeamento dos controles.</p>
 
         </main>
 
