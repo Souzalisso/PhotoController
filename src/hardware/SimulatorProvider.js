@@ -1,10 +1,10 @@
+const EventBus = require("../core/EventBus");
+
 class SimulatorProvider {
 
-    constructor(eventManager) {
+    constructor() {
 
         this.connected = false;
-
-        this.eventManager = eventManager;
 
     }
 
@@ -12,7 +12,7 @@ class SimulatorProvider {
 
         this.connected = true;
 
-        console.log("Simulator conectado.");
+        console.log("Simulador conectado.");
 
     }
 
@@ -20,17 +20,19 @@ class SimulatorProvider {
 
         this.connected = false;
 
+        console.log("Simulador desconectado.");
+
     }
 
     simulateButton(id) {
 
-        this.eventManager.emit("hardware:event", {
+        EventBus.emit("hardware-event", {
 
-            type: "button",
+            type: "BTN",
 
-            id: id,
+            id,
 
-            action: "press"
+            action: "PRESS"
 
         });
 
@@ -38,13 +40,27 @@ class SimulatorProvider {
 
     simulateEncoder(id, direction) {
 
-        this.eventManager.emit("hardware:event", {
+        EventBus.emit("hardware-event", {
 
-            type: "encoder",
+            type: "ENC",
 
-            id: id,
+            id,
 
-            direction: direction
+            direction
+
+        });
+
+    }
+
+    simulatePotentiometer(id, value) {
+
+        EventBus.emit("hardware-event", {
+
+            type: "POT",
+
+            id,
+
+            value
 
         });
 
@@ -52,4 +68,4 @@ class SimulatorProvider {
 
 }
 
-module.exports = SimulatorProvider;
+module.exports = new SimulatorProvider();

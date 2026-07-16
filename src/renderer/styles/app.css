@@ -131,3 +131,23 @@ body{
     transform:scale(1.03);
 
 }
+
+.control-button.selected{
+
+    outline:3px solid #3b82f6;
+
+    transform:scale(1.05);
+
+}
+
+select{
+
+    width:100%;
+
+    padding:12px;
+
+    border-radius:8px;
+
+    margin-top:10px;
+
+}

@@ -10,31 +10,25 @@ export default class HardwarePage {
 
             <div class="card">
 
-                <h2>Status</h2>
+                <h2>Simulador</h2>
 
-                <p id="hardwareStatus">
-                    Desconectado
+                <p>
+                    Clique em um botão para simular um evento do Arduino.
                 </p>
 
-            </div>
+                <div class="sim-buttons">
 
-            <div class="card">
+                    <button class="sim-btn" data-id="1">BTN 1</button>
+                    <button class="sim-btn" data-id="2">BTN 2</button>
+                    <button class="sim-btn" data-id="3">BTN 3</button>
+                    <button class="sim-btn" data-id="4">BTN 4</button>
 
-                <h2>Porta</h2>
+                    <button class="sim-btn" data-id="5">BTN 5</button>
+                    <button class="sim-btn" data-id="6">BTN 6</button>
+                    <button class="sim-btn" data-id="7">BTN 7</button>
+                    <button class="sim-btn" data-id="8">BTN 8</button>
 
-                <p id="hardwarePort">
-                    --
-                </p>
-
-            </div>
-
-            <div class="card">
-
-                <h2>Último Evento</h2>
-
-                <p id="hardwareLastEvent">
-                    Nenhum evento
-                </p>
+                </div>
 
             </div>
 
@@ -46,22 +40,17 @@ export default class HardwarePage {
 
     init() {
 
-        console.log("Hardware carregado.");
+        document.querySelectorAll(".sim-btn").forEach(button => {
 
-        window.photoController.onHardwareStatus((status) => {
+            button.addEventListener("click", async () => {
 
-            document.getElementById("hardwareStatus").textContent =
-                status.connected ? "🟢 Conectado" : "🔴 Desconectado";
+                await window.photoController.simulateButton(
 
-            document.getElementById("hardwarePort").textContent =
-                status.port || "--";
+                    Number(button.dataset.id)
 
-        });
+                );
 
-        window.photoController.onHardwareEvent((event) => {
-
-            document.getElementById("hardwareLastEvent").textContent =
-                `${event.type} ${event.id} → ${event.value}`;
+            });
 
         });
 

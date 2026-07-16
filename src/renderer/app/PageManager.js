@@ -2,7 +2,7 @@ import DashboardPage from "../pages/Dashboard/DashboardPage.js";
 import ControlsPage from "../pages/Controls/ControlsPage.js";
 import HardwarePage from "../pages/Hardware/HardwarePage.js";
 import DisplayPage from "../pages/Display/DisplayPage.js";
-import LightroomPage from "../pages/Lightroom/LightroomPage.js";
+import LightroomPage from "../pages/lightroom/LightroomPage.js";
 import AboutPage from "../pages/About/AboutPage.js";
 
 export default class PageManager {
