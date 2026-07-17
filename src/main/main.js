@@ -1,6 +1,5 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
-
+const { app, BrowserWindow, ipcMain, globalShortcut } = require("electron");
 
 const EventBus = require("../core/EventBus");
 const HardwareService = require("../hardware/HardwareService");
@@ -94,6 +93,21 @@ ipcMain.handle("hardware:simulateButton", (event, buttonId) => {
 app.whenReady().then(() => {
 
     createWindow();
+
+    globalShortcut.register("CommandOrControl+Shift+T", () => {
+
+    console.log("===== TESTE KRONOS =====");
+
+    EventBus.emit("hardware-event", {
+
+        device: "SIM",
+        type: "BTN",
+        id: 1,
+        value: "PRESS"
+
+    });
+
+});
 
     HardwareService.connect("COM3");
 

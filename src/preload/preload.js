@@ -1,6 +1,8 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("photoController", {
+    simulateButton: (buttonId) =>
+    ipcRenderer.invoke("hardware:simulateButton", buttonId),
 
     ping: () => ipcRenderer.invoke("ping"),
 

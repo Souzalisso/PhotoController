@@ -12,31 +12,33 @@ class HardwareController {
 
     handleEvent(event) {
 
-        console.log("Evento recebido:", event);
+    console.log("Evento recebido:", event);
 
-        const configuration = ConfigurationManager.load();
+    const configuration = ConfigurationManager.load();
 
-        if (!configuration) {
+    if (!configuration) {
 
-            console.log("Nenhuma configuração encontrada.");
+        console.log("Nenhuma configuração encontrada.");
 
-            return;
-
-        }
-
-        const button = configuration.buttons?.find(btn => btn.id === event.id);
-
-        if (!button) {
-
-            console.log("Botão não configurado.");
-
-            return;
-
-        }
-
-        KeyboardManager.execute(button.command);
+        return;
 
     }
+
+    const command = configuration.buttons[event.id];
+
+    if (!command) {
+
+        console.log(`BTN ${event.id} não configurado.`);
+
+        return;
+
+    }
+
+    console.log(`Executando comando: ${command}`);
+
+    KeyboardManager.execute(command);
+
+}
 
 }
 

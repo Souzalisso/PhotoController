@@ -16,4 +16,8 @@ export default class AboutPage {
 
     }
 
+    init() {
+
+    }
+
 }

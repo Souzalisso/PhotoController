@@ -1,7 +1,7 @@
 {
     "buttons": {
-        "1": null,
-        "2": null,
+        "1": "next-photo",
+        "2": "previous-photo",
         "3": null,
         "4": null,
         "5": null,
@@ -9,8 +9,6 @@
         "7": null,
         "8": null
     },
-
     "encoders": {},
-
     "potentiometers": {}
 }
