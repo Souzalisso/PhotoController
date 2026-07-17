@@ -47,6 +47,10 @@ export default class ControlsPage {
                     Nenhum
                 </p>
 
+                <p id="selectedCommand">
+                    Nenhum comando
+                </p>
+
             </div>
 
             <div class="card">
@@ -62,9 +66,7 @@ export default class ControlsPage {
                     ${LightroomCommands.map(command => `
 
                         <option value="${command.id}">
-
                             ${command.category} • ${command.name}
-
                         </option>
 
                     `).join("")}
@@ -79,13 +81,60 @@ export default class ControlsPage {
 
     }
 
+    async loadButtonConfiguration(buttonId) {
+
+        const configuration = await window.photoController.loadConfiguration();
+
+        const command = configuration.buttons[buttonId];
+
+        document.getElementById("commandSelect").value = command || "";
+
+        document.getElementById("selectedCommand").textContent =
+    this.getCommandName(command);
+
+    }
+
+    getCommandName(commandId) {
+
+    if (!commandId) {
+
+        return "Nenhum comando";
+
+    }
+
+    const command = LightroomCommands.find(item => item.id === commandId);
+
+    return command ? command.name : commandId;
+
+}
+
+    async updateButtonsStatus() {
+
+    const configuration = await window.photoController.loadConfiguration();
+
+    document.querySelectorAll(".control-button").forEach(button => {
+
+        const id = Number(button.dataset.id);
+
+        button.classList.remove("configured");
+
+        if (configuration.buttons[id]) {
+
+            button.classList.add("configured");
+
+        }
+
+    });
+
+}
+
     init() {
 
         let selectedButton = null;
 
         document.querySelectorAll(".control-button").forEach(button => {
 
-            button.addEventListener("click", () => {
+            button.addEventListener("click", async () => {
 
                 document.querySelectorAll(".control-button").forEach(btn => {
 
@@ -100,37 +149,40 @@ export default class ControlsPage {
                 document.getElementById("selectedControl").textContent =
                     button.textContent.trim();
 
+                await this.loadButtonConfiguration(selectedButton);
+
             });
+            this.updateButtonsStatus();
 
         });
 
-       document.getElementById("commandSelect").addEventListener("change", async (event) => {
+        document.getElementById("commandSelect").addEventListener("change", async (event) => {
 
-    if (!selectedButton) {
+            if (!selectedButton) {
 
-        alert("Selecione um botão primeiro.");
+                alert("Selecione um botão primeiro.");
 
-        event.target.value = "";
+                event.target.value = "";
 
-        return;
+                return;
 
-    }
+            }
 
-    await window.photoController.saveButton(
+            await window.photoController.saveButton(
 
-        selectedButton,
+                selectedButton,
 
-        event.target.value
+                event.target.value
 
-    );
+            );
 
-    console.log(
+            document.getElementById("selectedCommand").textContent =
+    this.getCommandName(event.target.value);
 
-        `BTN ${selectedButton} configurado para ${event.target.value}`
+            console.log(`BTN ${selectedButton} configurado para ${event.target.value}`);
+            await this.updateButtonsStatus();
 
-    );
-
-});
+        });
 
     }
 

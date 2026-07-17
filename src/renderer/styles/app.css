@@ -151,3 +151,27 @@ select{
     margin-top:10px;
 
 }
+
+.control-button {
+
+    transition: .2s;
+
+}
+
+.control-button.configured {
+
+    background: #00c853;
+
+    color: white;
+
+    border-color: #00c853;
+
+}
+
+.control-button.selected {
+
+    background: #1976d2;
+
+    color: white;
+
+}
