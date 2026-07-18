@@ -3,13 +3,13 @@ import KronosRenderer from "./KronosRenderer.js";
 
 export default class KronosLayout {
 
-    constructor(){
+    constructor() {
 
         this.renderer = new KronosRenderer();
 
     }
 
-    render(){
+    render() {
 
         return `
 
@@ -22,6 +22,40 @@ export default class KronosLayout {
             </div>
 
         `;
+
+    }
+
+    init() {
+
+        document.querySelectorAll(".kronos-control").forEach(control => {
+
+            control.addEventListener("click", () => {
+
+                document.querySelectorAll(".kronos-control").forEach(item => {
+
+                    item.classList.remove("selected");
+
+                });
+
+                control.classList.add("selected");
+
+                document.dispatchEvent(
+
+                    new CustomEvent("kronos:control-selected", {
+
+                        detail: {
+
+                            id: control.dataset.id
+
+                        }
+
+                    })
+
+                );
+
+            });
+
+        });
 
     }
 

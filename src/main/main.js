@@ -61,15 +61,15 @@ ipcMain.handle("config:load", () => {
 
 });
 
-ipcMain.handle("config:saveButton", (event, buttonId, command) => {
+ipcMain.handle("config:saveControl", (event, controlId, command) => {
 
     const configuration = ConfigurationManager.load();
 
-    configuration.buttons[buttonId] = command;
+    configuration.controls[controlId] = command;
 
     ConfigurationManager.save(configuration);
 
-    console.log(`BTN ${buttonId} -> ${command}`);
+    console.log(`${controlId} -> ${command}`);
 
     return true;
 

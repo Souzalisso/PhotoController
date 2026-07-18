@@ -6,8 +6,8 @@ contextBridge.exposeInMainWorld("photoController", {
 
     ping: () => ipcRenderer.invoke("ping"),
 
-    saveButton: (buttonId, command) =>
-        ipcRenderer.invoke("config:saveButton", buttonId, command),
+    saveControl: (controlId, command) =>
+    ipcRenderer.invoke("config:saveControl", controlId, command),
 
     loadConfiguration: () =>
         ipcRenderer.invoke("config:load"),

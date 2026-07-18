@@ -10,18 +10,25 @@ class HardwareController {
 
     }
 
-    handleEvent(event) {
+    async handleEvent(event) {
 
     console.log("Evento recebido:", event);
 
     const configuration = ConfigurationManager.load();
 
-    if (!configuration) {
+    const command = configuration.controls[event.id];
 
-        console.log("Nenhuma configuração encontrada.");
+    if (!command) {
+
+        console.log("Controle não configurado.");
 
         return;
 
+    }
+
+    await KeyboardManager.execute(command);
+
+}
     }
 
     const command = configuration.buttons[event.id];
@@ -38,8 +45,7 @@ class HardwareController {
 
     KeyboardManager.execute(command);
 
-}
 
-}
+
 
 module.exports = new HardwareController();

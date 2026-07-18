@@ -15,31 +15,41 @@ class ConfigurationManager {
 
     }
 
-    load() {
+   load() {
 
-        try {
+    try {
 
-            const data = fs.readFileSync(
+        const data = fs.readFileSync(
 
-                this.configPath,
+            this.configPath,
 
-                "utf8"
+            "utf8"
 
-            );
+        );
 
-            return JSON.parse(data);
+        const configuration = JSON.parse(data);
 
-        }
+        if (!configuration.controls) {
 
-        catch (error) {
-
-            console.error(error);
-
-            return null;
+            configuration.controls = {};
 
         }
+
+        return configuration;
 
     }
+
+    catch (error) {
+
+        return {
+
+            controls: {}
+
+        };
+
+    }
+
+}
 
     save(configuration) {
 

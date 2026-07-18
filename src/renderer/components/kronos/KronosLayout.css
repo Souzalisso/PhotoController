@@ -55,3 +55,24 @@
     border:5px solid #666;
 
 }
+.kronos-control{
+
+    transition: .2s;
+
+    cursor: pointer;
+
+}
+
+.kronos-control:hover{
+
+    transform: scale(1.05);
+
+}
+
+.kronos-control.selected{
+
+    outline: 3px solid #00c853;
+
+    outline-offset: 4px;
+
+}

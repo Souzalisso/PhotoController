@@ -1,19 +1,26 @@
-import KronosHardware from "../../data/KronosHardware.js";
+import KronosLayout from "../../kronos/KronosLayout.js";
+import KronosControls from "../../kronos/KronosControls.js";
 import LightroomCommands from "../../data/Lightroom/LightroomCommands.js";
 
 export default class ControlsPage {
 
-    renderButtons() {
+    constructor() {
 
-        return KronosHardware.controls.buttons.map(button => `
+        this.kronosLayout = new KronosLayout();
 
-            <button
-                class="control-button"
-                data-id="${button.id}">
+        this.selectedControl = null;
 
-                ${button.label}
+    }
 
-            </button>
+    renderCommands() {
+
+        return LightroomCommands.map(command => `
+
+            <option value="${command.id}">
+
+                ${command.category} • ${command.name}
+
+            </option>
 
         `).join("");
 
@@ -25,53 +32,49 @@ export default class ControlsPage {
 
         <main class="content">
 
-            <h1>Controles</h1>
+            <h1>Configuração do KRONOS</h1>
 
-            <div class="card">
+            <div class="controls-layout">
 
-                <h2>Botões</h2>
+                <div class="layout-area">
 
-                <div class="buttons-grid">
-
-                    ${this.renderButtons()}
+                    ${this.kronosLayout.render()}
 
                 </div>
 
-            </div>
+                <aside class="properties">
 
-            <div class="card">
+                    <div class="card">
 
-                <h2>Controle Selecionado</h2>
+                        <h2>Controle</h2>
 
-                <p id="selectedControl">
-                    Nenhum
-                </p>
+                        <p id="selectedControl">
 
-                <p id="selectedCommand">
-                    Nenhum comando
-                </p>
+                            Nenhum
 
-            </div>
+                        </p>
 
-            <div class="card">
+                    </div>
 
-                <h2>Comando Lightroom</h2>
+                    <div class="card">
 
-                <select id="commandSelect">
+                        <h2>Comando Lightroom</h2>
 
-                    <option value="">
-                        Selecione um comando...
-                    </option>
+                        <select id="commandSelect">
 
-                    ${LightroomCommands.map(command => `
+                            <option value="">
 
-                        <option value="${command.id}">
-                            ${command.category} • ${command.name}
-                        </option>
+                                Selecione um comando...
 
-                    `).join("")}
+                            </option>
 
-                </select>
+                            ${this.renderCommands()}
+
+                        </select>
+
+                    </div>
+
+                </aside>
 
             </div>
 
@@ -81,108 +84,63 @@ export default class ControlsPage {
 
     }
 
-    async loadButtonConfiguration(buttonId) {
+    init() {
 
-        const configuration = await window.photoController.loadConfiguration();
+        this.kronosLayout.init();
 
-        const command = configuration.buttons[buttonId];
+        document.addEventListener("kronos:control-selected", this.onControlSelected.bind(this));
 
-        document.getElementById("commandSelect").value = command || "";
+        document.getElementById("commandSelect").addEventListener(
 
-        document.getElementById("selectedCommand").textContent =
-    this.getCommandName(command);
+            "change",
 
-    }
+            this.onCommandSelected.bind(this)
 
-    getCommandName(commandId) {
-
-    if (!commandId) {
-
-        return "Nenhum comando";
+        );
 
     }
 
-    const command = LightroomCommands.find(item => item.id === commandId);
+    onControlSelected(event) {
 
-    return command ? command.name : commandId;
+        this.selectedControl = event.detail.id;
 
-}
+        const control = KronosControls.find(item => item.id === this.selectedControl);
 
-    async updateButtonsStatus() {
+        if (!control) {
 
-    const configuration = await window.photoController.loadConfiguration();
-
-    document.querySelectorAll(".control-button").forEach(button => {
-
-        const id = Number(button.dataset.id);
-
-        button.classList.remove("configured");
-
-        if (configuration.buttons[id]) {
-
-            button.classList.add("configured");
+            return;
 
         }
 
-    });
+        document.getElementById("selectedControl").textContent = control.label;
 
-}
+    }
 
-    init() {
+    async onCommandSelected(event) {
 
-        let selectedButton = null;
+        if (!this.selectedControl) {
 
-        document.querySelectorAll(".control-button").forEach(button => {
+            alert("Selecione um controle.");
 
-            button.addEventListener("click", async () => {
+            event.target.value = "";
 
-                document.querySelectorAll(".control-button").forEach(btn => {
+            return;
 
-                    btn.classList.remove("selected");
+        }
 
-                });
+        await window.photoController.saveControl(
 
-                button.classList.add("selected");
+            this.selectedControl,
 
-                selectedButton = Number(button.dataset.id);
+            event.target.value
 
-                document.getElementById("selectedControl").textContent =
-                    button.textContent.trim();
+        );
 
-                await this.loadButtonConfiguration(selectedButton);
+        console.log(
 
-            });
-            this.updateButtonsStatus();
+            `${this.selectedControl} -> ${event.target.value}`
 
-        });
-
-        document.getElementById("commandSelect").addEventListener("change", async (event) => {
-
-            if (!selectedButton) {
-
-                alert("Selecione um botão primeiro.");
-
-                event.target.value = "";
-
-                return;
-
-            }
-
-            await window.photoController.saveButton(
-
-                selectedButton,
-
-                event.target.value
-
-            );
-
-            document.getElementById("selectedCommand").textContent =
-    this.getCommandName(event.target.value);
-
-            console.log(`BTN ${selectedButton} configurado para ${event.target.value}`);
-            await this.updateButtonsStatus();
-
-        });
+        );
 
     }
 
