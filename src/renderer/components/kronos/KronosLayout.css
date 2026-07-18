@@ -1,0 +1,57 @@
+.kronos-layout{
+
+    position:relative;
+
+    width:1100px;
+
+    height:700px;
+
+    margin:auto;
+
+    background:#1b1b1b;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+}
+
+.kronos-control{
+
+    position:absolute;
+
+}
+
+.button{
+
+    border:none;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+}
+
+.encoder{
+
+    position:absolute;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+}
+
+.knob{
+
+    width:60px;
+
+    height:60px;
+
+    border-radius:50%;
+
+    border:5px solid #666;
+
+}
