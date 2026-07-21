@@ -1,283 +1,260 @@
-const KronosControls = {
+const KronosControls = [
 
-    panel: {
+    //---------------------------------
+    // COLUNA ESQUERDA
+    //---------------------------------
 
-        name: "KRONOS",
-
-        width: 1400,
-
-        height: 760
-
+    {
+        id: "undo",
+        type: "button",
+        text: "UNDO",
+        group: "left"
     },
 
-    leftButtons: [
-
-        {
-            id: "undo",
-            label: "UNDO",
-            type: "button",
-            command: null
-        },
-
-        {
-            id: "redo",
-            label: "REDO",
-            type: "button",
-            command: null
-        },
-
-        {
-            id: "copy",
-            label: "COPY",
-            type: "button",
-            command: null
-        },
-
-        {
-            id: "paste",
-            label: "PASTE",
-            type: "button",
-            command: null
-        },
-
-        {
-            id: "sync",
-            label: "SYNC",
-            type: "button",
-            command: null
-        },
-
-        {
-            id: "before",
-            label: "BEFORE",
-            type: "button",
-            command: null
-        }
-
-    ],
-
-    topEncoders: [
-
-        {
-            id: "exposure",
-            label: "EXPOSURE",
-            type: "encoder",
-            commandLeft: null,
-            commandRight: null,
-            commandPress: null
-        },
-
-        {
-            id: "contrast",
-            label: "CONTRAST",
-            type: "encoder",
-            commandLeft: null,
-            commandRight: null,
-            commandPress: null
-        },
-
-        {
-            id: "highlights",
-            label: "HIGHLIGHTS",
-            type: "encoder",
-            commandLeft: null,
-            commandRight: null,
-            commandPress: null
-        },
-
-        {
-            id: "shadows",
-            label: "SHADOWS",
-            type: "encoder",
-            commandLeft: null,
-            commandRight: null,
-            commandPress: null
-        },
-
-        {
-            id: "whites",
-            label: "WHITES",
-            type: "encoder",
-            commandLeft: null,
-            commandRight: null,
-            commandPress: null
-        }
-
-    ],
-
-    bottomEncoders: [
-
-        {
-            id: "blacks",
-            label: "BLACKS",
-            type: "encoder",
-            commandLeft: null,
-            commandRight: null,
-            commandPress: null
-        },
-
-        {
-            id: "temperature",
-            label: "TEMP",
-            type: "encoder",
-            commandLeft: null,
-            commandRight: null,
-            commandPress: null
-        },
-
-        {
-            id: "tint",
-            label: "TINT",
-            type: "encoder",
-            commandLeft: null,
-            commandRight: null,
-            commandPress: null
-        },
-
-        {
-            id: "vibrance",
-            label: "VIBRANCE",
-            type: "encoder",
-            commandLeft: null,
-            commandRight: null,
-            commandPress: null
-        },
-
-        {
-            id: "saturation",
-            label: "SATURATION",
-            type: "encoder",
-            commandLeft: null,
-            commandRight: null,
-            commandPress: null
-        }
-
-    ],
-
-    display: {
-
-        id: "display",
-
-        type: "display"
-
+    {
+        id: "redo",
+        type: "button",
+        text: "REDO",
+        group: "left"
     },
 
-    lowerEncoders: [
+    {
+        id: "copy",
+        type: "button",
+        text: "COPY",
+        group: "left"
+    },
 
-        {
+    {
+        id: "paste",
+        type: "button",
+        text: "PASTE",
+        group: "left"
+    },
 
-            id: "leftWheel",
+    {
+        id: "sync",
+        type: "button",
+        text: "SYNC",
+        group: "left"
+    },
 
-            type: "encoder",
+    {
+        id: "beforeAfter",
+        type: "button",
+        text: "BEFORE\nAFTER",
+        group: "left"
+    },
 
-            commandLeft: null,
+    //---------------------------------
+    // PRIMEIRA LINHA
+    //---------------------------------
 
-            commandRight: null,
+    {
+        id:"exposure",
+        type:"encoder",
+        label:"EXPOSIÇÃO",
+        color:"#ffffff"
+    },
 
-            commandPress: null
+    {
+        id:"contrast",
+        type:"encoder",
+        label:"CONTRASTE",
+        color:"#ff6b35"
+    },
 
-        },
+    {
+        id:"highlights",
+        type:"encoder",
+        label:"REALCES",
+        color:"#ff8c42"
+    },
 
-        {
+    {
+        id:"shadows",
+        type:"encoder",
+        label:"SOMBRAS",
+        color:"#f3c623"
+    },
 
-            id: "centerWheel",
+    {
+        id:"whites",
+        type:"encoder",
+        label:"BRANCOS",
+        color:"#5dd65d"
+    },
 
-            type: "encoder",
+    //---------------------------------
+    // SEGUNDA LINHA
+    //---------------------------------
 
-            commandLeft: null,
+    {
+        id:"blacks",
+        type:"encoder",
+        label:"PRETOS",
+        color:"#5bc0eb"
+    },
 
-            commandRight: null,
+    {
+        id:"temperature",
+        type:"encoder",
+        label:"TEMPERATURA",
+        color:"#33c3ff"
+    },
 
-            commandPress: null
+    {
+        id:"tint",
+        type:"encoder",
+        label:"MATIZ",
+        color:"#8b5cf6"
+    },
 
-        },
+    {
+        id:"vibrance",
+        type:"encoder",
+        label:"VIBRATILIDADE",
+        color:"#d946ef"
+    },
 
-        {
+    {
+        id:"saturation",
+        type:"encoder",
+        label:"SATURAÇÃO",
+        color:"#ff3366"
+    },
 
-            id: "rightWheel",
+    //---------------------------------
+    // DISPLAY
+    //---------------------------------
 
-            type: "encoder",
+    {
+        id:"display",
+        type:"display"
+    },
 
-            commandLeft: null,
+    //---------------------------------
+    // ENCODERS NAVEGAÇÃO
+    //---------------------------------
 
-            commandRight: null,
+    {
+        id:"encoderA",
+        type:"smallEncoder",
+        label:"A"
+    },
 
-            commandPress: null
+    {
+        id:"navigation",
+        type:"navigation"
+    },
 
-        }
+    {
+        id:"encoderB",
+        type:"smallEncoder",
+        label:"B"
+    },
 
-    ],
+    //---------------------------------
+    // ESTRELAS
+    //---------------------------------
 
-    stars: [
+    {
+        id:"star1",
+        type:"star",
+        value:1
+    },
 
-        { id: "star1", label: "★", type: "button", command: null },
+    {
+        id:"star2",
+        type:"star",
+        value:2
+    },
 
-        { id: "star2", label: "★", type: "button", command: null },
+    {
+        id:"star3",
+        type:"star",
+        value:3
+    },
 
-        { id: "star3", label: "★", type: "button", command: null },
+    {
+        id:"star4",
+        type:"star",
+        value:4
+    },
 
-        { id: "star4", label: "★", type: "button", command: null },
+    {
+        id:"star5",
+        type:"star",
+        value:5
+    },
 
-        { id: "star5", label: "★", type: "button", command: null }
+    //---------------------------------
+    // PICK
+    //---------------------------------
 
-    ],
+    {
+        id:"pick",
+        type:"pick"
+    },
 
-    actions: [
+    {
+        id:"reject",
+        type:"reject"
+    },
 
-        {
+    //---------------------------------
+    // DIREITA
+    //---------------------------------
 
-            id: "pick",
+    {
+        id:"p1",
+        type:"button",
+        text:"P1",
+        group:"right"
+    },
 
-            label: "PICK",
+    {
+        id:"p2",
+        type:"button",
+        text:"P2",
+        group:"right"
+    },
 
-            type: "button",
+    {
+        id:"edit",
+        type:"button",
+        text:"EDIT",
+        group:"right"
+    },
 
-            command: null
+    //---------------------------------
+    // NAVEGAÇÃO
+    //---------------------------------
 
-        },
+    {
+        id:"left",
+        type:"arrow",
+        direction:"left"
+    },
 
-        {
+    {
+        id:"right",
+        type:"arrow",
+        direction:"right"
+    },
 
-            id: "reject",
+    {
+        id:"fit",
+        type:"button",
+        text:"FIT"
+    },
 
-            label: "REJECT",
+    {
+        id:"zoom",
+        type:"button",
+        text:"1:1"
+    }
 
-            type: "button",
-
-            command: null
-
-        }
-
-    ],
-
-    navigation: [
-
-        {
-
-            id: "fit",
-
-            label: "FIT",
-
-            type: "button",
-
-            command: null
-
-        },
-
-        {
-
-            id: "zoom",
-
-            label: "1:1",
-
-            type: "button",
-
-            command: null
-
-        }
-
-    ]
-
-};
+];
 
 export default KronosControls;

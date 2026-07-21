@@ -1,22 +1,20 @@
-import KronosDesigner from "../../designer/KronosDesigner.js";
+import KronosDesigner from "../designer/KronosDesigner.js";
 
 export default class ControlsPage {
 
-    constructor(){
+    render() {
 
-        this.designer=new KronosDesigner();
+        const designer = new KronosDesigner();
 
-    }
-
-    render(){
-
-        return this.designer.render();
+        return designer.render();
 
     }
 
-    async init(){
+    init() {
 
-        await this.designer.init();
+        const designer = new KronosDesigner();
+
+        designer.init();
 
     }
 
