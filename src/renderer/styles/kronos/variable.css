@@ -1,0 +1,86 @@
+:root{
+
+    /* ==========================
+       PAINEL
+    ========================== */
+
+    --panel-background:#1B1B1D;
+
+    --panel-border:#2F3136;
+
+    --panel-shadow:
+        0 20px 60px rgba(0,0,0,.45);
+
+    --panel-radius:22px;
+
+    /* ==========================
+       CORES
+    ========================== */
+
+    --primary:#2D7DFF;
+
+    --success:#2ECC71;
+
+    --danger:#E74C3C;
+
+    --warning:#F4B400;
+
+    --text:#ECECEC;
+
+    --text-secondary:#9AA0A6;
+
+    /* ==========================
+       BOTÕES
+    ========================== */
+
+    --button-background:#2C2F33;
+
+    --button-hover:#383C41;
+
+    --button-active:#4A90E2;
+
+    --button-border:#4B4F55;
+
+    /* ==========================
+       ENCODERS
+    ========================== */
+
+    --encoder-body:#3D4046;
+
+    --encoder-ring:#5E636B;
+
+    --encoder-cap:#AEB4BC;
+
+    /* ==========================
+       OLED
+    ========================== */
+
+    --oled-background:#07140B;
+
+    --oled-green:#79FF8A;
+
+    /* ==========================
+       LEDS
+    ========================== */
+
+    --led-off:#4D4D4D;
+
+    --led-green:#36FF75;
+
+    --led-red:#FF4444;
+
+    --led-blue:#4A7CFF;
+
+    --led-yellow:#FFD93D;
+
+    /* ==========================
+       ANIMAÇÕES
+    ========================== */
+
+    --transition-fast:.15s;
+
+    --transition:.25s;
+
+    --transition-slow:.4s;
+
+}

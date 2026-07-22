@@ -1,0 +1,246 @@
+/* ==========================================
+   ÁREA INFERIOR
+========================================== */
+
+.navigation-section,
+.stars-section,
+.actions-section{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:18px;
+
+}
+
+/* ==========================================
+   ENCODER DE NAVEGAÇÃO
+========================================== */
+
+.navigation-encoder{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:10px;
+
+    cursor:pointer;
+
+}
+
+.navigation-encoder span{
+
+    color:var(--text);
+
+    font-size:11px;
+
+    font-weight:600;
+
+    letter-spacing:1px;
+
+}
+
+/* ==========================================
+   BOTÕES DE ESTRELAS
+========================================== */
+
+.star-button{
+
+    width:48px;
+
+    height:48px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:var(--button-background);
+
+    color:#FFD43B;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+    transition:all var(--transition);
+
+    box-shadow:
+
+        inset 0 1px 2px rgba(255,255,255,.05),
+
+        0 4px 10px rgba(0,0,0,.25);
+
+}
+
+.star-button:hover{
+
+    transform:translateY(-2px);
+
+    background:var(--button-hover);
+
+}
+
+.star-button.selected{
+
+    background:#FFD43B;
+
+    color:#1b1b1d;
+
+}
+
+/* ==========================================
+   BOTÕES DE AÇÃO
+========================================== */
+
+.pick-button,
+.reject-button,
+.arrow-button{
+
+    min-width:82px;
+
+    height:46px;
+
+    padding:0 18px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:var(--button-background);
+
+    color:var(--text);
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    transition:all var(--transition);
+
+    box-shadow:
+
+        inset 0 1px 2px rgba(255,255,255,.05),
+
+        0 4px 10px rgba(0,0,0,.25);
+
+}
+
+/* ==========================================
+   PICK
+========================================== */
+
+.pick-button{
+
+    border-left:4px solid #2ECC71;
+
+}
+
+.pick-button:hover{
+
+    background:#315b42;
+
+}
+
+/* ==========================================
+   REJECT
+========================================== */
+
+.reject-button{
+
+    border-left:4px solid #E74C3C;
+
+}
+
+.reject-button:hover{
+
+    background:#5b3333;
+
+}
+
+/* ==========================================
+   SETAS
+========================================== */
+
+.arrow-button{
+
+    width:54px;
+
+    min-width:54px;
+
+    padding:0;
+
+    font-size:18px;
+
+}
+
+.arrow-button:hover{
+
+    background:var(--button-hover);
+
+}
+
+/* ==========================================
+   FIT / 1:1
+========================================== */
+
+.action-button{
+
+    min-width:78px;
+
+    height:42px;
+
+    border-radius:10px;
+
+    border:1px solid var(--button-border);
+
+    background:var(--button-background);
+
+    color:var(--text);
+
+    cursor:pointer;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    transition:all var(--transition);
+
+}
+
+.action-button:hover{
+
+    background:var(--button-hover);
+
+}
+
+.action-button.selected{
+
+    border-color:var(--primary);
+
+}
+
+/* ==========================================
+   ESTADO ATIVO
+========================================== */
+
+.pick-button.active,
+.reject-button.active,
+.arrow-button.active,
+.action-button.active{
+
+    box-shadow:
+
+        0 0 14px rgba(45,125,255,.35);
+
+}

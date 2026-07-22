@@ -1,0 +1,213 @@
+/* ==========================================
+   OLED
+========================================== */
+
+.oled-display{
+
+    width:100%;
+
+    max-width:520px;
+
+    min-height:150px;
+
+    margin:auto;
+
+    padding:16px;
+
+    border-radius:16px;
+
+    background:#161616;
+
+    border:2px solid #2f2f2f;
+
+    box-shadow:
+
+        inset 0 2px 8px rgba(255,255,255,.04),
+
+        inset 0 -5px 10px rgba(0,0,0,.45),
+
+        0 12px 24px rgba(0,0,0,.35);
+
+}
+
+/* ==========================================
+   TELA OLED
+========================================== */
+
+.oled-body{
+
+    width:100%;
+
+    height:110px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    border-radius:10px;
+
+    background:var(--oled-background);
+
+    color:var(--oled-green);
+
+    overflow:hidden;
+
+    position:relative;
+
+}
+
+/* ==========================================
+   EFEITO DE BRILHO
+========================================== */
+
+.oled-body::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+
+        linear-gradient(
+
+            rgba(255,255,255,.04),
+
+            transparent 30%
+
+        );
+
+    pointer-events:none;
+
+}
+
+/* ==========================================
+   CABEÇALHO
+========================================== */
+
+.oled-header{
+
+    height:28px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:#cfcfcf;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    letter-spacing:2px;
+
+    text-transform:uppercase;
+
+}
+
+/* ==========================================
+   TÍTULO
+========================================== */
+
+.oled-title{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    letter-spacing:1px;
+
+    margin-bottom:10px;
+
+}
+
+/* ==========================================
+   VALOR
+========================================== */
+
+.oled-value{
+
+    font-size:34px;
+
+    font-weight:bold;
+
+    letter-spacing:2px;
+
+}
+
+/* ==========================================
+   STATUS
+========================================== */
+
+.oled-status{
+
+    margin-top:8px;
+
+    font-size:12px;
+
+    color:#8cff8c;
+
+}
+
+/* ==========================================
+   CONECTADO
+========================================== */
+
+.oled-display.connected{
+
+    border-color:#4CAF50;
+
+}
+
+/* ==========================================
+   DESCONECTADO
+========================================== */
+
+.oled-display.disconnected{
+
+    border-color:#C62828;
+
+}
+
+.oled-display.disconnected .oled-body{
+
+    opacity:.55;
+
+}
+
+/* ==========================================
+   ATUALIZAÇÃO
+========================================== */
+
+.oled-value.update{
+
+    animation:oledFlash .25s;
+
+}
+
+@keyframes oledFlash{
+
+    0%{
+
+        opacity:.4;
+
+        transform:scale(.95);
+
+    }
+
+    100%{
+
+        opacity:1;
+
+        transform:scale(1);
+
+    }
+
+}

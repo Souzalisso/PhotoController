@@ -1,0 +1,252 @@
+/* ==========================================
+   FADE IN DO PAINEL
+========================================== */
+
+.kronos-panel{
+
+    animation:panelFade .35s ease-out;
+
+}
+
+@keyframes panelFade{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(12px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/* ==========================================
+   CLIQUE DOS BOTÕES
+========================================== */
+
+.kronos-button:active,
+.pick-button:active,
+.reject-button:active,
+.arrow-button:active,
+.star-button:active,
+.action-button:active{
+
+    transform:scale(.96);
+
+}
+
+/* ==========================================
+   HOVER DOS BOTÕES
+========================================== */
+
+.kronos-button,
+.pick-button,
+.reject-button,
+.arrow-button,
+.star-button,
+.action-button{
+
+    transition:
+
+        transform .15s,
+
+        background .25s,
+
+        border-color .25s,
+
+        box-shadow .25s;
+
+}
+
+/* ==========================================
+   ENCODER
+========================================== */
+
+.encoder-ring{
+
+    transition:
+
+        transform .15s,
+
+        box-shadow .25s;
+
+}
+
+.encoder:hover .encoder-ring{
+
+    transform:translateY(-2px);
+
+}
+
+.encoder.selected .encoder-ring{
+
+    animation:selectedPulse .8s ease-out;
+
+}
+
+/* ==========================================
+   LED
+========================================== */
+
+.button-led.active,
+.encoder-led.active{
+
+    animation:ledPulse 1.5s infinite;
+
+}
+
+/* ==========================================
+   DISPLAY
+========================================== */
+
+.oled-value.update{
+
+    animation:displayUpdate .18s;
+
+}
+
+/* ==========================================
+   CONECTADO
+========================================== */
+
+.connected{
+
+    animation:connectedFlash .5s;
+
+}
+
+/* ==========================================
+   DESCONEXÃO
+========================================== */
+
+.disconnected{
+
+    animation:disconnectedFlash .5s;
+
+}
+
+/* ==========================================
+   KEYFRAMES
+========================================== */
+
+@keyframes ledPulse{
+
+    0%{
+
+        opacity:.5;
+
+    }
+
+    50%{
+
+        opacity:1;
+
+    }
+
+    100%{
+
+        opacity:.5;
+
+    }
+
+}
+
+@keyframes selectedPulse{
+
+    0%{
+
+        box-shadow:
+
+            0 0 0 rgba(45,125,255,0);
+
+    }
+
+    50%{
+
+        box-shadow:
+
+            0 0 14px rgba(45,125,255,.45);
+
+    }
+
+    100%{
+
+        box-shadow:
+
+            0 0 0 rgba(45,125,255,0);
+
+    }
+
+}
+
+@keyframes displayUpdate{
+
+    0%{
+
+        transform:scale(.95);
+
+        opacity:.6;
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+        opacity:1;
+
+    }
+
+}
+
+@keyframes connectedFlash{
+
+    0%{
+
+        filter:brightness(.8);
+
+    }
+
+    50%{
+
+        filter:brightness(1.15);
+
+    }
+
+    100%{
+
+        filter:brightness(1);
+
+    }
+
+}
+
+@keyframes disconnectedFlash{
+
+    0%{
+
+        opacity:1;
+
+    }
+
+    50%{
+
+        opacity:.55;
+
+    }
+
+    100%{
+
+        opacity:1;
+
+    }
+
+}

@@ -1,0 +1,141 @@
+.kronos{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    width:100%;
+
+    height:100%;
+
+    padding:40px;
+
+    box-sizing:border-box;
+
+}
+
+.kronos-panel{
+
+    width:1450px;
+
+    min-height:780px;
+
+    display:grid;
+
+    grid-template-columns:
+
+        120px
+
+        1fr
+
+        120px;
+
+    gap:35px;
+
+    padding:35px;
+
+    border-radius:var(--panel-radius);
+
+    background:var(--panel-background);
+
+    border:1px solid var(--panel-border);
+
+    box-shadow:var(--panel-shadow);
+
+}
+
+.left-column{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:flex-start;
+
+    gap:16px;
+
+}
+
+.center-panel{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:35px;
+
+}
+
+.right-column{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:flex-start;
+
+    gap:16px;
+
+}
+
+.encoder-row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.display-area{
+
+    display:flex;
+
+    justify-content:center;
+
+}
+
+.bottom-area{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:25px;
+
+}
+
+.navigation-section{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:40px;
+
+}
+
+.stars-section{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:18px;
+
+}
+
+.actions-section{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:18px;
+
+}

@@ -1,0 +1,219 @@
+/* ==========================================
+   BOTÃO BASE
+========================================== */
+
+.kronos-button{
+
+    width:100%;
+
+    min-height:64px;
+
+    padding:12px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:6px;
+
+    background:var(--button-background);
+
+    border:1px solid var(--button-border);
+
+    border-radius:12px;
+
+    color:var(--text);
+
+    cursor:pointer;
+
+    user-select:none;
+
+    transition:
+
+        background var(--transition),
+
+        border var(--transition),
+
+        transform var(--transition-fast),
+
+        box-shadow var(--transition);
+
+    box-sizing:border-box;
+
+}
+
+/* ==========================================
+   HOVER
+========================================== */
+
+.kronos-button:hover{
+
+    background:var(--button-hover);
+
+    transform:translateY(-2px);
+
+}
+
+/* ==========================================
+   CLICK
+========================================== */
+
+.kronos-button:active{
+
+    transform:scale(.97);
+
+}
+
+/* ==========================================
+   BOTÃO SELECIONADO
+========================================== */
+
+.kronos-button.selected{
+
+    border-color:var(--primary);
+
+    box-shadow:
+
+        0 0 0 2px rgba(45,125,255,.25);
+
+}
+
+/* ==========================================
+   LED
+========================================== */
+
+.button-led{
+
+    width:10px;
+
+    height:10px;
+
+    border-radius:50%;
+
+    background:var(--led-off);
+
+    transition:all var(--transition);
+
+}
+
+.kronos-button.active .button-led{
+
+    background:var(--led-green);
+
+    box-shadow:
+
+        0 0 8px var(--led-green);
+
+}
+
+/* ==========================================
+   TEXTO
+========================================== */
+
+.button-text{
+
+    font-size:12px;
+
+    font-weight:600;
+
+    text-align:center;
+
+    letter-spacing:.5px;
+
+    line-height:16px;
+
+}
+
+/* ==========================================
+   PICK
+========================================== */
+
+.pick-button{
+
+    background:#2d4732;
+
+}
+
+.pick-button:hover{
+
+    background:#38663f;
+
+}
+
+/* ==========================================
+   REJECT
+========================================== */
+
+.reject-button{
+
+    background:#4d2a2a;
+
+}
+
+.reject-button:hover{
+
+    background:#693434;
+
+}
+
+/* ==========================================
+   SETAS
+========================================== */
+
+.arrow-button{
+
+    width:60px;
+
+    height:60px;
+
+    border-radius:50%;
+
+    font-size:20px;
+
+}
+
+/* ==========================================
+   ESTRELAS
+========================================== */
+
+.star-button{
+
+    width:46px;
+
+    height:46px;
+
+    border-radius:50%;
+
+    background:var(--button-background);
+
+    border:1px solid var(--button-border);
+
+    color:#FFD93D;
+
+    font-size:22px;
+
+    cursor:pointer;
+
+    transition:all var(--transition);
+
+}
+
+.star-button:hover{
+
+    transform:scale(1.08);
+
+    background:var(--button-hover);
+
+}
+
+.star-button.selected{
+
+    background:#FFD93D;
+
+    color:#1B1B1D;
+
+}

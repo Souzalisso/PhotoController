@@ -1,0 +1,241 @@
+/* ==========================================
+   ENCODER BASE
+========================================== */
+
+.encoder{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    gap:14px;
+
+    user-select:none;
+
+    cursor:pointer;
+
+}
+
+/* ==========================================
+   ANEL EXTERNO
+========================================== */
+
+.encoder-ring{
+
+    position:relative;
+
+    width:92px;
+
+    height:92px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:linear-gradient(
+
+        145deg,
+
+        #60656d,
+
+        #35383d
+
+    );
+
+    box-shadow:
+
+        inset 2px 2px 5px rgba(255,255,255,.08),
+
+        inset -4px -4px 8px rgba(0,0,0,.45),
+
+        0 10px 18px rgba(0,0,0,.35);
+
+    transition:all var(--transition);
+
+}
+
+/* ==========================================
+   DISCO CENTRAL
+========================================== */
+
+.encoder-cap{
+
+    width:68px;
+
+    height:68px;
+
+    border-radius:50%;
+
+    background:linear-gradient(
+
+        145deg,
+
+        #9fa5ad,
+
+        #6d737a
+
+    );
+
+    box-shadow:
+
+        inset 1px 1px 2px rgba(255,255,255,.35),
+
+        inset -3px -3px 4px rgba(0,0,0,.35);
+
+}
+
+/* ==========================================
+   MARCADOR
+========================================== */
+
+.encoder-marker{
+
+    position:absolute;
+
+    top:7px;
+
+    width:5px;
+
+    height:18px;
+
+    border-radius:4px;
+
+    background:white;
+
+}
+
+/* ==========================================
+   LED RGB
+========================================== */
+
+.encoder-led{
+
+    position:absolute;
+
+    width:100%;
+
+    height:100%;
+
+    border-radius:50%;
+
+    border:3px solid transparent;
+
+    opacity:.45;
+
+    transition:all .3s;
+
+}
+
+.encoder.active .encoder-led{
+
+    opacity:1;
+
+    box-shadow:
+
+        0 0 18px currentColor;
+
+}
+
+/* ==========================================
+   HOVER
+========================================== */
+
+.encoder:hover .encoder-ring{
+
+    transform:translateY(-3px);
+
+}
+
+/* ==========================================
+   SELECIONADO
+========================================== */
+
+.encoder.selected .encoder-ring{
+
+    box-shadow:
+
+        0 0 0 3px rgba(45,125,255,.30),
+
+        0 12px 22px rgba(0,0,0,.45);
+
+}
+
+/* ==========================================
+   LABEL
+========================================== */
+
+.encoder-label{
+
+    color:var(--text);
+
+    font-size:12px;
+
+    font-weight:600;
+
+    letter-spacing:.8px;
+
+    text-align:center;
+
+}
+
+/* ==========================================
+   ENCODER PEQUENO
+========================================== */
+
+.small-encoder .encoder-ring{
+
+    width:64px;
+
+    height:64px;
+
+}
+
+.small-encoder .encoder-cap{
+
+    width:46px;
+
+    height:46px;
+
+}
+
+.small-encoder span{
+
+    color:var(--text);
+
+    font-size:11px;
+
+    font-weight:600;
+
+}
+
+/* ==========================================
+   ANIMAÇÃO DE ROTAÇÃO
+========================================== */
+
+.encoder.rotating .encoder-cap{
+
+    animation:encoderRotate .15s linear;
+
+}
+
+@keyframes encoderRotate{
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+    to{
+
+        transform:rotate(20deg);
+
+    }
+
+}

@@ -512,4 +512,233 @@ export default class KronosCanvas {
         `;
 
     }
+
+        renderStar(control) {
+
+        const selected = this.controlManager?.isSelected?.(control.id)
+            ? "selected"
+            : "";
+
+        return `
+
+            <button
+                class="star-button ${selected}"
+                data-id="${control.id}">
+
+                ★
+
+            </button>
+
+        `;
+
+    }
+
+    renderPick(control) {
+
+        const selected = this.controlManager?.isSelected?.(control.id)
+            ? "selected"
+            : "";
+
+        return `
+
+            <button
+                class="pick-button ${selected}"
+                data-id="${control.id}">
+
+                ✔ PICK
+
+            </button>
+
+        `;
+
+    }
+
+    renderReject(control) {
+
+        const selected = this.controlManager?.isSelected?.(control.id)
+            ? "selected"
+            : "";
+
+        return `
+
+            <button
+                class="reject-button ${selected}"
+                data-id="${control.id}">
+
+                ✖ REJECT
+
+            </button>
+
+        `;
+
+    }
+
+    renderArrow(control) {
+
+        const selected = this.controlManager?.isSelected?.(control.id)
+            ? "selected"
+            : "";
+
+        const symbol =
+            control.direction === "left"
+                ? "◀"
+                : "▶";
+
+        return `
+
+            <button
+                class="arrow-button ${selected}"
+                data-id="${control.id}">
+
+                ${symbol}
+
+            </button>
+
+        `;
+
+    }
+
+        init(container = document) {
+
+        this.bindEvents(container);
+
+    }
+
+    bindEvents(container) {
+
+        container
+            .querySelectorAll("[data-id]")
+            .forEach(element => {
+
+                element.addEventListener("click", () => {
+
+                    const id = element.dataset.id;
+
+                    this.selectControl(id);
+
+                });
+
+            });
+
+    }
+
+    selectControl(id) {
+
+        if (this.controlManager) {
+
+            this.controlManager.select(id);
+
+        }
+
+        this.updateSelection();
+
+    }
+
+    updateSelection(container = document) {
+
+        container
+            .querySelectorAll("[data-id]")
+            .forEach(control => {
+
+                control.classList.remove("selected");
+
+            });
+
+        const selectedId =
+            this.controlManager?.getSelected?.();
+
+        if (!selectedId)
+            return;
+
+        const selected =
+            container.querySelector(
+
+                `[data-id="${selectedId}"]`
+
+            );
+
+        if (selected) {
+
+            selected.classList.add("selected");
+
+        }
+
+    }
+
+    /*Colocar o arduino de uma vez (ainda não será usado)*/ 
+
+        setControlActive(id, active = true) {
+
+        const element = document.querySelector(
+
+            `[data-id="${id}"]`
+
+        );
+
+        if (!element)
+            return;
+
+        if (active) {
+
+            element.classList.add("active");
+
+        } else {
+
+            element.classList.remove("active");
+
+        }
+
+    }
+
+    setConnected(connected) {
+
+        const panel = document.querySelector(
+
+            ".kronos-panel"
+
+        );
+
+        if (!panel)
+            return;
+
+        panel.classList.toggle(
+
+            "connected",
+
+            connected
+
+        );
+
+    }
+
+    updateDisplay(title, value) {
+
+        const titleElement =
+            document.querySelector(
+
+                ".oled-title"
+
+            );
+
+        const valueElement =
+            document.querySelector(
+
+                ".oled-value"
+
+            );
+
+        if (titleElement) {
+
+            titleElement.textContent = title;
+
+        }
+
+        if (valueElement) {
+
+            valueElement.textContent = value;
+
+        }
+
+    }
+
 }
