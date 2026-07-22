@@ -1,51 +1,321 @@
 import KronosControls from "./KronosControls.js";
-import KronosTheme from "./KronosTheme.js";
 
 export default class KronosCanvas {
+
+    constructor(controlManager) {
+
+        this.controlManager = controlManager;
+
+    }
 
     render() {
 
         return `
 
+            <div class="kronos">
+
+                ${this.renderPanel()}
+
+            </div>
+
+        `;
+
+    }
+
+    renderPanel() {
+
+        return `
+
             <div class="kronos-panel">
 
-                <div class="kronos-left">
+                ${this.renderLeftColumn()}
 
-                    ${this.renderLeftButtons()}
+                ${this.renderCenter()}
+
+                ${this.renderRightColumn()}
+
+            </div>
+
+        `;
+
+    }
+
+    renderLeftColumn() {
+
+        return `
+
+            <div class="left-column">
+
+                ${this.getGroup("left")
+                    .map(control => this.renderControl(control))
+                    .join("")}
+
+            </div>
+
+        `;
+
+    }
+
+    renderCenter() {
+
+        return `
+
+            <div class="center-panel">
+
+                ${this.renderTopEncoders()}
+
+                ${this.renderDisplayArea()}
+
+                ${this.renderBottomEncoders()}
+
+                ${this.renderBottomArea()}
+
+            </div>
+
+        `;
+
+    }
+
+    renderRightColumn() {
+
+        return `
+
+            <div class="right-column">
+
+                ${this.getGroup("right")
+                    .map(control => this.renderControl(control))
+                    .join("")}
+
+            </div>
+
+        `;
+
+    }
+
+    renderTopEncoders() {
+
+        const controls = [
+
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites"
+
+        ];
+
+        return `
+
+            <div class="encoder-row">
+
+                ${controls.map(id =>
+
+                    this.renderControl(
+
+                        this.getControl(id)
+
+                    )
+
+                ).join("")}
+
+            </div>
+
+        `;
+
+    }
+
+    renderBottomEncoders() {
+
+        const controls = [
+
+            "blacks",
+            "temperature",
+            "tint",
+            "vibrance",
+            "saturation"
+
+        ];
+
+        return `
+
+            <div class="encoder-row">
+
+                ${controls.map(id =>
+
+                    this.renderControl(
+
+                        this.getControl(id)
+
+                    )
+
+                ).join("")}
+
+            </div>
+
+        `;
+
+    }
+
+    renderDisplayArea() {
+
+        return `
+
+            <div class="display-area">
+
+                ${this.renderControl(
+
+                    this.getControl("display")
+
+                )}
+
+            </div>
+
+        `;
+
+    }
+
+    renderBottomArea() {
+
+        return `
+
+            <div class="bottom-area">
+
+                ${this.renderNavigationSection()}
+
+                ${this.renderStarsSection()}
+
+                ${this.renderActionsSection()}
+
+            </div>
+
+        `;
+
+    }
+
+    getControl(id) {
+
+        return KronosControls.find(
+
+            control => control.id === id
+
+        );
+
+    }
+
+    getGroup(group) {
+
+        return KronosControls.filter(
+
+            control => control.group === group
+
+        );
+
+    }
+
+    renderControl(control) {
+
+        if (!control) return "";
+
+        switch (control.type) {
+
+            case "button":
+
+                return this.renderButton(control);
+
+            case "encoder":
+
+                return this.renderEncoder(control);
+
+            case "smallEncoder":
+
+                return this.renderSmallEncoder(control);
+
+            case "display":
+
+                return this.renderDisplay(control);
+
+            case "navigation":
+
+                return this.renderNavigation(control);
+
+            case "star":
+
+                return this.renderStar(control);
+
+            case "pick":
+
+                return this.renderPick(control);
+
+            case "reject":
+
+                return this.renderReject(control);
+
+            case "arrow":
+
+                return this.renderArrow(control);
+
+            default:
+
+                return "";
+
+        }
+
+    }
+
+        renderButton(control) {
+
+        const selected = this.controlManager?.isSelected?.(control.id)
+            ? "selected"
+            : "";
+
+        return `
+
+            <button
+                class="kronos-button ${selected}"
+                data-id="${control.id}">
+
+                <span class="button-led"></span>
+
+                <span class="button-text">
+
+                    ${control.text.replace("\n", "<br>")}
+
+                </span>
+
+            </button>
+
+        `;
+
+    }
+
+    renderEncoder(control) {
+
+        const selected = this.controlManager?.isSelected?.(control.id)
+            ? "selected"
+            : "";
+
+        return `
+
+            <div
+                class="encoder ${selected}"
+                data-id="${control.id}">
+
+                <div class="encoder-ring">
+
+                    <div
+                        class="encoder-led"
+                        style="background:${control.color};">
+                    </div>
+
+                    <div class="encoder-cap"></div>
+
+                    <div class="encoder-marker"></div>
 
                 </div>
 
-                <div class="kronos-center">
+                <div class="encoder-label">
 
-                    <div class="kronos-top-row">
-
-                        ${this.renderTopEncoders()}
-
-                    </div>
-
-                    ${this.renderDisplay()}
-
-                    <div class="kronos-middle-row">
-
-                        ${this.renderBottomEncoders()}
-
-                    </div>
-
-                    <div class="kronos-lower-row">
-
-                        ${this.renderLowerEncoders()}
-
-                    </div>
-
-                    <div class="kronos-footer">
-
-                        ${this.renderStars()}
-
-                        ${this.renderActions()}
-
-                        ${this.renderNavigation()}
-
-                    </div>
+                    ${control.label}
 
                 </div>
 
@@ -55,35 +325,35 @@ export default class KronosCanvas {
 
     }
 
-    renderLeftButtons() {
+    renderSmallEncoder(control) {
 
-        return KronosControls.leftButtons
-            .map(button => this.renderButton(button))
-            .join("");
+        const selected = this.controlManager?.isSelected?.(control.id)
+            ? "selected"
+            : "";
 
-    }
+        return `
 
-    renderTopEncoders() {
+            <div
+                class="small-encoder ${selected}"
+                data-id="${control.id}">
 
-        return KronosControls.topEncoders
-            .map(encoder => this.renderEncoder(encoder))
-            .join("");
+                <div class="encoder-ring">
 
-    }
+                    <div class="encoder-cap"></div>
 
-    renderBottomEncoders() {
+                    <div class="encoder-marker"></div>
 
-        return KronosControls.bottomEncoders
-            .map(encoder => this.renderEncoder(encoder))
-            .join("");
+                </div>
 
-    }
+                <span>
 
-    renderLowerEncoders() {
+                    ${control.label}
 
-        return KronosControls.lowerEncoders
-            .map(encoder => this.renderLargeEncoder(encoder))
-            .join("");
+                </span>
+
+            </div>
+
+        `;
 
     }
 
@@ -92,60 +362,30 @@ export default class KronosCanvas {
         return `
 
             <div
-                class="kronos-display kronos-control"
-                data-id="${KronosControls.display.id}">
+                class="oled-display"
+                data-id="display">
 
-                <div class="display-title">
+                <div class="oled-header">
 
                     KRONOS
 
                 </div>
 
-                <div class="display-text">
+                <div class="oled-body">
 
-                    Lightroom Ready
+                    <div class="oled-title">
 
-                </div>
-
-            </div>
-
-        `;
-
-    }
-
-    renderStars() {
-
-        return `
-
-            <div class="stars-container">
-
-                ${KronosControls.stars.map(star => `
-
-                    <div
-                        class="kronos-star kronos-control"
-                        data-id="${star.id}">
-
-                        ★
+                        Lightroom
 
                     </div>
 
-                `).join("")}
+                    <div class="oled-value">
 
-            </div>
+                        Ready
 
-        `;
+                    </div>
 
-    }
-
-    renderActions() {
-
-        return `
-
-            <div class="actions-container">
-
-                ${KronosControls.actions
-                    .map(button => this.renderButton(button))
-                    .join("")}
+                </div>
 
             </div>
 
@@ -157,52 +397,21 @@ export default class KronosCanvas {
 
         return `
 
-            <div class="navigation-container">
-
-                ${KronosControls.navigation
-                    .map(button => this.renderButton(button))
-                    .join("")}
-
-            </div>
-
-        `;
-
-    }
-
-    renderButton(button) {
-
-        return `
-
             <div
-                class="kronos-button kronos-control"
-                data-id="${button.id}">
+                class="navigation-encoder"
+                data-id="navigation">
 
-                ${button.label}
+                <div class="encoder-ring">
 
-            </div>
+                    <div class="encoder-cap"></div>
 
-        `;
-
-    }
-
-    renderEncoder(encoder) {
-
-        return `
-
-            <div
-                class="encoder-container">
-
-                <div
-                    class="kronos-encoder kronos-control"
-                    data-id="${encoder.id}">
-
-                    <div class="encoder-indicator"></div>
+                    <div class="encoder-marker"></div>
 
                 </div>
 
                 <span>
 
-                    ${encoder.label}
+                    NAV
 
                 </span>
 
@@ -211,26 +420,4 @@ export default class KronosCanvas {
         `;
 
     }
-
-    renderLargeEncoder(encoder) {
-
-        return `
-
-            <div
-                class="large-encoder-container">
-
-                <div
-                    class="kronos-large-encoder kronos-control"
-                    data-id="${encoder.id}">
-
-                    <div class="encoder-indicator"></div>
-
-                </div>
-
-            </div>
-
-        `;
-
-    }
-
 }
