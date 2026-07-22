@@ -420,4 +420,96 @@ export default class KronosCanvas {
         `;
 
     }
+
+        renderNavigationSection() {
+
+        return `
+
+            <div class="navigation-section">
+
+                ${this.renderControl(
+                    this.getControl("encoderA")
+                )}
+
+                ${this.renderControl(
+                    this.getControl("navigation")
+                )}
+
+                ${this.renderControl(
+                    this.getControl("encoderB")
+                )}
+
+            </div>
+
+        `;
+
+    }
+
+    renderStarsSection() {
+
+        const stars = [
+
+            "star1",
+            "star2",
+            "star3",
+            "star4",
+            "star5"
+
+        ];
+
+        return `
+
+            <div class="stars-section">
+
+                ${stars.map(id =>
+
+                    this.renderControl(
+
+                        this.getControl(id)
+
+                    )
+
+                ).join("")}
+
+            </div>
+
+        `;
+
+    }
+
+    renderActionsSection() {
+
+        return `
+
+            <div class="actions-section">
+
+                ${this.renderControl(
+                    this.getControl("pick")
+                )}
+
+                ${this.renderControl(
+                    this.getControl("reject")
+                )}
+
+                ${this.renderControl(
+                    this.getControl("left")
+                )}
+
+                ${this.renderControl(
+                    this.getControl("right")
+                )}
+
+                ${this.renderControl(
+                    this.getControl("fit")
+                )}
+
+                ${this.renderControl(
+                    this.getControl("zoom")
+                )}
+
+            </div>
+
+        `;
+
+    }
 }
