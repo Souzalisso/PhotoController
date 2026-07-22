@@ -1,0 +1,25 @@
+/*
+======================================================
+KRONOS DESIGN SYSTEM
+Versão: 1.0
+======================================================
+*/
+
+/* Variáveis */
+
+@import "./variables.css";
+
+/* Estrutura */
+
+@import "./layout.css";
+
+/* Componentes */
+
+@import "./buttons.css";
+@import "./encoders.css";
+@import "./display.css";
+@import "./navigation.css";
+
+/* Animações */
+
+@import "./animations.css";
