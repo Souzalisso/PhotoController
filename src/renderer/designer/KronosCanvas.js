@@ -1,10 +1,12 @@
 import KronosControls from "./KronosControls.js";
+import KronosRenderer from "./KronosRenderer.js";
 
 export default class KronosCanvas {
 
     constructor(controlManager) {
 
         this.controlManager = controlManager;
+        this.renderer = new KronosRenderer();
 
     }
 
@@ -46,7 +48,7 @@ export default class KronosCanvas {
 
             <div class="left-column">
 
-                ${this.getGroup("left")
+                ${KronosControls.left
                     .map(control => this.renderControl(control))
                     .join("")}
 
@@ -82,7 +84,7 @@ export default class KronosCanvas {
 
             <div class="right-column">
 
-                ${this.getGroup("right")
+                ${KronosControls.right
                     .map(control => this.renderControl(control))
                     .join("")}
 
@@ -94,29 +96,13 @@ export default class KronosCanvas {
 
     renderTopEncoders() {
 
-        const controls = [
-
-            "exposure",
-            "contrast",
-            "highlights",
-            "shadows",
-            "whites"
-
-        ];
-
         return `
 
             <div class="encoder-row">
 
-                ${controls.map(id =>
-
-                    this.renderControl(
-
-                        this.getControl(id)
-
-                    )
-
-                ).join("")}
+                ${KronosControls.top
+                    .map(control => this.renderControl(control))
+                    .join("")}
 
             </div>
 
@@ -126,29 +112,13 @@ export default class KronosCanvas {
 
     renderBottomEncoders() {
 
-        const controls = [
-
-            "blacks",
-            "temperature",
-            "tint",
-            "vibrance",
-            "saturation"
-
-        ];
-
         return `
 
             <div class="encoder-row">
 
-                ${controls.map(id =>
-
-                    this.renderControl(
-
-                        this.getControl(id)
-
-                    )
-
-                ).join("")}
+                ${KronosControls.bottom
+                    .map(control => this.renderControl(control))
+                    .join("")}
 
             </div>
 
@@ -163,9 +133,7 @@ export default class KronosCanvas {
             <div class="display-area">
 
                 ${this.renderControl(
-
-                    this.getControl("display")
-
+                    KronosControls.center.display
                 )}
 
             </div>
@@ -192,251 +160,22 @@ export default class KronosCanvas {
 
     }
 
-    getControl(id) {
-
-        return KronosControls.find(
-
-            control => control.id === id
-
-        );
-
-    }
-
-    getGroup(group) {
-
-        return KronosControls.filter(
-
-            control => control.group === group
-
-        );
-
-    }
-
-    renderControl(control) {
-
-        if (!control) return "";
-
-        switch (control.type) {
-
-            case "button":
-
-                return this.renderButton(control);
-
-            case "encoder":
-
-                return this.renderEncoder(control);
-
-            case "smallEncoder":
-
-                return this.renderSmallEncoder(control);
-
-            case "display":
-
-                return this.renderDisplay(control);
-
-            case "navigation":
-
-                return this.renderNavigation(control);
-
-            case "star":
-
-                return this.renderStar(control);
-
-            case "pick":
-
-                return this.renderPick(control);
-
-            case "reject":
-
-                return this.renderReject(control);
-
-            case "arrow":
-
-                return this.renderArrow(control);
-
-            default:
-
-                return "";
-
-        }
-
-    }
-
-        renderButton(control) {
-
-        const selected = this.controlManager?.isSelected?.(control.id)
-            ? "selected"
-            : "";
-
-        return `
-
-            <button
-                class="kronos-button ${selected}"
-                data-id="${control.id}">
-
-                <span class="button-led"></span>
-
-                <span class="button-text">
-
-                    ${control.text.replace("\n", "<br>")}
-
-                </span>
-
-            </button>
-
-        `;
-
-    }
-
-    renderEncoder(control) {
-
-        const selected = this.controlManager?.isSelected?.(control.id)
-            ? "selected"
-            : "";
-
-        return `
-
-            <div
-                class="encoder ${selected}"
-                data-id="${control.id}">
-
-                <div class="encoder-ring">
-
-                    <div
-                        class="encoder-led"
-                        style="background:${control.color};">
-                    </div>
-
-                    <div class="encoder-cap"></div>
-
-                    <div class="encoder-marker"></div>
-
-                </div>
-
-                <div class="encoder-label">
-
-                    ${control.label}
-
-                </div>
-
-            </div>
-
-        `;
-
-    }
-
-    renderSmallEncoder(control) {
-
-        const selected = this.controlManager?.isSelected?.(control.id)
-            ? "selected"
-            : "";
-
-        return `
-
-            <div
-                class="small-encoder ${selected}"
-                data-id="${control.id}">
-
-                <div class="encoder-ring">
-
-                    <div class="encoder-cap"></div>
-
-                    <div class="encoder-marker"></div>
-
-                </div>
-
-                <span>
-
-                    ${control.label}
-
-                </span>
-
-            </div>
-
-        `;
-
-    }
-
-    renderDisplay() {
-
-        return `
-
-            <div
-                class="oled-display"
-                data-id="display">
-
-                <div class="oled-header">
-
-                    KRONOS
-
-                </div>
-
-                <div class="oled-body">
-
-                    <div class="oled-title">
-
-                        Lightroom
-
-                    </div>
-
-                    <div class="oled-value">
-
-                        Ready
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        `;
-
-    }
-
-    renderNavigation() {
-
-        return `
-
-            <div
-                class="navigation-encoder"
-                data-id="navigation">
-
-                <div class="encoder-ring">
-
-                    <div class="encoder-cap"></div>
-
-                    <div class="encoder-marker"></div>
-
-                </div>
-
-                <span>
-
-                    NAV
-
-                </span>
-
-            </div>
-
-        `;
-
-    }
-
-        renderNavigationSection() {
+    renderNavigationSection() {
 
         return `
 
             <div class="navigation-section">
 
                 ${this.renderControl(
-                    this.getControl("encoderA")
+                    KronosControls.center.leftEncoder
                 )}
 
                 ${this.renderControl(
-                    this.getControl("navigation")
+                    KronosControls.center.mainEncoder
                 )}
 
                 ${this.renderControl(
-                    this.getControl("encoderB")
+                    KronosControls.center.rightEncoder
                 )}
 
             </div>
@@ -447,29 +186,13 @@ export default class KronosCanvas {
 
     renderStarsSection() {
 
-        const stars = [
-
-            "star1",
-            "star2",
-            "star3",
-            "star4",
-            "star5"
-
-        ];
-
         return `
 
             <div class="stars-section">
 
-                ${stars.map(id =>
-
-                    this.renderControl(
-
-                        this.getControl(id)
-
-                    )
-
-                ).join("")}
+                ${KronosControls.stars
+                    .map(control => this.renderControl(control))
+                    .join("")}
 
             </div>
 
@@ -483,29 +206,9 @@ export default class KronosCanvas {
 
             <div class="actions-section">
 
-                ${this.renderControl(
-                    this.getControl("pick")
-                )}
-
-                ${this.renderControl(
-                    this.getControl("reject")
-                )}
-
-                ${this.renderControl(
-                    this.getControl("left")
-                )}
-
-                ${this.renderControl(
-                    this.getControl("right")
-                )}
-
-                ${this.renderControl(
-                    this.getControl("fit")
-                )}
-
-                ${this.renderControl(
-                    this.getControl("zoom")
-                )}
+                ${KronosControls.actions
+                    .map(control => this.renderControl(control))
+                    .join("")}
 
             </div>
 
@@ -513,94 +216,22 @@ export default class KronosCanvas {
 
     }
 
-        renderStar(control) {
+    renderControl(control) {
 
-        const selected = this.controlManager?.isSelected?.(control.id)
-            ? "selected"
-            : "";
+        if (!control) {
 
-        return `
+            return "";
 
-            <button
-                class="star-button ${selected}"
-                data-id="${control.id}">
+        }
 
-                ★
-
-            </button>
-
-        `;
+        return this.renderer.render(control);
 
     }
-
-    renderPick(control) {
-
-        const selected = this.controlManager?.isSelected?.(control.id)
-            ? "selected"
-            : "";
-
-        return `
-
-            <button
-                class="pick-button ${selected}"
-                data-id="${control.id}">
-
-                ✔ PICK
-
-            </button>
-
-        `;
-
-    }
-
-    renderReject(control) {
-
-        const selected = this.controlManager?.isSelected?.(control.id)
-            ? "selected"
-            : "";
-
-        return `
-
-            <button
-                class="reject-button ${selected}"
-                data-id="${control.id}">
-
-                ✖ REJECT
-
-            </button>
-
-        `;
-
-    }
-
-    renderArrow(control) {
-
-        const selected = this.controlManager?.isSelected?.(control.id)
-            ? "selected"
-            : "";
-
-        const symbol =
-            control.direction === "left"
-                ? "◀"
-                : "▶";
-
-        return `
-
-            <button
-                class="arrow-button ${selected}"
-                data-id="${control.id}">
-
-                ${symbol}
-
-            </button>
-
-        `;
-
-    }
-
         init(container = document) {
 
         this.bindEvents(container);
+
+        this.updateSelection(container);
 
     }
 
@@ -612,9 +243,7 @@ export default class KronosCanvas {
 
                 element.addEventListener("click", () => {
 
-                    const id = element.dataset.id;
-
-                    this.selectControl(id);
+                    this.selectControl(element.dataset.id, container);
 
                 });
 
@@ -622,15 +251,15 @@ export default class KronosCanvas {
 
     }
 
-    selectControl(id) {
+    selectControl(id, container = document) {
 
-        if (this.controlManager) {
+        if (this.controlManager?.select) {
 
             this.controlManager.select(id);
 
         }
 
-        this.updateSelection();
+        this.updateSelection(container);
 
     }
 
@@ -638,24 +267,25 @@ export default class KronosCanvas {
 
         container
             .querySelectorAll("[data-id]")
-            .forEach(control => {
+            .forEach(element => {
 
-                control.classList.remove("selected");
+                element.classList.remove("selected");
 
             });
 
-        const selectedId =
-            this.controlManager?.getSelected?.();
+        const selectedId = this.controlManager?.getSelected?.();
 
-        if (!selectedId)
+        if (!selectedId) {
+
             return;
 
-        const selected =
-            container.querySelector(
+        }
 
-                `[data-id="${selectedId}"]`
+        const selected = container.querySelector(
 
-            );
+            `[data-id="${selectedId}"]`
+
+        );
 
         if (selected) {
 
@@ -665,9 +295,7 @@ export default class KronosCanvas {
 
     }
 
-    /*Colocar o arduino de uma vez (ainda não será usado)*/ 
-
-        setControlActive(id, active = true) {
+    setControlActive(id, active = true) {
 
         const element = document.querySelector(
 
@@ -675,18 +303,13 @@ export default class KronosCanvas {
 
         );
 
-        if (!element)
+        if (!element) {
+
             return;
 
-        if (active) {
-
-            element.classList.add("active");
-
-        } else {
-
-            element.classList.remove("active");
-
         }
+
+        element.classList.toggle("active", active);
 
     }
 
@@ -698,8 +321,11 @@ export default class KronosCanvas {
 
         );
 
-        if (!panel)
+        if (!panel) {
+
             return;
+
+        }
 
         panel.classList.toggle(
 
@@ -711,21 +337,25 @@ export default class KronosCanvas {
 
     }
 
-    updateDisplay(title, value) {
+    updateDisplay(title, value, status = "") {
 
-        const titleElement =
-            document.querySelector(
+        const titleElement = document.querySelector(
 
-                ".oled-title"
+            "#oled-line-1"
 
-            );
+        );
 
-        const valueElement =
-            document.querySelector(
+        const valueElement = document.querySelector(
 
-                ".oled-value"
+            "#oled-line-2"
 
-            );
+        );
+
+        const statusElement = document.querySelector(
+
+            "#oled-line-3"
+
+        );
 
         if (titleElement) {
 
@@ -739,6 +369,36 @@ export default class KronosCanvas {
 
         }
 
+        if (statusElement) {
+
+            statusElement.textContent = status;
+
+        }
+
     }
 
-}
+    clearDisplay() {
+
+        this.updateDisplay("", "", "");
+
+    }
+
+    getSelectedControl() {
+
+        const id = this.controlManager?.getSelected?.();
+
+        if (!id) {
+
+            return null;
+
+        }
+
+        return KronosControls.findById(id);
+
+    }
+
+    refresh(container = document) {
+
+        this.updateSelection(container);
+
+    }
