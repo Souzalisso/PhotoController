@@ -2,7 +2,19 @@ class ProtocolParser {
 
     parse(message) {
 
+        if (!message) {
+
+            return null;
+
+        }
+
         message = message.trim();
+
+        if (!message.length) {
+
+            return null;
+
+        }
 
         const parts = message.split("|");
 
@@ -12,11 +24,13 @@ class ProtocolParser {
 
         }
 
+        const device = parts[0];
         const type = parts[1];
+        const id = Number(parts[2]);
 
         let value = parts[3];
 
-        if (type === "POT" || type === "ENC") {
+        if (type === "ENC" || type === "POT") {
 
             value = Number(value);
 
@@ -24,11 +38,15 @@ class ProtocolParser {
 
         return {
 
-            device: parts[0],
+            raw: message,
+
+            timestamp: Date.now(),
+
+            device,
 
             type,
 
-            id: Number(parts[2]),
+            id,
 
             value
 

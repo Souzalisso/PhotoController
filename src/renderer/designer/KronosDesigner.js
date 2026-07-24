@@ -1,6 +1,6 @@
 import KronosCanvas from "./KronosCanvas.js";
-import ControlManager from "../managers/ControlManager.js";
-import LightroomCommands from "../data/Lightroom/LightroomCommands.js";
+import ControlManager from "../../core/managers/ControlManager.js";
+import LightroomCommands from "../../core/data/lightroom/LightroomCommands.js";
 
 export default class KronosDesigner {
 

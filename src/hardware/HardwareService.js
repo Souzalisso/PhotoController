@@ -1,12 +1,53 @@
-const EventBus = require("../core/EventBus");
-const ProtocolParser = require("../protocol/ProtocolParser");
-const ArduinoProvider = require("./ArduinoProvider");
+const HardwareMapper =
+    require("../core/services/HardwareMapper");
+
+const LightroomService =
+    require("../core/services/LightroomService");
+
+const KeyboardService =
+    require("../core/services/KeyboardService");
 
 class HardwareService {
 
     constructor() {
 
         this.connected = false;
+
+        this.parser = null;
+
+        this.mapper = null;
+
+        this.controlManager = null;
+
+        this.lightroom = null;
+
+        this.keyboard = null;
+
+    }
+
+    initialize({
+
+        parser,
+
+        mapper,
+
+        controlManager,
+
+        lightroom,
+
+        keyboard
+
+    }) {
+
+        this.parser = parser;
+
+        this.mapper = mapper;
+
+        this.controlManager = controlManager;
+
+        this.lightroom = lightroom;
+
+        this.keyboard = keyboard;
 
     }
 
@@ -16,21 +57,35 @@ class HardwareService {
 
             ArduinoProvider.connect(port);
 
-            ArduinoProvider.onData((message) => {
+            ArduinoProvider.onData(
 
-                this.receive(message);
+                message => this.receive(message)
 
-            });
+            );
 
             this.connected = true;
 
-            EventBus.emit("hardware-connected");
+            EventBus.emit(
 
-            console.log("Hardware conectado.");
+                "hardware-connected"
 
-        } catch (error) {
+            );
 
-            console.log("Nenhum Arduino encontrado.");
+            console.log(
+
+                "KRONOS Hardware conectado."
+
+            );
+
+        }
+
+        catch (error) {
+
+            console.log(
+
+                "Arduino não encontrado."
+
+            );
 
             this.connected = false;
 
@@ -44,17 +99,117 @@ class HardwareService {
 
         this.connected = false;
 
-        EventBus.emit("hardware-disconnected");
+        EventBus.emit(
+
+            "hardware-disconnected"
+
+        );
 
     }
 
     receive(message) {
 
-        const event = ProtocolParser.parse(message);
+        if (!this.parser) {
 
-        if (!event) return;
+            return;
 
-        EventBus.emit("hardware-event", event);
+        }
+
+        const event = this.parser.parse(
+
+            message
+
+        );
+
+        if (!event) {
+
+            return;
+
+        }
+
+        EventBus.emit(
+
+            "hardware-event",
+
+            event
+
+        );
+
+        this.process(event);
+
+    }
+
+    process(event) {
+
+        if (
+
+            !this.mapper ||
+
+            !this.controlManager ||
+
+            !this.lightroom ||
+
+            !this.keyboard
+
+        ) {
+
+            return;
+
+        }
+
+        const mapped = this.mapper.map(
+
+            event
+
+        );
+
+        if (!mapped) {
+
+            return;
+
+        }
+
+        const commandId =
+
+            this.controlManager.getCommand(
+
+                mapped.controlId
+
+            );
+
+        if (!commandId) {
+
+            console.warn(
+
+                `Controle ${mapped.controlId} sem comando.`
+
+            );
+
+            return;
+
+        }
+
+        const command =
+
+            this.lightroom.execute(
+
+                commandId,
+
+                mapped.value
+
+            );
+
+        if (!command) {
+
+            return;
+
+        }
+
+        this.keyboard.execute(
+
+            command.shortcut
+
+        );
 
     }
 

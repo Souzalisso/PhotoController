@@ -1,543 +1,1040 @@
-/**
- * ==========================================================
- * KRONOS CONTROLS
- * ----------------------------------------------------------
- * Cadastro oficial de todos os controles físicos do KRONOS.
- *
- * Nenhum outro arquivo deve duplicar essas informações.
- *
- * Todo Renderer, HardwareService, ConfigurationManager
- * e LightroomService utilizarão este arquivo.
- * ==========================================================
- */
+class KronosControls {
 
-const controls = {
-
-    left: [
+    static left = [
 
         {
             id: "undo",
+
             label: "UNDO",
+
             type: "button",
-            command: "undo",
+
             configurable: true,
+
             led: false,
-            firmwarePin: null,
-            position: 1
+
+            position: 1,
+
+            hardware: {
+
+                type: "BTN",
+
+                id: 1
+
+            }
+
         },
 
         {
             id: "redo",
+
             label: "REDO",
+
             type: "button",
-            command: "redo",
+
             configurable: true,
+
             led: false,
-            firmwarePin: null,
-            position: 2
+
+            position: 2,
+
+            hardware: {
+
+                type: "BTN",
+
+                id: 2
+
+            }
+
         },
 
         {
             id: "copy",
+
             label: "COPY",
+
             type: "button",
-            command: "copy-settings",
+
             configurable: true,
+
             led: false,
-            firmwarePin: null,
-            position: 3
+
+            position: 3,
+
+            hardware: {
+
+                type: "BTN",
+
+                id: 3
+
+            }
+
         },
 
         {
             id: "paste",
+
             label: "PASTE",
+
             type: "button",
-            command: "paste-settings",
+
             configurable: true,
+
             led: false,
-            firmwarePin: null,
-            position: 4
+
+            position: 4,
+
+            hardware: {
+
+                type: "BTN",
+
+                id: 4
+
+            }
+
         },
 
         {
             id: "sync",
+
             label: "SYNC",
+
             type: "button",
-            command: "sync-settings",
+
             configurable: true,
+
             led: false,
-            firmwarePin: null,
-            position: 5
+
+            position: 5,
+
+            hardware: {
+
+                type: "BTN",
+
+                id: 5
+
+            }
+
         },
 
         {
             id: "before-after",
-            label: "BEFORE / AFTER",
+
+            label: "BEFORE",
+
             type: "button",
-            command: "before-after",
+
             configurable: true,
+
             led: false,
-            firmwarePin: null,
-            position: 6
+
+            position: 6,
+
+            hardware: {
+
+                type: "BTN",
+
+                id: 6
+
+            }
+
         }
-
-    ],
-
-    top: [
-
-        {
-            id: "exposure",
-            label: "EXPOSIÇÃO",
-            type: "encoder",
-            command: "exposure",
-            configurable: true,
-            push: true,
-            led: "ring",
-            firmwarePin: null,
-            defaultValue: 0,
-            position: 1
-        },
-
-        {
-            id: "contrast",
-            label: "CONTRASTE",
-            type: "encoder",
-            command: "contrast",
-            configurable: true,
-            push: true,
-            led: "ring",
-            firmwarePin: null,
-            defaultValue: 0,
-            position: 2
-        },
-
-        {
-            id: "highlights",
-            label: "REALCES",
-            type: "encoder",
-            command: "highlights",
-            configurable: true,
-            push: true,
-            led: "ring",
-            firmwarePin: null,
-            defaultValue: 0,
-            position: 3
-        },
-
-        {
-            id: "shadows",
-            label: "SOMBRAS",
-            type: "encoder",
-            command: "shadows",
-            configurable: true,
-            push: true,
-            led: "ring",
-            firmwarePin: null,
-            defaultValue: 0,
-            position: 4
-        },
-
-        {
-            id: "whites",
-            label: "BRANCOS",
-            type: "encoder",
-            command: "whites",
-            configurable: true,
-            push: true,
-            led: "ring",
-            firmwarePin: null,
-            defaultValue: 0,
-            position: 5
-        }
-
-    ],
-
-    center: {
-
-    display: {
-        id: "display",
-        label: "OLED DISPLAY",
-        type: "display",
-        configurable: false,
-        firmwarePin: null
-    },
-
-    leftEncoder: {
-        id: "encoder-left",
-        label: "MENU",
-        type: "encoder",
-        command: "menu-navigation",
-        configurable: true,
-        push: true,
-        led: "ring",
-        firmwarePin: null,
-        defaultValue: 0
-    },
-
-    mainEncoder: {
-        id: "encoder-main",
-        label: "NAVEGAÇÃO",
-        type: "encoder",
-        command: "navigate",
-        configurable: true,
-        push: true,
-        led: "ring",
-        firmwarePin: null,
-        defaultValue: 0
-    },
-
-    rightEncoder: {
-        id: "encoder-right",
-        label: "ZOOM",
-        type: "encoder",
-        command: "zoom",
-        configurable: true,
-        push: true,
-        led: "ring",
-        firmwarePin: null,
-        defaultValue: 0
-    }
-
-},
-
-bottom: [
-
-    {
-        id: "blacks",
-        label: "PRETOS",
-        type: "encoder",
-        command: "blacks",
-        configurable: true,
-        push: true,
-        led: "ring",
-        firmwarePin: null,
-        defaultValue: 0,
-        position: 1
-    },
-
-    {
-        id: "temperature",
-        label: "TEMPERATURA",
-        type: "encoder",
-        command: "temperature",
-        configurable: true,
-        push: true,
-        led: "ring",
-        firmwarePin: null,
-        defaultValue: 0,
-        position: 2
-    },
-
-    {
-        id: "tint",
-        label: "MATIZ",
-        type: "encoder",
-        command: "tint",
-        configurable: true,
-        push: true,
-        led: "ring",
-        firmwarePin: null,
-        defaultValue: 0,
-        position: 3
-    },
-
-    {
-        id: "vibrance",
-        label: "VIBRATILIDADE",
-        type: "encoder",
-        command: "vibrance",
-        configurable: true,
-        push: true,
-        led: "ring",
-        firmwarePin: null,
-        defaultValue: 0,
-        position: 4
-    },
-
-    {
-        id: "saturation",
-        label: "SATURAÇÃO",
-        type: "encoder",
-        command: "saturation",
-        configurable: true,
-        push: true,
-        led: "ring",
-        firmwarePin: null,
-        defaultValue: 0,
-        position: 5
-    }
-
-],
-
-right: [
-
-    {
-        id: "p1",
-        label: "P1",
-        type: "button",
-        command: "preset-1",
-        configurable: true,
-        led: false,
-        firmwarePin: null,
-        position: 1
-    },
-
-    {
-        id: "p2",
-        label: "P2",
-        type: "button",
-        command: "preset-2",
-        configurable: true,
-        led: false,
-        firmwarePin: null,
-        position: 2
-    },
-
-    {
-        id: "edit",
-        label: "EDIT",
-        type: "button",
-        command: "edit-mode",
-        configurable: false,
-        led: false,
-        firmwarePin: null,
-        position: 3
-    }
-
-],
-
-stars: [
-
-    {
-        id: "rate-1",
-        label: "★",
-        type: "button",
-        command: "rate-1",
-        configurable: true,
-        led: false,
-        firmwarePin: null,
-        position: 1
-    },
-
-    {
-        id: "rate-2",
-        label: "★★",
-        type: "button",
-        command: "rate-2",
-        configurable: true,
-        led: false,
-        firmwarePin: null,
-        position: 2
-    },
-
-    {
-        id: "rate-3",
-        label: "★★★",
-        type: "button",
-        command: "rate-3",
-        configurable: true,
-        led: false,
-        firmwarePin: null,
-        position: 3
-    },
-
-    {
-        id: "rate-4",
-        label: "★★★★",
-        type: "button",
-        command: "rate-4",
-        configurable: true,
-        led: false,
-        firmwarePin: null,
-        position: 4
-    },
-
-    {
-        id: "rate-5",
-        label: "★★★★★",
-        type: "button",
-        command: "rate-5",
-        configurable: true,
-        led: false,
-        firmwarePin: null,
-        position: 5
-    }
-
-],
-
-actions: [
-
-    {
-        id: "pick",
-        label: "PICK",
-        type: "button",
-        command: "pick",
-        configurable: true,
-        led: false,
-        firmwarePin: null,
-        position: 1
-    },
-
-    {
-        id: "reject",
-        label: "REJECT",
-        type: "button",
-        command: "reject",
-        configurable: true,
-        led: false,
-        firmwarePin: null,
-        position: 2
-    },
-
-    {
-        id: "previous",
-        label: "←",
-        type: "button",
-        command: "previous-photo",
-        configurable: true,
-        led: false,
-        firmwarePin: null,
-        position: 3
-    },
-
-    {
-        id: "next",
-        label: "→",
-        type: "button",
-        command: "next-photo",
-        configurable: true,
-        led: false,
-        firmwarePin: null,
-        position: 4
-    },
-
-    {
-        id: "fit",
-        label: "FIT",
-        type: "button",
-        command: "fit",
-        configurable: true,
-        led: false,
-        firmwarePin: null,
-        position: 5
-    },
-
-    {
-        id: "zoom-1-1",
-        label: "1:1",
-        type: "button",
-        command: "zoom-1-1",
-        configurable: true,
-        led: false,
-        firmwarePin: null,
-        position: 6
-    }
-
-],
-};
-
-/* ==========================================================
- * MÉTODOS UTILITÁRIOS
- * ========================================================== */
-
-controls.getAll = function () {
-
-    return [
-
-        ...this.left,
-        ...this.top,
-        ...Object.values(this.center),
-        ...this.bottom,
-        ...this.right,
-        ...this.stars,
-        ...this.actions
 
     ];
 
-};
 
-controls.findById = function (id) {
 
-    return this.getAll().find(control => control.id === id);
+    static top = [
 
-};
+        {
 
-controls.findByCommand = function (command) {
+            id: "exposure",
 
-    return this.getAll().find(control => control.command === command);
+            label: "EXPOSIÇÃO",
 
-};
+            type: "encoder",
 
-controls.findByType = function (type) {
+            configurable: true,
 
-    return this.getAll().filter(control => control.type === type);
+            push: true,
 
-};
+            led: "ring",
 
-controls.findByGroup = function (group) {
+            defaultValue: 0,
 
-    return this[group] || [];
+            position: 1,
 
-};
+            hardware: {
 
-controls.getButtons = function () {
+                type: "ENC",
 
-    return this.findByType("button");
+                id: 1
 
-};
+            }
 
-controls.getEncoders = function () {
+        },
 
-    return this.findByType("encoder");
+        {
 
-};
+            id: "contrast",
 
-controls.getDisplays = function () {
+            label: "CONTRASTE",
 
-    return this.findByType("display");
+            type: "encoder",
 
-};
+            configurable: true,
 
-controls.getConfigurable = function () {
+            push: true,
 
-    return this.getAll().filter(control => control.configurable);
+            led: "ring",
 
-};
+            defaultValue: 0,
 
-controls.exists = function (id) {
+            position: 2,
 
-    return this.findById(id) !== undefined;
+            hardware: {
 
-};
+                type: "ENC",
 
-controls.count = function () {
+                id: 2
 
-    return this.getAll().length;
+            }
 
-};
+        },
 
-controls.validate = function () {
+        {
 
-    const ids = new Set();
+            id: "highlights",
 
-    for (const control of this.getAll()) {
+            label: "REALCES",
 
-        if (ids.has(control.id)) {
+            type: "encoder",
 
-            throw new Error(`Controle duplicado: ${control.id}`);
+            configurable: true,
+
+            push: true,
+
+            led: "ring",
+
+            defaultValue: 0,
+
+            position: 3,
+
+            hardware: {
+
+                type: "ENC",
+
+                id: 3
+
+            }
+
+        },
+
+        {
+
+            id: "shadows",
+
+            label: "SOMBRAS",
+
+            type: "encoder",
+
+            configurable: true,
+
+            push: true,
+
+            led: "ring",
+
+            defaultValue: 0,
+
+            position: 4,
+
+            hardware: {
+
+                type: "ENC",
+
+                id: 4
+
+            }
+
+        },
+
+        {
+
+            id: "whites",
+
+            label: "BRANCOS",
+
+            type: "encoder",
+
+            configurable: true,
+
+            push: true,
+
+            led: "ring",
+
+            defaultValue: 0,
+
+            position: 5,
+
+            hardware: {
+
+                type: "ENC",
+
+                id: 5
+
+            }
 
         }
 
-        ids.add(control.id);
+    ];
+        static bottom = [
+
+        {
+
+            id: "blacks",
+
+            label: "PRETOS",
+
+            type: "encoder",
+
+            configurable: true,
+
+            push: true,
+
+            led: "ring",
+
+            defaultValue: 0,
+
+            position: 1,
+
+            hardware: {
+
+                type: "ENC",
+
+                id: 6
+
+            }
+
+        },
+
+        {
+
+            id: "temperature",
+
+            label: "TEMPERATURA",
+
+            type: "encoder",
+
+            configurable: true,
+
+            push: true,
+
+            led: "ring",
+
+            defaultValue: 0,
+
+            position: 2,
+
+            hardware: {
+
+                type: "ENC",
+
+                id: 7
+
+            }
+
+        },
+
+        {
+
+            id: "tint",
+
+            label: "MATIZ",
+
+            type: "encoder",
+
+            configurable: true,
+
+            push: true,
+
+            led: "ring",
+
+            defaultValue: 0,
+
+            position: 3,
+
+            hardware: {
+
+                type: "ENC",
+
+                id: 8
+
+            }
+
+        },
+
+        {
+
+            id: "vibrance",
+
+            label: "VIBRATILIDADE",
+
+            type: "encoder",
+
+            configurable: true,
+
+            push: true,
+
+            led: "ring",
+
+            defaultValue: 0,
+
+            position: 4,
+
+            hardware: {
+
+                type: "ENC",
+
+                id: 9
+
+            }
+
+        },
+
+        {
+
+            id: "saturation",
+
+            label: "SATURAÇÃO",
+
+            type: "encoder",
+
+            configurable: true,
+
+            push: true,
+
+            led: "ring",
+
+            defaultValue: 0,
+
+            position: 5,
+
+            hardware: {
+
+                type: "ENC",
+
+                id: 10
+
+            }
+
+        }
+
+    ];
+
+
+
+    static center = {
+
+        display: {
+
+            id: "display",
+
+            label: "DISPLAY",
+
+            type: "display",
+
+            configurable: false,
+
+            hardware: {
+
+                type: "DISPLAY",
+
+                id: 1
+
+            }
+
+        },
+
+
+
+        leftEncoder: {
+
+            id: "encoder-left",
+
+            label: "LEFT",
+
+            type: "encoder",
+
+            configurable: true,
+
+            push: true,
+
+            led: "ring",
+
+            defaultValue: 0,
+
+            hardware: {
+
+                type: "ENC",
+
+                id: 11
+
+            }
+
+        },
+
+
+
+        mainEncoder: {
+
+            id: "encoder-main",
+
+            label: "NAV",
+
+            type: "encoder",
+
+            configurable: true,
+
+            push: true,
+
+            led: "ring",
+
+            defaultValue: 0,
+
+            hardware: {
+
+                type: "ENC",
+
+                id: 12
+
+            }
+
+        },
+
+
+
+        rightEncoder: {
+
+            id: "encoder-right",
+
+            label: "RIGHT",
+
+            type: "encoder",
+
+            configurable: true,
+
+            push: true,
+
+            led: "ring",
+
+            defaultValue: 0,
+
+            hardware: {
+
+                type: "ENC",
+
+                id: 13
+
+            }
+
+        }
+
+    };
+        static right = [
+
+        {
+
+            id: "p1",
+
+            label: "P1",
+
+            type: "button",
+
+            configurable: true,
+
+            led: true,
+
+            position: 1,
+
+            hardware: {
+
+                type: "BTN",
+
+                id: 7
+
+            }
+
+        },
+
+        {
+
+            id: "p2",
+
+            label: "P2",
+
+            type: "button",
+
+            configurable: true,
+
+            led: true,
+
+            position: 2,
+
+            hardware: {
+
+                type: "BTN",
+
+                id: 8
+
+            }
+
+        },
+
+        {
+
+            id: "edit",
+
+            label: "EDIT",
+
+            type: "button",
+
+            configurable: true,
+
+            led: true,
+
+            position: 3,
+
+            hardware: {
+
+                type: "BTN",
+
+                id: 9
+
+            }
+
+        }
+
+    ];
+
+
+
+    static stars = [
+
+        {
+
+            id: "rate-1",
+
+            label: "★",
+
+            type: "button",
+
+            configurable: true,
+
+            led: true,
+
+            hardware: {
+
+                type: "BTN",
+
+                id: 10
+
+            }
+
+        },
+
+        {
+
+            id: "rate-2",
+
+            label: "★★",
+
+            type: "button",
+
+            configurable: true,
+
+            led: true,
+
+            hardware: {
+
+                type: "BTN",
+
+                id: 11
+
+            }
+
+        },
+
+        {
+
+            id: "rate-3",
+
+            label: "★★★",
+
+            type: "button",
+
+            configurable: true,
+
+            led: true,
+
+            hardware: {
+
+                type: "BTN",
+
+                id: 12
+
+            }
+
+        },
+
+        {
+
+            id: "rate-4",
+
+            label: "★★★★",
+
+            type: "button",
+
+            configurable: true,
+
+            led: true,
+
+            hardware: {
+
+                type: "BTN",
+
+                id: 13
+
+            }
+
+        },
+
+        {
+
+            id: "rate-5",
+
+            label: "★★★★★",
+
+            type: "button",
+
+            configurable: true,
+
+            led: true,
+
+            hardware: {
+
+                type: "BTN",
+
+                id: 14
+
+            }
+
+        }
+
+    ];
+
+
+
+    static actions = [
+
+        {
+
+            id: "pick",
+
+            label: "PICK",
+
+            type: "button",
+
+            configurable: true,
+
+            led: true,
+
+            hardware: {
+
+                type: "BTN",
+
+                id: 15
+
+            }
+
+        },
+
+        {
+
+            id: "reject",
+
+            label: "REJECT",
+
+            type: "button",
+
+            configurable: true,
+
+            led: true,
+
+            hardware: {
+
+                type: "BTN",
+
+                id: 16
+
+            }
+
+        },
+
+        {
+
+            id: "previous",
+
+            label: "◀",
+
+            type: "button",
+
+            configurable: true,
+
+            led: false,
+
+            hardware: {
+
+                type: "BTN",
+
+                id: 17
+
+            }
+
+        },
+
+        {
+
+            id: "next",
+
+            label: "▶",
+
+            type: "button",
+
+            configurable: true,
+
+            led: false,
+
+            hardware: {
+
+                type: "BTN",
+
+                id: 18
+
+            }
+
+        },
+
+        {
+
+            id: "fit",
+
+            label: "FIT",
+
+            type: "button",
+
+            configurable: true,
+
+            led: false,
+
+            hardware: {
+
+                type: "BTN",
+
+                id: 19
+
+            }
+
+        },
+
+        {
+
+            id: "zoom-1-1",
+
+            label: "1:1",
+
+            type: "button",
+
+            configurable: true,
+
+            led: false,
+
+            hardware: {
+
+                type: "BTN",
+
+                id: 20
+
+            }
+
+        }
+
+    ];
+        static get all() {
+
+        return [
+
+            ...this.left,
+
+            ...this.top,
+
+            ...this.bottom,
+
+            ...this.right,
+
+            ...this.stars,
+
+            ...this.actions,
+
+            this.center.display,
+
+            this.center.leftEncoder,
+
+            this.center.mainEncoder,
+
+            this.center.rightEncoder
+
+        ];
 
     }
 
-    return true;
 
-};
 
-controls.validate();
+    static findById(id) {
 
-Object.freeze(controls);
+        return this.all.find(
 
-export default controls;
+            control => control.id === id
+
+        ) || null;
+
+    }
+
+
+
+    static findByHardware(type, id) {
+
+        return this.all.find(control =>
+
+            control.hardware?.type === type &&
+
+            control.hardware?.id === id
+
+        ) || null;
+
+    }
+
+
+
+    static getButtons() {
+
+        return this.all.filter(
+
+            control => control.type === "button"
+
+        );
+
+    }
+
+
+
+    static getEncoders() {
+
+        return this.all.filter(
+
+            control => control.type === "encoder"
+
+        );
+
+    }
+
+
+
+    static getDisplays() {
+
+        return this.all.filter(
+
+            control => control.type === "display"
+
+        );
+
+    }
+
+
+
+    static validate() {
+
+        const ids = new Set();
+
+        const hardware = new Set();
+
+        for (const control of this.all) {
+
+            if (ids.has(control.id)) {
+
+                throw new Error(
+
+                    `Controle duplicado: ${control.id}`
+
+                );
+
+            }
+
+            ids.add(control.id);
+
+            if (control.hardware) {
+
+                const key =
+
+                    `${control.hardware.type}-${control.hardware.id}`;
+
+                if (hardware.has(key)) {
+
+                    throw new Error(
+
+                        `Hardware duplicado: ${key}`
+
+                    );
+
+                }
+
+                hardware.add(key);
+
+            }
+
+        }
+
+        return true;
+
+    }
+
+
+
+    static initialize() {
+
+        this.validate();
+
+        Object.freeze(this.left);
+
+        Object.freeze(this.top);
+
+        Object.freeze(this.bottom);
+
+        Object.freeze(this.right);
+
+        Object.freeze(this.stars);
+
+        Object.freeze(this.actions);
+
+        Object.freeze(this.center);
+
+        Object.freeze(this);
+
+    }
+
+}
+
+
+
+KronosControls.initialize();
+
+export default KronosControls;
