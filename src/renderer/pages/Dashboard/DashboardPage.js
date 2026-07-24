@@ -1,42 +1,30 @@
+import KronosDesigner from "../designer/KronosDesigner.js";
+
 export default class DashboardPage {
+
+    constructor() {
+
+        this.designer = new KronosDesigner();
+
+    }
 
     render() {
 
         return `
 
-        <main class="content">
+            <main class="dashboard-page">
 
-            <h1>Dashboard</h1>
+                ${this.designer.render()}
 
-            <div class="card">
-
-                <h2>Hardware</h2>
-
-                <p id="hardwareStatus">
-                    Desconectado
-                </p>
-
-            </div>
-
-            <div class="card">
-
-                <h2>Último Evento</h2>
-
-                <p id="lastEvent">
-                    Nenhum evento
-                </p>
-
-            </div>
-
-        </main>
+            </main>
 
         `;
 
     }
 
-    init() {
+    async init() {
 
-        console.log("Dashboard carregado.");
+        await this.designer.init();
 
     }
 
