@@ -1,260 +1,137 @@
-const KronosControls = [
+export default [
 
-    //---------------------------------
-    // COLUNA ESQUERDA
-    //---------------------------------
+    // ======== COLUNA ESQUERDA ========
 
     {
         id: "undo",
+        label: "UNDO",
         type: "button",
-        text: "UNDO",
-        group: "left"
+        group: "left",
+        position: 1
     },
 
     {
         id: "redo",
+        label: "REDO",
         type: "button",
-        text: "REDO",
-        group: "left"
+        group: "left",
+        position: 2
     },
 
     {
         id: "copy",
+        label: "COPY",
         type: "button",
-        text: "COPY",
-        group: "left"
+        group: "left",
+        position: 3
     },
 
     {
         id: "paste",
+        label: "PASTE",
         type: "button",
-        text: "PASTE",
-        group: "left"
+        group: "left",
+        position: 4
     },
 
     {
         id: "sync",
+        label: "SYNC",
         type: "button",
-        text: "SYNC",
-        group: "left"
+        group: "left",
+        position: 5
     },
 
     {
-        id: "beforeAfter",
+        id: "before-after",
+        label: "BEFORE",
         type: "button",
-        text: "BEFORE\nAFTER",
-        group: "left"
+        group: "left",
+        position: 6
     },
 
-    //---------------------------------
-    // PRIMEIRA LINHA
-    //---------------------------------
+    // ======== PRIMEIRA LINHA ========
 
     {
-        id:"exposure",
-        type:"encoder",
-        label:"EXPOSIÇÃO",
-        color:"#ffffff"
-    },
-
-    {
-        id:"contrast",
-        type:"encoder",
-        label:"CONTRASTE",
-        color:"#ff6b35"
+        id: "exposure",
+        label: "EXPOSIÇÃO",
+        type: "encoder",
+        group: "top",
+        position: 1
     },
 
     {
-        id:"highlights",
-        type:"encoder",
-        label:"REALCES",
-        color:"#ff8c42"
+        id: "contrast",
+        label: "CONTRASTE",
+        type: "encoder",
+        group: "top",
+        position: 2
     },
 
     {
-        id:"shadows",
-        type:"encoder",
-        label:"SOMBRAS",
-        color:"#f3c623"
+        id: "highlights",
+        label: "REALCES",
+        type: "encoder",
+        group: "top",
+        position: 3
     },
 
     {
-        id:"whites",
-        type:"encoder",
-        label:"BRANCOS",
-        color:"#5dd65d"
-    },
-
-    //---------------------------------
-    // SEGUNDA LINHA
-    //---------------------------------
-
-    {
-        id:"blacks",
-        type:"encoder",
-        label:"PRETOS",
-        color:"#5bc0eb"
+        id: "shadows",
+        label: "SOMBRAS",
+        type: "encoder",
+        group: "top",
+        position: 4
     },
 
     {
-        id:"temperature",
-        type:"encoder",
-        label:"TEMPERATURA",
-        color:"#33c3ff"
+        id: "whites",
+        label: "BRANCOS",
+        type: "encoder",
+        group: "top",
+        position: 5
+    },
+
+    // ======== SEGUNDA LINHA ========
+
+    {
+        id: "blacks",
+        label: "PRETOS",
+        type: "encoder",
+        group: "bottom",
+        position: 1
     },
 
     {
-        id:"tint",
-        type:"encoder",
-        label:"MATIZ",
-        color:"#8b5cf6"
+        id: "temperature",
+        label: "TEMPERATURA",
+        type: "encoder",
+        group: "bottom",
+        position: 2
     },
 
     {
-        id:"vibrance",
-        type:"encoder",
-        label:"VIBRATILIDADE",
-        color:"#d946ef"
+        id: "tint",
+        label: "MATIZ",
+        type: "encoder",
+        group: "bottom",
+        position: 3
     },
 
     {
-        id:"saturation",
-        type:"encoder",
-        label:"SATURAÇÃO",
-        color:"#ff3366"
-    },
-
-    //---------------------------------
-    // DISPLAY
-    //---------------------------------
-
-    {
-        id:"display",
-        type:"display"
-    },
-
-    //---------------------------------
-    // ENCODERS NAVEGAÇÃO
-    //---------------------------------
-
-    {
-        id:"encoderA",
-        type:"smallEncoder",
-        label:"A"
+        id: "vibrance",
+        label: "VIBRATILIDADE",
+        type: "encoder",
+        group: "bottom",
+        position: 4
     },
 
     {
-        id:"navigation",
-        type:"navigation"
-    },
-
-    {
-        id:"encoderB",
-        type:"smallEncoder",
-        label:"B"
-    },
-
-    //---------------------------------
-    // ESTRELAS
-    //---------------------------------
-
-    {
-        id:"star1",
-        type:"star",
-        value:1
-    },
-
-    {
-        id:"star2",
-        type:"star",
-        value:2
-    },
-
-    {
-        id:"star3",
-        type:"star",
-        value:3
-    },
-
-    {
-        id:"star4",
-        type:"star",
-        value:4
-    },
-
-    {
-        id:"star5",
-        type:"star",
-        value:5
-    },
-
-    //---------------------------------
-    // PICK
-    //---------------------------------
-
-    {
-        id:"pick",
-        type:"pick"
-    },
-
-    {
-        id:"reject",
-        type:"reject"
-    },
-
-    //---------------------------------
-    // DIREITA
-    //---------------------------------
-
-    {
-        id:"p1",
-        type:"button",
-        text:"P1",
-        group:"right"
-    },
-
-    {
-        id:"p2",
-        type:"button",
-        text:"P2",
-        group:"right"
-    },
-
-    {
-        id:"edit",
-        type:"button",
-        text:"EDIT",
-        group:"right"
-    },
-
-    //---------------------------------
-    // NAVEGAÇÃO
-    //---------------------------------
-
-    {
-        id:"left",
-        type:"arrow",
-        direction:"left"
-    },
-
-    {
-        id:"right",
-        type:"arrow",
-        direction:"right"
-    },
-
-    {
-        id:"fit",
-        type:"button",
-        text:"FIT"
-    },
-
-    {
-        id:"zoom",
-        type:"button",
-        text:"1:1"
+        id: "saturation",
+        label: "SATURAÇÃO",
+        type: "encoder",
+        group: "bottom",
+        position: 5
     }
 
 ];
-
-export default KronosControls;

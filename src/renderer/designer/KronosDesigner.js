@@ -6,13 +6,17 @@ export default class KronosDesigner {
 
     constructor() {
 
-        this.canvas = new KronosCanvas();
+    this.controlManager = new ControlManager();
 
-        this.controlManager = new ControlManager();
+    this.canvas = new KronosCanvas(
 
-        this.selectedControl = null;
+        this.controlManager
 
-    }
+    );
+
+    this.selectedControl = null;
+
+}
 
     render() {
 
@@ -130,15 +134,37 @@ export default class KronosDesigner {
 
         this.selectedControl = controlElement.dataset.id;
 
-        document.getElementById("selectedControl").textContent =
-            this.selectedControl;
-
-        const command = this.controlManager.getCommand(this.selectedControl);
-
-        document.getElementById("commandSelect").value =
-            command || "";
+        this.updateSidebar();
 
     }
+
+    updateSidebar() {
+
+    document.getElementById(
+        "selectedControl"
+    ).textContent = this.selectedControl;
+
+    const command = this.controlManager.getCommand(
+        this.selectedControl
+    );
+
+    document.getElementById(
+        "commandSelect"
+    ).value = command || "";
+
+}
+
+    showMessage(message) {
+
+        console.log(
+
+            "[KRONOS]",
+
+         message
+
+    );
+
+}
 
     registerSaveButton() {
 
@@ -148,7 +174,9 @@ export default class KronosDesigner {
 
                 if (!this.selectedControl) {
 
-                    alert("Selecione um controle.");
+                    this.showMessage(
+                        "Selecione um controle."
+                    );
 
                     return;
 
@@ -166,7 +194,9 @@ export default class KronosDesigner {
 
                 );
 
-                alert("Configuração salva.");
+                this.showMessage(
+                "Configuração salva."
+            );
 
             });
 

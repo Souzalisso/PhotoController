@@ -1,15 +1,12 @@
 export default class KronosRenderer {
 
-    constructor() {
-
-        this.classPrefix = "kronos";
-
-    }
-
-    /**
-     * Renderiza qualquer controle.
-     */
     render(control) {
+
+        if (!control) {
+
+            return "";
+
+        }
 
         switch (control.type) {
 
@@ -23,96 +20,150 @@ export default class KronosRenderer {
                 return this.renderDisplay(control);
 
             default:
-                throw new Error(`Tipo de controle desconhecido: ${control.type}`);
+
+                console.warn(
+
+                    `Tipo de controle desconhecido: ${control.type}`
+
+                );
+
+                return "";
 
         }
 
     }
 
-    /**
-     * Renderiza um botão.
-     */
     renderButton(control) {
 
-        const button = document.createElement("button");
+        return `
 
-        button.className = `${this.classPrefix}-button`;
+            <button
 
-        button.dataset.id = control.id;
-        button.dataset.command = control.command;
-        button.dataset.type = control.type;
+                class="${this.buildClass("button")}"
 
-        button.textContent = control.label;
+                ${this.buildDataset(control)}>
 
-        return button;
+                <span class="button-led"></span>
+
+                <span class="button-text">
+
+                    ${control.label}
+
+                </span>
+
+            </button>
+
+        `;
 
     }
 
-    /**
-     * Renderiza um encoder.
-     */
     renderEncoder(control) {
 
-        const container = document.createElement("div");
+        return `
 
-        container.className = `${this.classPrefix}-encoder`;
+            <div
 
-        container.dataset.id = control.id;
-        container.dataset.command = control.command;
-        container.dataset.type = control.type;
+                class="${this.buildClass("encoder")}"
 
-        const ring = document.createElement("div");
-        ring.className = "encoder-ring";
+                ${this.buildDataset(control)}>
 
-        const knob = document.createElement("div");
-        knob.className = "encoder-knob";
+                <div class="encoder-ring">
 
-        const label = document.createElement("span");
-        label.className = "encoder-label";
-        label.textContent = control.label;
+                    <div class="encoder-led"></div>
 
-        container.appendChild(ring);
-        container.appendChild(knob);
-        container.appendChild(label);
+                    <div class="encoder-cap"></div>
 
-        return container;
+                    <div class="encoder-marker"></div>
+
+                </div>
+
+                <div class="encoder-label">
+
+                    ${control.label}
+
+                </div>
+
+            </div>
+
+        `;
 
     }
 
-    /**
-     * Renderiza o display OLED.
-     */
     renderDisplay(control) {
 
-        const display = document.createElement("div");
+        return `
 
-        display.className = `${this.classPrefix}-display`;
+            <div
 
-        display.dataset.id = control.id;
-        display.dataset.type = control.type;
+                class="${this.buildClass("display")}"
 
-        const title = document.createElement("div");
-        title.className = "display-title";
-        title.textContent = "KRONOS";
+                ${this.buildDataset(control)}>
 
-        const line1 = document.createElement("div");
-        line1.className = "display-line";
-        line1.id = "oled-line-1";
+                <div class="oled-header">
 
-        const line2 = document.createElement("div");
-        line2.className = "display-line";
-        line2.id = "oled-line-2";
+                    KRONOS
 
-        const line3 = document.createElement("div");
-        line3.className = "display-line";
-        line3.id = "oled-line-3";
+                </div>
 
-        display.appendChild(title);
-        display.appendChild(line1);
-        display.appendChild(line2);
-        display.appendChild(line3);
+                <div class="oled-body">
 
-        return display;
+                    <div
+                        class="oled-line"
+                        id="oled-line-1">
+
+                        Lightroom
+
+                    </div>
+
+                    <div
+                        class="oled-line"
+                        id="oled-line-2">
+
+                        Ready
+
+                    </div>
+
+                    <div
+                        class="oled-line"
+                        id="oled-line-3">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+    buildClass(type) {
+
+        return [
+
+            "kronos-control",
+
+            `kronos-${type}`
+
+        ].join(" ");
+
+    }
+
+    buildDataset(control) {
+
+        return `
+
+            data-id="${control.id}"
+
+            data-type="${control.type}"
+
+            data-command="${control.command ?? ""}"
+
+            data-configurable="${control.configurable}"
+
+            data-position="${control.position}"
+
+        `;
 
     }
 

@@ -218,27 +218,28 @@ export default class KronosCanvas {
 
     renderControl(control) {
 
-        if (!control) {
+    if (!control) {
 
-            return "";
-
-        }
-
-        return this.renderer.render(control);
+        return "";
 
     }
-        init(container = document) {
 
-        this.bindEvents(container);
+    return this.renderer.render(control);
 
-        this.updateSelection(container);
+}
+
+    init(container = document) {
+
+        this.bindEvents(kronos-control);
+
+        this.updateSelection(kronos-control);
 
     }
 
     bindEvents(container) {
 
         container
-            .querySelectorAll("[data-id]")
+            .querySelectorAll(".kronos-control")
             .forEach(element => {
 
                 element.addEventListener("click", () => {
@@ -337,45 +338,47 @@ export default class KronosCanvas {
 
     }
 
-    updateDisplay(title, value, status = "") {
+   updateDisplay({
 
-        const titleElement = document.querySelector(
+    title = "",
 
-            "#oled-line-1"
+    value = "",
 
-        );
+    status = ""
 
-        const valueElement = document.querySelector(
+} = {}) {
 
-            "#oled-line-2"
+    const titleElement = document.querySelector(
+        "#oled-line-1"
+    );
 
-        );
+    const valueElement = document.querySelector(
+        "#oled-line-2"
+    );
 
-        const statusElement = document.querySelector(
+    const statusElement = document.querySelector(
+        "#oled-line-3"
+    );
 
-            "#oled-line-3"
+    if (titleElement) {
 
-        );
-
-        if (titleElement) {
-
-            titleElement.textContent = title;
-
-        }
-
-        if (valueElement) {
-
-            valueElement.textContent = value;
-
-        }
-
-        if (statusElement) {
-
-            statusElement.textContent = status;
-
-        }
+        titleElement.textContent = title;
 
     }
+
+    if (valueElement) {
+
+        valueElement.textContent = value;
+
+    }
+
+    if (statusElement) {
+
+        statusElement.textContent = status;
+
+    }
+
+}
 
     clearDisplay() {
 
@@ -402,3 +405,11 @@ export default class KronosCanvas {
         this.updateSelection(container);
 
     }
+
+    destroy() {
+
+    this.controlManager = null;
+    this.renderer = null;
+
+}
+}
