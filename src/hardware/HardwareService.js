@@ -1,31 +1,9 @@
-const HardwareMapper =
-    require("../core/services/HardwareMapper");
+import EventBus from "../core/EventBus.js";
+import ArduinoProvider from "./ArduinoProvider.js";
 
-const LightroomService =
-    require("../core/services/LightroomService");
+export default class HardwareService {
 
-const KeyboardService =
-    require("../core/services/KeyboardService");
-
-class HardwareService {
-
-    constructor() {
-
-        this.connected = false;
-
-        this.parser = null;
-
-        this.mapper = null;
-
-        this.controlManager = null;
-
-        this.lightroom = null;
-
-        this.keyboard = null;
-
-    }
-
-    initialize({
+    constructor({
 
         parser,
 
@@ -33,11 +11,13 @@ class HardwareService {
 
         controlManager,
 
-        lightroom,
+        lightroomService,
 
-        keyboard
+        keyboardService
 
     }) {
+
+        this.connected = false;
 
         this.parser = parser;
 
@@ -45,9 +25,9 @@ class HardwareService {
 
         this.controlManager = controlManager;
 
-        this.lightroom = lightroom;
+        this.lightroomService = lightroomService;
 
-        this.keyboard = keyboard;
+        this.keyboardService = keyboardService;
 
     }
 
@@ -81,9 +61,11 @@ class HardwareService {
 
         catch (error) {
 
-            console.log(
+            console.error(
 
-                "Arduino não encontrado."
+                "Erro ao conectar Arduino:",
+
+                error
 
             );
 
@@ -108,12 +90,6 @@ class HardwareService {
     }
 
     receive(message) {
-
-        if (!this.parser) {
-
-            return;
-
-        }
 
         const event = this.parser.parse(
 
@@ -141,47 +117,33 @@ class HardwareService {
 
     process(event) {
 
-        if (
+        const mappedControl = this.mapper.map(event);
 
-            !this.mapper ||
+        if (!mappedControl) {
 
-            !this.controlManager ||
+            console.warn(
 
-            !this.lightroom ||
+                "Controle não encontrado:",
 
-            !this.keyboard
-
-        ) {
-
-            return;
-
-        }
-
-        const mapped = this.mapper.map(
-
-            event
-
-        );
-
-        if (!mapped) {
-
-            return;
-
-        }
-
-        const commandId =
-
-            this.controlManager.getCommand(
-
-                mapped.controlId
+                event
 
             );
+
+            return;
+
+        }
+
+        const commandId = this.controlManager.getCommand(
+
+            mappedControl.id
+
+        );
 
         if (!commandId) {
 
             console.warn(
 
-                `Controle ${mapped.controlId} sem comando.`
+                `Controle ${mappedControl.id} sem comando.`
 
             );
 
@@ -189,15 +151,13 @@ class HardwareService {
 
         }
 
-        const command =
+        const command = this.lightroomService.execute(
 
-            this.lightroom.execute(
+            commandId,
 
-                commandId,
+            mappedControl.value
 
-                mapped.value
-
-            );
+        );
 
         if (!command) {
 
@@ -205,7 +165,7 @@ class HardwareService {
 
         }
 
-        this.keyboard.execute(
+        this.keyboardService.execute(
 
             command.shortcut
 
@@ -220,5 +180,3 @@ class HardwareService {
     }
 
 }
-
-module.exports = new HardwareService();

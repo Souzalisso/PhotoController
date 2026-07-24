@@ -1,55 +1,92 @@
-const { SerialPort } = require("serialport");
+import { SerialPort } from "serialport";
+import { ReadlineParser } from "@serialport/parser-readline";
 
 class ArduinoProvider {
 
     constructor() {
 
         this.port = null;
+        this.parser = null;
+        this.connected = false;
 
     }
 
-    connect(portName = "COM3") {
+    connect(portName = "COM3", baudRate = 115200) {
+
+        if (this.connected) {
+
+            return;
+
+        }
 
         this.port = new SerialPort({
 
             path: portName,
-            baudRate: 9600,
+            baudRate,
             autoOpen: true
 
         });
 
-        this.port.on("open", () => {
+        this.parser = this.port.pipe(
 
-            console.log("Arduino conectado.");
+            new ReadlineParser({
 
-        });
+                delimiter: "\n"
 
-    }
+            })
 
-    onData(callback) {
+        );
 
-        if (!this.port) return;
+        this.connected = true;
 
-        this.port.on("data", (data) => {
+        console.log(
 
-            callback(data.toString().trim());
+            `Arduino conectado em ${portName}`
 
-        });
+        );
 
     }
 
     disconnect() {
 
-        if (this.port && this.port.isOpen) {
+        if (!this.port) {
 
-            this.port.close();
+            return;
 
         }
 
+        this.port.close();
+
         this.port = null;
+        this.parser = null;
+        this.connected = false;
+
+    }
+
+    onData(callback) {
+
+        if (!this.parser) {
+
+            return;
+
+        }
+
+        this.parser.on(
+
+            "data",
+
+            callback
+
+        );
+
+    }
+
+    isConnected() {
+
+        return this.connected;
 
     }
 
 }
 
-module.exports = new ArduinoProvider();
+export default new ArduinoProvider();

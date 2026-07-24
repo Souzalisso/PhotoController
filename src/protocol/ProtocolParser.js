@@ -1,4 +1,4 @@
-class ProtocolParser {
+export default class ProtocolParser {
 
     parse(message) {
 
@@ -10,12 +10,6 @@ class ProtocolParser {
 
         message = message.trim();
 
-        if (!message.length) {
-
-            return null;
-
-        }
-
         const parts = message.split("|");
 
         if (parts.length < 4) {
@@ -25,22 +19,30 @@ class ProtocolParser {
         }
 
         const device = parts[0];
+
         const type = parts[1];
+
         const id = Number(parts[2]);
 
         let value = parts[3];
 
-        if (type === "ENC" || type === "POT") {
+        switch (type) {
 
-            value = Number(value);
+            case "ENC":
+
+            case "POT":
+
+                value = Number(value);
+                break;
+
+            case "BTN":
+
+                value = value.toUpperCase();
+                break;
 
         }
 
         return {
-
-            raw: message,
-
-            timestamp: Date.now(),
 
             device,
 
@@ -55,5 +57,3 @@ class ProtocolParser {
     }
 
 }
-
-module.exports = new ProtocolParser();

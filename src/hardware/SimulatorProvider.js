@@ -1,71 +1,75 @@
-const EventBus = require("../core/EventBus");
-
 class SimulatorProvider {
 
     constructor() {
 
-        this.connected = false;
+        this.interval = null;
 
     }
 
-    connect() {
+    start(callback) {
 
-        this.connected = true;
+        this.stop();
 
-        console.log("Simulador conectado.");
+        const events = [
+
+            "KRN|BTN|1|PRESS",
+
+            "KRN|BTN|2|PRESS",
+
+            "KRN|ENC|5|1",
+
+            "KRN|ENC|5|-1",
+
+            "KRN|POT|7|420",
+
+            "KRN|BTN|8|PRESS"
+
+        ];
+
+        this.interval = setInterval(() => {
+
+            const event =
+
+                events[
+
+                    Math.floor(
+
+                        Math.random() * events.length
+
+                    )
+
+                ];
+
+            callback(event);
+
+        },
+
+        2500);
+
+        console.log(
+
+            "Simulador iniciado."
+
+        );
 
     }
 
-    disconnect() {
+    stop() {
 
-        this.connected = false;
+        if (this.interval) {
 
-        console.log("Simulador desconectado.");
+            clearInterval(
 
-    }
+                this.interval
 
-    simulateButton(id) {
+            );
 
-        EventBus.emit("hardware-event", {
+            this.interval = null;
 
-            type: "BTN",
-
-            id,
-
-            action: "PRESS"
-
-        });
-
-    }
-
-    simulateEncoder(id, direction) {
-
-        EventBus.emit("hardware-event", {
-
-            type: "ENC",
-
-            id,
-
-            direction
-
-        });
-
-    }
-
-    simulatePotentiometer(id, value) {
-
-        EventBus.emit("hardware-event", {
-
-            type: "POT",
-
-            id,
-
-            value
-
-        });
+        }
 
     }
 
 }
 
-module.exports = new SimulatorProvider();
+export default new SimulatorProvider();
