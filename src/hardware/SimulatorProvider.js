@@ -13,15 +13,10 @@ class SimulatorProvider {
         const events = [
 
             "KRN|BTN|1|PRESS",
-
             "KRN|BTN|2|PRESS",
-
             "KRN|ENC|5|1",
-
             "KRN|ENC|5|-1",
-
             "KRN|POT|7|420",
-
             "KRN|BTN|8|PRESS"
 
         ];
@@ -42,15 +37,9 @@ class SimulatorProvider {
 
             callback(event);
 
-        },
+        }, 2500);
 
-        2500);
-
-        console.log(
-
-            "Simulador iniciado."
-
-        );
+        console.log("Simulador iniciado.");
 
     }
 
@@ -58,11 +47,7 @@ class SimulatorProvider {
 
         if (this.interval) {
 
-            clearInterval(
-
-                this.interval
-
-            );
+            clearInterval(this.interval);
 
             this.interval = null;
 
@@ -72,4 +57,4 @@ class SimulatorProvider {
 
 }
 
-export default new SimulatorProvider();
+module.exports = new SimulatorProvider();

@@ -1,40 +1,31 @@
-import LightroomCommands from "../data/lightroom/LightroomCommands.js";
+const LightroomCommands = require("../data/lightroom/LightroomCommands");
+const KeyboardService = require("./KeyboardService");
 
-export default class LightroomService {
+class LightroomService {
 
     constructor() {
 
-        this.commands = new Map();
-
-        this.loadCommands();
-
-    }
-
-    loadCommands() {
-
-        LightroomCommands.forEach(command => {
-
-            this.commands.set(
-
-                command.id,
-
-                command
-
-            );
-
-        });
+        this.commands = LightroomCommands;
 
     }
 
     getCommand(commandId) {
 
-        return this.commands.get(commandId) || null;
+        return this.commands.find(
+
+            command => command.id === commandId
+
+        );
 
     }
 
-    execute(commandId, value = null) {
+    async execute(commandId) {
 
-        const command = this.getCommand(commandId);
+        const command = this.getCommand(
+
+            commandId
+
+        );
 
         if (!command) {
 
@@ -44,68 +35,40 @@ export default class LightroomService {
 
             );
 
-            return false;
+            return;
 
         }
 
-        console.group(
+        console.log(
 
-            "KRONOS"
+            `Executando: ${command.name}`
 
         );
 
-        console.log(
-
-            "Executando:",
-
-            command.name
-
-        );
-
-        console.log(
-
-            "Shortcut:",
+        await KeyboardService.execute(
 
             command.shortcut
 
         );
 
-        if (value !== null) {
+    }
 
-            console.log(
+    getCommands() {
 
-                "Valor:",
-
-                value
-
-            );
-
-        }
-
-        console.groupEnd();
-
-        return command;
+        return this.commands;
 
     }
 
-    getAllCommands() {
+    getByCategory(category) {
 
-        return Array.from(
+        return this.commands.filter(
 
-            this.commands.values()
-
-        );
-
-    }
-
-    hasCommand(commandId) {
-
-        return this.commands.has(
-
-            commandId
+            command => command.category === category
 
         );
 
     }
 
 }
+
+module.exports = new LightroomService();

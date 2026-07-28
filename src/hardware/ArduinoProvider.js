@@ -1,5 +1,5 @@
-import { SerialPort } from "serialport";
-import { ReadlineParser } from "@serialport/parser-readline";
+const { SerialPort } = require("serialport");
+const { ReadlineParser } = require("@serialport/parser-readline");
 
 class ArduinoProvider {
 
@@ -39,11 +39,7 @@ class ArduinoProvider {
 
         this.connected = true;
 
-        console.log(
-
-            `Arduino conectado em ${portName}`
-
-        );
+        console.log(`Arduino conectado em ${portName}`);
 
     }
 
@@ -71,13 +67,7 @@ class ArduinoProvider {
 
         }
 
-        this.parser.on(
-
-            "data",
-
-            callback
-
-        );
+        this.parser.on("data", callback);
 
     }
 
@@ -89,4 +79,4 @@ class ArduinoProvider {
 
 }
 
-export default new ArduinoProvider();
+module.exports = new ArduinoProvider();

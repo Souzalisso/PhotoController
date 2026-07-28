@@ -1037,4 +1037,4 @@ class KronosControls {
 
 KronosControls.initialize();
 
-export default KronosControls;
+module.exports = KronosControls;

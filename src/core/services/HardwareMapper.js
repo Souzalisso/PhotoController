@@ -1,6 +1,12 @@
-import KronosControls from "../designer/KronosControls.js";
+const KronosControls = require("../../renderer/designer/KronosControls");
 
-export default class HardwareMapper {
+class HardwareMapper {
+
+    constructor() {
+
+        this.controls = KronosControls.all;
+
+    }
 
     map(event) {
 
@@ -20,21 +26,19 @@ export default class HardwareMapper {
 
         if (!control) {
 
-            console.warn(
-
-                `Hardware não mapeado: ${event.type} ${event.id}`
-
-            );
-
             return null;
 
         }
 
         return {
 
-            controlId: control.id,
+            id: control.id,
 
-            controlType: control.type,
+            label: control.label,
+
+            type: control.type,
+
+            configurable: control.configurable,
 
             hardware: control.hardware,
 
@@ -46,4 +50,66 @@ export default class HardwareMapper {
 
     }
 
+    getControl(type, id) {
+
+        return KronosControls.findByHardware(
+
+            type,
+
+            id
+
+        );
+
+    }
+
+    exists(type, id) {
+
+        return this.getControl(
+
+            type,
+
+            id
+
+        ) !== null;
+
+    }
+
+    getAllControls() {
+
+        return this.controls;
+
+    }
+
+    getButtons() {
+
+        return this.controls.filter(
+
+            control => control.type === "button"
+
+        );
+
+    }
+
+    getEncoders() {
+
+        return this.controls.filter(
+
+            control => control.type === "encoder"
+
+        );
+
+    }
+
+    getDisplays() {
+
+        return this.controls.filter(
+
+            control => control.type === "display"
+
+        );
+
+    }
+
 }
+
+module.exports = new HardwareMapper();

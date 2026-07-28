@@ -1,65 +1,83 @@
-export default class KeyboardService {
+const { keyboard, Key } = require("@nut-tree-fork/nut-js");
+
+class KeyboardService {
 
     constructor() {
 
-        this.enabled = true;
+        this.keyMap = {
+
+            CTRL: Key.LeftControl,
+            SHIFT: Key.LeftShift,
+            ALT: Key.LeftAlt,
+
+            ENTER: Key.Enter,
+            SPACE: Key.Space,
+            TAB: Key.Tab,
+            ESC: Key.Escape,
+            DELETE: Key.Delete,
+            BACKSPACE: Key.Backspace,
+
+            ARROWLEFT: Key.Left,
+            ARROWRIGHT: Key.Right,
+            ARROWUP: Key.Up,
+            ARROWDOWN: Key.Down
+
+        };
 
     }
 
-    enable() {
-
-        this.enabled = true;
-
-    }
-
-    disable() {
-
-        this.enabled = false;
-
-    }
-
-    isEnabled() {
-
-        return this.enabled;
-
-    }
-
-    execute(shortcut) {
-
-        if (!this.enabled) {
-
-            return false;
-
-        }
+    async execute(shortcut) {
 
         if (!shortcut) {
 
-            return false;
+            return;
 
         }
 
-        console.group("KEYBOARD");
+        const keys = shortcut
+            .split("+")
+            .map(key => key.trim().toUpperCase());
 
-        console.log("Shortcut:", shortcut);
+        const nutKeys = [];
 
-        console.groupEnd();
+        for (const key of keys) {
 
-        /*
-         *
-         * Aqui ficará a integração com o Electron.
-         *
-         * Exemplos:
-         *
-         * window.electron.keyboard.send(shortcut);
-         *
-         * ou
-         *
-         * ipcRenderer.invoke(...)
-         *
-         */
+            nutKeys.push(
 
-        return true;
+                this.resolveKey(key)
+
+            );
+
+        }
+
+        await keyboard.pressKey(...nutKeys);
+
+        await keyboard.releaseKey(...nutKeys.reverse());
+
+    }
+
+    resolveKey(key) {
+
+        if (this.keyMap[key]) {
+
+            return this.keyMap[key];
+
+        }
+
+        if (key.length === 1) {
+
+            return Key[key.toUpperCase()];
+
+        }
+
+        throw new Error(
+
+            `Tecla não suportada: ${key}`
+
+        );
 
     }
 
 }
+
+module.exports = new KeyboardService();

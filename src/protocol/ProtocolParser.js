@@ -1,4 +1,4 @@
-export default class ProtocolParser {
+class ProtocolParser {
 
     parse(message) {
 
@@ -29,7 +29,6 @@ export default class ProtocolParser {
         switch (type) {
 
             case "ENC":
-
             case "POT":
 
                 value = Number(value);
@@ -45,11 +44,8 @@ export default class ProtocolParser {
         return {
 
             device,
-
             type,
-
             id,
-
             value
 
         };
@@ -57,3 +53,5 @@ export default class ProtocolParser {
     }
 
 }
+
+module.exports = new ProtocolParser();

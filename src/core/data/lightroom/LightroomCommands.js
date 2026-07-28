@@ -162,4 +162,4 @@ const LightroomCommands = [
 
 ];
 
-export default LightroomCommands;
+module.exports = LightroomCommands;
