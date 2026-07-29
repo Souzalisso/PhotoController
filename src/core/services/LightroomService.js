@@ -1,5 +1,4 @@
 const LightroomCommands = require("../data/lightroom/LightroomCommands");
-const KeyboardService = require("./KeyboardService");
 
 class LightroomService {
 
@@ -15,41 +14,21 @@ class LightroomService {
 
             command => command.id === commandId
 
-        );
+        ) || null;
 
     }
 
-    async execute(commandId) {
+    getShortcut(commandId) {
 
-        const command = this.getCommand(
-
-            commandId
-
-        );
+        const command = this.getCommand(commandId);
 
         if (!command) {
 
-            console.warn(
-
-                `Comando inexistente: ${commandId}`
-
-            );
-
-            return;
+            return null;
 
         }
 
-        console.log(
-
-            `Executando: ${command.name}`
-
-        );
-
-        await KeyboardService.execute(
-
-            command.shortcut
-
-        );
+        return command.shortcut;
 
     }
 

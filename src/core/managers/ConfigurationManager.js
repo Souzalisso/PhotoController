@@ -1,13 +1,10 @@
-import KronosControls from "../../renderer/designer/KronosControls.js";
-import ConfigurationManager from "./ConfigurationManager.js";
-
-export default class ConfigurationManager {
+class ConfigurationManager {
 
     constructor() {
 
         this.storageKey = "kronos-configuration";
 
-        this.configuration = {};
+        this.controls = {};
 
     }
 
@@ -23,15 +20,13 @@ export default class ConfigurationManager {
 
             if (!json) {
 
-                this.configuration = {};
+                this.controls = {};
 
-                return this.configuration;
+                return;
 
             }
 
-            this.configuration = JSON.parse(json);
-
-            return this.configuration;
+            this.controls = JSON.parse(json);
 
         }
 
@@ -45,9 +40,7 @@ export default class ConfigurationManager {
 
             );
 
-            this.configuration = {};
-
-            return this.configuration;
+            this.controls = {};
 
         }
 
@@ -63,7 +56,7 @@ export default class ConfigurationManager {
 
                 JSON.stringify(
 
-                    this.configuration,
+                    this.controls,
 
                     null,
 
@@ -91,43 +84,37 @@ export default class ConfigurationManager {
 
     get(controlId) {
 
-        return this.configuration[controlId] || null;
+        return this.controls[controlId] || null;
 
     }
 
     set(controlId, commandId) {
 
-        this.configuration[controlId] = commandId;
+        this.controls[controlId] = commandId;
 
     }
 
     has(controlId) {
 
-        return Object.prototype.hasOwnProperty.call(
-
-            this.configuration,
-
-            controlId
-
-        );
+        return controlId in this.controls;
 
     }
 
     remove(controlId) {
 
-        delete this.configuration[controlId];
+        delete this.controls[controlId];
 
     }
 
-    clear() {
+    getAll() {
 
-        this.configuration = {};
+        return this.controls;
 
     }
 
     async reset() {
 
-        this.clear();
+        this.controls = {};
 
         localStorage.removeItem(
 
@@ -138,3 +125,5 @@ export default class ConfigurationManager {
     }
 
 }
+
+module.exports = ConfigurationManager;

@@ -1,9 +1,10 @@
-import EventBus from "../core/EventBus.js";
-import ArduinoProvider from "./ArduinoProvider.js";
+const EventBus = require("../core/EventBus");
 
-export default class HardwareService {
+class HardwareService {
 
     constructor({
+
+        provider,
 
         parser,
 
@@ -17,7 +18,7 @@ export default class HardwareService {
 
     }) {
 
-        this.connected = false;
+        this.provider = provider;
 
         this.parser = parser;
 
@@ -29,15 +30,17 @@ export default class HardwareService {
 
         this.keyboardService = keyboardService;
 
+        this.connected = false;
+
     }
 
     connect(port = "COM3") {
 
         try {
 
-            ArduinoProvider.connect(port);
+            this.provider.connect(port);
 
-            ArduinoProvider.onData(
+            this.provider.onData(
 
                 message => this.receive(message)
 
@@ -53,7 +56,7 @@ export default class HardwareService {
 
             console.log(
 
-                "KRONOS Hardware conectado."
+                "Hardware conectado."
 
             );
 
@@ -63,13 +66,11 @@ export default class HardwareService {
 
             console.error(
 
-                "Erro ao conectar Arduino:",
+                "Erro ao conectar hardware:",
 
                 error
 
             );
-
-            this.connected = false;
 
         }
 
@@ -77,7 +78,7 @@ export default class HardwareService {
 
     disconnect() {
 
-        ArduinoProvider.disconnect();
+        this.provider.disconnect();
 
         this.connected = false;
 
@@ -115,15 +116,19 @@ export default class HardwareService {
 
     }
 
-    process(event) {
+    async process(event) {
 
-        const mappedControl = this.mapper.map(event);
+        const control = this.mapper.map(
 
-        if (!mappedControl) {
+            event
+
+        );
+
+        if (!control) {
 
             console.warn(
 
-                "Controle não encontrado:",
+                "Controle não encontrado.",
 
                 event
 
@@ -135,7 +140,7 @@ export default class HardwareService {
 
         const commandId = this.controlManager.getCommand(
 
-            mappedControl.id
+            control.id
 
         );
 
@@ -143,7 +148,7 @@ export default class HardwareService {
 
             console.warn(
 
-                `Controle ${mappedControl.id} sem comando.`
+                `${control.id} sem comando.`
 
             );
 
@@ -151,23 +156,27 @@ export default class HardwareService {
 
         }
 
-        const command = this.lightroomService.execute(
+        const shortcut = this.lightroomService.getShortcut(
 
-            commandId,
-
-            mappedControl.value
+            commandId
 
         );
 
-        if (!command) {
+        if (!shortcut) {
+
+            console.warn(
+
+                `${commandId} sem atalho.`
+
+            );
 
             return;
 
         }
 
-        this.keyboardService.execute(
+        await this.keyboardService.execute(
 
-            command.shortcut
+            shortcut
 
         );
 
@@ -180,3 +189,5 @@ export default class HardwareService {
     }
 
 }
+
+module.exports = HardwareService;

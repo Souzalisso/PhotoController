@@ -1,7 +1,7 @@
-import KronosControls from "../designer/KronosControls.js";
-import ConfigurationManager from "./ConfigurationManager.js";
+const KronosControls = require("../../renderer/designer/KronosControls");
+const ConfigurationManager = require("./ConfigurationManager");
 
-export default class ControlManager {
+class ControlManager {
 
     constructor() {
 
@@ -19,13 +19,45 @@ export default class ControlManager {
 
     getControl(controlId) {
 
-        return KronosControls.findById(controlId);
+        return KronosControls.findById(
+
+            controlId
+
+        );
+
+    }
+
+    getControls() {
+
+        return KronosControls.all;
+
+    }
+
+    getButtons() {
+
+        return KronosControls.getButtons();
+
+    }
+
+    getEncoders() {
+
+        return KronosControls.getEncoders();
+
+    }
+
+    getDisplays() {
+
+        return KronosControls.getDisplays();
 
     }
 
     getCommand(controlId) {
 
-        return this.configuration.get(controlId);
+        return this.configuration.get(
+
+            controlId
+
+        );
 
     }
 
@@ -45,31 +77,27 @@ export default class ControlManager {
 
     hasCommand(controlId) {
 
-        return this.configuration.has(controlId);
+        return this.configuration.has(
+
+            controlId
+
+        );
 
     }
 
     removeCommand(controlId) {
 
-        this.configuration.remove(controlId);
+        this.configuration.remove(
+
+            controlId
+
+        );
 
     }
 
-    getControls() {
+    async resetConfiguration() {
 
-        return KronosControls.all;
-
-    }
-
-    getButtons() {
-
-        return KronosControls.getButtons();
-
-    }
-
-    getEncoders() {
-
-        return KronosControls.getEncoders();
+        await this.configuration.reset();
 
     }
 
@@ -113,16 +141,5 @@ export default class ControlManager {
 
     }
 
-    resetSelection() {
-
-        this.selectedControl = null;
-
-    }
-
-    async resetConfiguration() {
-
-        await this.configuration.reset();
-
-    }
-
 }
+module.exports = ControlManager;
