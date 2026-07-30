@@ -17,19 +17,15 @@ class ControlManager {
 
     }
 
-    getControl(controlId) {
-
-        return KronosControls.findById(
-
-            controlId
-
-        );
-
-    }
-
     getControls() {
 
         return KronosControls.all;
+
+    }
+
+    getControl(id) {
+
+        return KronosControls.findById(id);
 
     }
 
@@ -53,11 +49,7 @@ class ControlManager {
 
     getCommand(controlId) {
 
-        return this.configuration.get(
-
-            controlId
-
-        );
+        return this.configuration.get(controlId);
 
     }
 
@@ -75,23 +67,15 @@ class ControlManager {
 
     }
 
-    hasCommand(controlId) {
+    removeCommand(controlId) {
 
-        return this.configuration.has(
-
-            controlId
-
-        );
+        this.configuration.remove(controlId);
 
     }
 
-    removeCommand(controlId) {
+    hasCommand(controlId) {
 
-        this.configuration.remove(
-
-            controlId
-
-        );
+        return this.configuration.has(controlId);
 
     }
 
@@ -133,13 +117,10 @@ class ControlManager {
 
         }
 
-        return this.getControl(
-
-            this.selectedControl
-
-        );
+        return this.getControl(this.selectedControl);
 
     }
 
 }
+
 module.exports = ControlManager;

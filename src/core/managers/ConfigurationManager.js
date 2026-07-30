@@ -12,32 +12,17 @@ class ConfigurationManager {
 
         try {
 
-            const json = localStorage.getItem(
+            const json = localStorage.getItem(this.storageKey);
 
-                this.storageKey
-
-            );
-
-            if (!json) {
-
-                this.controls = {};
-
-                return;
-
-            }
-
-            this.controls = JSON.parse(json);
+            this.controls = json ? JSON.parse(json) : {};
 
         }
 
         catch (error) {
 
             console.error(
-
                 "Erro ao carregar configuração:",
-
                 error
-
             );
 
             this.controls = {};
@@ -71,11 +56,8 @@ class ConfigurationManager {
         catch (error) {
 
             console.error(
-
                 "Erro ao salvar configuração:",
-
                 error
-
             );
 
         }
@@ -116,11 +98,7 @@ class ConfigurationManager {
 
         this.controls = {};
 
-        localStorage.removeItem(
-
-            this.storageKey
-
-        );
+        localStorage.removeItem(this.storageKey);
 
     }
 

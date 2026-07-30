@@ -2,10 +2,7 @@ const path = require("path");
 const { app, BrowserWindow, ipcMain, globalShortcut } = require("electron");
 
 const EventBus = require("../core/EventBus");
-const HardwareService = require("../hardware/HardwareService");
-const ConfigurationManager = require("../core/ConfigurationManager");
-
-require("../controllers/HardwareController");
+const Application = require("../core/Application");
 
 let mainWindow;
 
@@ -13,164 +10,326 @@ function createWindow() {
 
     mainWindow = new BrowserWindow({
 
-    width: 1400,
-    height: 900,
-    minWidth: 1200,
-    minHeight: 700,
+        width: 1400,
+        height: 900,
 
-    title: "KRONOS Controller",
+        minWidth: 1200,
+        minHeight: 700,
 
-    webPreferences: {
+        title: "KRONOS Controller",
 
-        preload: path.join(__dirname, "../preload/preload.js"),
+        webPreferences: {
 
-        contextIsolation: true,
+            preload: path.join(
+                __dirname,
+                "../preload/preload.js"
+            ),
 
-        nodeIntegration: false
+            contextIsolation: true,
 
-    }
+            nodeIntegration: false
+
+        }
 
     });
 
     mainWindow.loadFile(
-        path.join(__dirname, "../renderer/index.html")
+
+        path.join(
+
+            __dirname,
+
+            "../renderer/index.html"
+
+        )
+
     );
 
-    mainWindow.webContents.once("did-finish-load", () => {
+    mainWindow.webContents.once(
 
-        mainWindow.webContents.send("hardware-status", {
+        "did-finish-load",
 
-            connected: false,
-            port: "COM3"
+        () => {
 
-        });
+            mainWindow.webContents.send(
 
-    });
+                "hardware-status",
+
+                {
+
+                    connected: false,
+
+                    port: "COM3"
+
+                }
+
+            );
+
+        }
+
+    );
 
 }
 
-ipcMain.handle("ping", async () => {
+ipcMain.handle(
 
-    return "Pong! Electron está funcionando.";
+    "ping",
 
-});
+    async () => {
 
-ipcMain.handle("config:load", () => {
-
-    return ConfigurationManager.load();
-
-});
-
-ipcMain.handle("config:saveControl", (event, controlId, command) => {
-
-    const configuration = ConfigurationManager.load();
-
-    configuration.controls[controlId] = command;
-
-    ConfigurationManager.save(configuration);
-
-    console.log(`${controlId} -> ${command}`);
-
-    return true;
-
-});
-
-ipcMain.handle("hardware:simulateButton", (event, buttonId) => {
-
-    EventBus.emit("hardware-event", {
-
-        device: "SIM",
-        type: "BTN",
-        id: buttonId,
-        value: "PRESS"
-
-    });
-
-    return true;
-
-});
-
-app.whenReady().then(() => {
-
-    createWindow();
-
-    globalShortcut.register("CommandOrControl+Shift+T", () => {
-
-    console.log("===== TESTE KRONOS =====");
-
-    EventBus.emit("hardware-event", {
-
-        device: "SIM",
-        type: "BTN",
-        id: 1,
-        value: "PRESS"
-
-    });
-
-});
-
-    HardwareService.connect("COM3");
-
-    EventBus.on("hardware-connected", () => {
-
-        if (mainWindow) {
-
-            mainWindow.webContents.send("hardware-status", {
-
-                connected: true,
-                port: "COM3"
-
-            });
-
-        }
-
-    });
-
-    EventBus.on("hardware-disconnected", () => {
-
-        if (mainWindow) {
-
-            mainWindow.webContents.send("hardware-status", {
-
-                connected: false,
-                port: "--"
-
-            });
-
-        }
-
-    });
-
-    EventBus.on("hardware-event", (event) => {
-
-        console.log("Evento:", event);
-
-        if (mainWindow) {
-
-            mainWindow.webContents.send("hardware-event", event);
-
-        }
-
-    });
-
-});
-
-app.on("window-all-closed", () => {
-
-    if (process.platform !== "darwin") {
-
-        app.quit();
+        return "Pong! Electron funcionando.";
 
     }
 
-});
+);
 
-app.on("activate", () => {
+ipcMain.handle(
 
-    if (BrowserWindow.getAllWindows().length === 0) {
+    "config:load",
+
+    async () => {
+
+        return Application
+            .getControlManager()
+            .configuration
+            .getAll();
+
+    }
+
+);
+
+ipcMain.handle(
+
+    "config:saveControl",
+
+    async (
+
+        event,
+
+        controlId,
+
+        command
+
+    ) => {
+
+        await Application
+            .getControlManager()
+            .setCommand(
+
+                controlId,
+
+                command
+
+            );
+
+        console.log(
+
+            `${controlId} -> ${command}`
+
+        );
+
+        return true;
+
+    }
+
+);
+
+ipcMain.handle(
+
+    "hardware:simulateButton",
+
+    async (
+
+        event,
+
+        buttonId
+
+    ) => {
+
+        Application
+            .getHardware()
+            .simulateButton(
+
+                buttonId
+
+            );
+
+        return true;
+
+    }
+
+);
+
+app.whenReady().then(
+
+    async () => {
 
         createWindow();
 
+        await Application.start(
+
+            "COM3"
+
+        );
+
+        globalShortcut.register(
+
+            "CommandOrControl+Shift+T",
+
+            () => {
+
+                console.log(
+
+                    "===== TESTE KRONOS ====="
+
+                );
+
+                Application
+                    .getHardware()
+                    .simulateButton(
+
+                        1
+
+                    );
+
+            }
+
+        );
+
+        EventBus.on(
+
+            "hardware-connected",
+
+            () => {
+
+                if (!mainWindow) {
+
+                    return;
+
+                }
+
+                mainWindow.webContents.send(
+
+                    "hardware-status",
+
+                    {
+
+                        connected: true,
+
+                        port: "COM3"
+
+                    }
+
+                );
+
+            }
+
+        );
+
+        EventBus.on(
+
+            "hardware-disconnected",
+
+            () => {
+
+                if (!mainWindow) {
+
+                    return;
+
+                }
+
+                mainWindow.webContents.send(
+
+                    "hardware-status",
+
+                    {
+
+                        connected: false,
+
+                        port: "--"
+
+                    }
+
+                );
+
+            }
+
+        );
+
+        EventBus.on(
+
+            "hardware-event",
+
+            event => {
+
+                console.log(
+
+                    "Evento:",
+
+                    event
+
+                );
+
+                if (!mainWindow) {
+
+                    return;
+
+                }
+
+                mainWindow.webContents.send(
+
+                    "hardware-event",
+
+                    event
+
+                );
+
+            }
+
+        );
+
     }
 
-});
+);
+
+app.on(
+
+    "window-all-closed",
+
+    () => {
+
+        if (
+
+            process.platform !== "darwin"
+
+        ) {
+
+            Application.stop();
+
+            app.quit();
+
+        }
+
+    }
+
+);
+
+app.on(
+
+    "activate",
+
+    () => {
+
+        if (
+
+            BrowserWindow.getAllWindows().length === 0
+
+        ) {
+
+            createWindow();
+
+        }
+
+    }
+
+);

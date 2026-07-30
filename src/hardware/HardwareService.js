@@ -5,29 +5,20 @@ class HardwareService {
     constructor({
 
         provider,
-
         parser,
-
         mapper,
-
         controlManager,
-
         lightroomService,
-
         keyboardService
 
     }) {
 
         this.provider = provider;
-
         this.parser = parser;
-
         this.mapper = mapper;
 
         this.controlManager = controlManager;
-
         this.lightroomService = lightroomService;
-
         this.keyboardService = keyboardService;
 
         this.connected = false;
@@ -48,17 +39,9 @@ class HardwareService {
 
             this.connected = true;
 
-            EventBus.emit(
+            EventBus.emit("hardware-connected");
 
-                "hardware-connected"
-
-            );
-
-            console.log(
-
-                "Hardware conectado."
-
-            );
+            console.log("Hardware conectado.");
 
         }
 
@@ -78,7 +61,11 @@ class HardwareService {
 
     disconnect() {
 
-        this.provider.disconnect();
+        if (this.provider.disconnect) {
+
+            this.provider.disconnect();
+
+        }
 
         this.connected = false;
 
@@ -92,13 +79,13 @@ class HardwareService {
 
     receive(message) {
 
-        const event = this.parser.parse(
+        const parsed = this.parser.parse(
 
             message
 
         );
 
-        if (!event) {
+        if (!parsed) {
 
             return;
 
@@ -108,11 +95,11 @@ class HardwareService {
 
             "hardware-event",
 
-            event
+            parsed
 
         );
 
-        this.process(event);
+        this.process(parsed);
 
     }
 
@@ -126,14 +113,6 @@ class HardwareService {
 
         if (!control) {
 
-            console.warn(
-
-                "Controle não encontrado.",
-
-                event
-
-            );
-
             return;
 
         }
@@ -145,12 +124,6 @@ class HardwareService {
         );
 
         if (!commandId) {
-
-            console.warn(
-
-                `${control.id} sem comando.`
-
-            );
 
             return;
 
@@ -164,12 +137,6 @@ class HardwareService {
 
         if (!shortcut) {
 
-            console.warn(
-
-                `${commandId} sem atalho.`
-
-            );
-
             return;
 
         }
@@ -179,6 +146,22 @@ class HardwareService {
             shortcut
 
         );
+
+    }
+
+    simulateButton(id) {
+
+        this.process({
+
+            device: "SIM",
+
+            type: "BTN",
+
+            id,
+
+            value: "PRESS"
+
+        });
 
     }
 
