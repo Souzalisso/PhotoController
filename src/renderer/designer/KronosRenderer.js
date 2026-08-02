@@ -1,4 +1,4 @@
-export default class KronosRenderer {
+class KronosRenderer {
 
     render(control) {
 
@@ -168,3 +168,5 @@ export default class KronosRenderer {
     }
 
 }
+
+module.exports = KronosRenderer;

@@ -1,6 +1,6 @@
-import KronosDesigner from "../designer/KronosDesigner.js";
+const KronosDesigner = require("../../designer/KronosDesigner");
 
-export default class DashboardPage {
+class DashboardPage {
 
     constructor() {
 
@@ -29,3 +29,5 @@ export default class DashboardPage {
     }
 
 }
+
+module.exports = DashboardPage;

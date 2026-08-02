@@ -1,4 +1,4 @@
-export const CONTROL_TYPES = Object.freeze({
+const CONTROL_TYPES = Object.freeze({
 
     BUTTON: "button",
 
@@ -16,7 +16,7 @@ export const CONTROL_TYPES = Object.freeze({
 
 });
 
-export const GROUPS = Object.freeze({
+const GROUPS = Object.freeze({
 
     LEFT: "left",
 
@@ -36,7 +36,7 @@ export const GROUPS = Object.freeze({
 
 });
 
-export const SIZES = Object.freeze({
+const SIZES = Object.freeze({
 
     SMALL: "small",
 
@@ -46,7 +46,7 @@ export const SIZES = Object.freeze({
 
 });
 
-export const LED_COLORS = Object.freeze({
+const LED_COLORS = Object.freeze({
 
     NONE: "",
 
@@ -70,7 +70,7 @@ export const LED_COLORS = Object.freeze({
 
 });
 
-export const STATES = Object.freeze({
+const STATES = Object.freeze({
 
     DEFAULT: "default",
 
@@ -83,3 +83,17 @@ export const STATES = Object.freeze({
     DISABLED: "disabled"
 
 });
+
+module.exports = {
+
+    CONTROL_TYPES,
+
+    GROUPS,
+
+    SIZES,
+
+    LED_COLORS,
+
+    STATES
+
+};

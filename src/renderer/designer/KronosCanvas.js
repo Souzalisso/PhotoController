@@ -1,7 +1,7 @@
-import KronosControls from "./KronosControls.js";
-import KronosRenderer from "./KronosRenderer.js";
+const KronosControls = require("./KronosControls");
+const KronosRenderer = require("./KronosRenderer");
 
-export default class KronosCanvas {
+class KronosCanvas {
 
     constructor(controlManager) {
 
@@ -218,21 +218,21 @@ export default class KronosCanvas {
 
     renderControl(control) {
 
-    if (!control) {
+        if (!control) {
 
-        return "";
+            return "";
+
+        }
+
+        return this.renderer.render(control);
 
     }
 
-    return this.renderer.render(control);
-
-}
-
     init(container = document) {
 
-        this.bindEvents(kronos-control);
+        this.bindEvents(container);
 
-        this.updateSelection(kronos-control);
+        this.updateSelection(container);
 
     }
 
@@ -338,51 +338,29 @@ export default class KronosCanvas {
 
     }
 
-   updateDisplay({
+    updateDisplay({
 
-    title = "",
+        title = "",
 
-    value = "",
+        value = "",
 
-    status = ""
+        status = ""
 
-} = {}) {
+    } = {}) {
 
-    const titleElement = document.querySelector(
-        "#oled-line-1"
-    );
+        const titleElement = document.querySelector("#oled-line-1");
+        const valueElement = document.querySelector("#oled-line-2");
+        const statusElement = document.querySelector("#oled-line-3");
 
-    const valueElement = document.querySelector(
-        "#oled-line-2"
-    );
-
-    const statusElement = document.querySelector(
-        "#oled-line-3"
-    );
-
-    if (titleElement) {
-
-        titleElement.textContent = title;
+        if (titleElement) titleElement.textContent = title;
+        if (valueElement) valueElement.textContent = value;
+        if (statusElement) statusElement.textContent = status;
 
     }
-
-    if (valueElement) {
-
-        valueElement.textContent = value;
-
-    }
-
-    if (statusElement) {
-
-        statusElement.textContent = status;
-
-    }
-
-}
 
     clearDisplay() {
 
-        this.updateDisplay("", "", "");
+        this.updateDisplay();
 
     }
 
@@ -408,8 +386,11 @@ export default class KronosCanvas {
 
     destroy() {
 
-    this.controlManager = null;
-    this.renderer = null;
+        this.controlManager = null;
+        this.renderer = null;
+
+    }
 
 }
-}
+
+module.exports = KronosCanvas;

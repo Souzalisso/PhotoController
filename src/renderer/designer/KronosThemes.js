@@ -80,4 +80,4 @@ const KronosTheme = {
 
 };
 
-export default KronosTheme;
+module.exports = KronosTheme;

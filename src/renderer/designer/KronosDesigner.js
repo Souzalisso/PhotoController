@@ -1,22 +1,22 @@
-import KronosCanvas from "./KronosCanvas.js";
-import ControlManager from "../../core/managers/ControlManager.js";
-import LightroomCommands from "../../core/data/lightroom/LightroomCommands.js";
+const KronosCanvas = require("./KronosCanvas");
+const ControlManager = require("../../core/managers/ControlManager");
+const LightroomCommands = require("../../core/data/lightroom/LightroomCommands");
 
-export default class KronosDesigner {
+class KronosDesigner {
 
     constructor() {
 
-    this.controlManager = new ControlManager();
+        this.controlManager = new ControlManager();
 
-    this.canvas = new KronosCanvas(
+        this.canvas = new KronosCanvas(
 
-        this.controlManager
+            this.controlManager
 
-    );
+        );
 
-    this.selectedControl = null;
+        this.selectedControl = null;
 
-}
+    }
 
     render() {
 
@@ -140,19 +140,19 @@ export default class KronosDesigner {
 
     updateSidebar() {
 
-    document.getElementById(
-        "selectedControl"
-    ).textContent = this.selectedControl;
+        document.getElementById(
+            "selectedControl"
+        ).textContent = this.selectedControl;
 
-    const command = this.controlManager.getCommand(
-        this.selectedControl
-    );
+        const command = this.controlManager.getCommand(
+            this.selectedControl
+        );
 
-    document.getElementById(
-        "commandSelect"
-    ).value = command || "";
+        document.getElementById(
+            "commandSelect"
+        ).value = command || "";
 
-}
+    }
 
     showMessage(message) {
 
@@ -160,11 +160,11 @@ export default class KronosDesigner {
 
             "[KRONOS]",
 
-         message
+            message
 
-    );
+        );
 
-}
+    }
 
     registerSaveButton() {
 
@@ -195,11 +195,13 @@ export default class KronosDesigner {
                 );
 
                 this.showMessage(
-                "Configuração salva."
-            );
+                    "Configuração salva."
+                );
 
             });
 
     }
 
 }
+
+module.exports = KronosDesigner;
