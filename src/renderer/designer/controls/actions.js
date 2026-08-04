@@ -1,83 +1,77 @@
-const left = [
+const actions = [
 
     {
-        id: "undo",
-        label: "UNDO",
+        id: "pick",
+        label: "PICK",
         type: "button",
         configurable: true,
-        led: false,
-        position: 1,
+        led: true,
         hardware: {
             type: "BTN",
-            id: 1
+            id: 15
         }
     },
 
     {
-        id: "redo",
-        label: "REDO",
+        id: "reject",
+        label: "REJECT",
         type: "button",
         configurable: true,
-        led: false,
-        position: 2,
+        led: true,
         hardware: {
             type: "BTN",
-            id: 2
+            id: 16
         }
     },
 
     {
-        id: "copy",
-        label: "COPY",
+        id: "previous",
+        label: "◀",
         type: "button",
         configurable: true,
         led: false,
-        position: 3,
         hardware: {
             type: "BTN",
-            id: 3
+            id: 17
         }
     },
 
     {
-        id: "paste",
-        label: "PASTE",
+        id: "next",
+        label: "▶",
         type: "button",
         configurable: true,
         led: false,
-        position: 4,
         hardware: {
             type: "BTN",
-            id: 4
+            id: 18
         }
     },
 
     {
-        id: "sync",
-        label: "SYNC",
+        id: "fit",
+        label: "FIT",
         type: "button",
         configurable: true,
         led: false,
-        position: 5,
         hardware: {
             type: "BTN",
-            id: 5
+            id: 19
         }
     },
 
     {
-        id: "before-after",
-        label: "BEFORE",
+        id: "zoom-1-1",
+        label: "1:1",
         type: "button",
         configurable: true,
         led: false,
-        position: 6,
         hardware: {
             type: "BTN",
-            id: 6
+            id: 20
         }
     }
 
 ];
 
-module.exports = left;
+module.exports = actions;

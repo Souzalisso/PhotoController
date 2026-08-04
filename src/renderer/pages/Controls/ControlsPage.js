@@ -1,5 +1,3 @@
-const KronosDesigner = require("../../designer/KronosDesigner");
-
 class ControlsPage {
 
     constructor() {
@@ -21,5 +19,3 @@ class ControlsPage {
     }
 
 }
-
-module.exports = ControlsPage;

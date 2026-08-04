@@ -23,9 +23,6 @@ export default class PageManager {
         this.currentPage = "dashboard";
 
     }
-    
-    
-    
 
     getCurrentPage() {
 
@@ -42,29 +39,15 @@ export default class PageManager {
         }
 
     }
+
     renderCurrentPage() {
 
-    const container = document.getElementById("page-content");
+        const container = document.getElementById("page-content");
 
-    container.innerHTML = this.getCurrentPage().render();
+        container.innerHTML = this.getCurrentPage().render();
 
-    this.getCurrentPage().init();
+        this.getCurrentPage().init();
 
-}
-init() {
-
-    this.sidebar.init();
-
-    this.pageManager.getCurrentPage().init();
-
-    document.addEventListener("change-page", (event) => {
-
-        this.pageManager.setCurrentPage(event.detail);
-
-        this.pageManager.renderCurrentPage();
-
-    });
-
-}
+    }
 
 }
