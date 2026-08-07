@@ -29,16 +29,23 @@ class ControlRepository {
         const definitions = [
 
             ...left,
+
             ...top,
+
             ...bottom,
 
             center.display,
+
             center.leftEncoder,
+
             center.mainEncoder,
+
             center.rightEncoder,
 
             ...right,
+
             ...stars,
+
             ...actions
 
         ];
@@ -52,6 +59,9 @@ class ControlRepository {
 
 
         this.validate();
+
+
+        return this.controls;
 
     }
 
@@ -90,6 +100,7 @@ class ControlRepository {
 
             }
 
+
             ids.add(control.id);
 
 
@@ -99,6 +110,20 @@ class ControlRepository {
 
             if (control.hardware) {
 
+                if (
+                    !control.hardware.type ||
+                    control.hardware.id === undefined
+                ) {
+
+                    throw new Error(
+
+                        `Hardware inválido no controle: ${control.id}`
+
+                    );
+
+                }
+
+
                 const key =
                     `${control.hardware.type}-${control.hardware.id}`;
 
@@ -106,10 +131,13 @@ class ControlRepository {
                 if (hardware.has(key)) {
 
                     throw new Error(
+
                         `Hardware duplicado: ${key}`
+
                     );
 
                 }
+
 
                 hardware.add(key);
 
@@ -124,7 +152,7 @@ class ControlRepository {
 
 
     // =====================================
-    // Busca por ID
+    // Buscar por ID
     // =====================================
 
     findById(id) {
@@ -139,16 +167,18 @@ class ControlRepository {
 
 
     // =====================================
-    // Busca por Hardware
+    // Buscar por Hardware
     // =====================================
 
     findByHardware(type, id) {
 
-        return this.controls.find(control =>
+        return this.controls.find(
 
-            control.hardware?.type === type &&
+            control =>
 
-            control.hardware?.id === id
+                control.hardware?.type === type &&
+
+                control.hardware?.id === id
 
         ) || null;
 
@@ -264,6 +294,7 @@ class ControlRepository {
 
         const control = this.findById(id);
 
+
         if (!control) {
 
             return null;
@@ -297,17 +328,20 @@ class ControlRepository {
 
 
     // =====================================
-    // Comandos
+    // Comandos Lightroom
     // =====================================
 
     setCommand(id, command) {
 
         const control = this.findById(id);
 
+
         if (!control) {
 
             throw new Error(
+
                 `Controle não encontrado: ${id}`
+
             );
 
         }
@@ -316,7 +350,9 @@ class ControlRepository {
         if (!control.configurable) {
 
             throw new Error(
+
                 `Controle não configurável: ${id}`
+
             );
 
         }
@@ -333,6 +369,7 @@ class ControlRepository {
     getCommand(id) {
 
         const control = this.findById(id);
+
 
         if (!control) {
 
@@ -354,6 +391,7 @@ class ControlRepository {
 
         const control = this.findById(id);
 
+
         if (!control) {
 
             return null;
@@ -372,6 +410,7 @@ class ControlRepository {
     getValue(id) {
 
         const control = this.findById(id);
+
 
         if (!control) {
 
@@ -392,6 +431,7 @@ class ControlRepository {
     reset(id) {
 
         const control = this.findById(id);
+
 
         if (!control) {
 

@@ -1,7 +1,8 @@
-import Sidebar from "../components/sidebar/Sidebar.js";
-import PageManager from "./PageManager.js";
+const Sidebar = require("../components/sidebar/Sidebar");
+const PageManager = require("./PageManager");
 
-export default class App {
+
+class App {
 
     constructor() {
 
@@ -11,50 +12,158 @@ export default class App {
 
     }
 
+
+    // =====================================
+    // Renderização
+    // =====================================
+
     render() {
 
         return `
 
-        <div class="layout">
+            <div class="layout">
 
-            ${this.sidebar.render()}
+                ${this.sidebar.render()}
 
-            <div id="page-content">
+                <div id="page-content">
 
-                ${this.pageManager.getCurrentPage().render()}
+                    ${this.pageManager
+                        .getCurrentPage()
+                        .render()}
+
+                </div>
 
             </div>
-
-        </div>
 
         `;
 
     }
 
+
+    // =====================================
+    // Inicialização
+    // =====================================
+
     init() {
 
         this.sidebar.init();
 
-        this.pageManager.getCurrentPage().init();
+        this.pageManager
+            .getCurrentPage()
+            .init();
 
-        document.addEventListener("change-page", (event) => {
 
-            this.changePage(event.detail);
+        document.addEventListener(
 
-        });
+            "change-page",
+
+            event => {
+
+                this.changePage(
+                    event.detail
+                );
+
+            }
+
+        );
 
     }
 
+
+    // =====================================
+    // Troca de página
+    // =====================================
+
     changePage(page) {
 
-        this.pageManager.setCurrentPage(page);
+        this.pageManager
+            .setCurrentPage(page);
 
-        const container = document.getElementById("page-content");
 
-        container.innerHTML = this.pageManager.getCurrentPage().render();
+        const container =
+            document.getElementById(
+                "page-content"
+            );
 
-        this.pageManager.getCurrentPage().init();
+
+        if (!container) {
+
+            return;
+
+        }
+
+
+        const currentPage =
+            this.pageManager
+                .getCurrentPage();
+
+
+        if (!currentPage) {
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            currentPage.render();
+
+
+        currentPage.init();
+
+    }
+
+
+    // =====================================
+    // Página atual
+    // =====================================
+
+    getCurrentPage() {
+
+        return this.pageManager
+            .getCurrentPage();
+
+    }
+
+
+    // =====================================
+    // Destruição
+    // =====================================
+
+    destroy() {
+
+        const currentPage =
+            this.pageManager
+                .getCurrentPage();
+
+
+        if (
+            currentPage &&
+            typeof currentPage.destroy === "function"
+        ) {
+
+            currentPage.destroy();
+
+        }
+
+
+        if (
+            this.sidebar &&
+            typeof this.sidebar.destroy === "function"
+        ) {
+
+            this.sidebar.destroy();
+
+        }
+
+
+        this.sidebar = null;
+
+        this.pageManager = null;
 
     }
 
 }
+
+
+module.exports = App;
