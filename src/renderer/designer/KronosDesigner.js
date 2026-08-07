@@ -1,22 +1,44 @@
 const KronosCanvas = require("./KronosCanvas");
-const ControlManager = require("../../core/managers/ControlManager");
-const LightroomCommands = require("../../core/data/lightroom/LightroomCommands");
+const ControlRepository = require("./repositories/ControlRepository");
+
+const LightroomCommands =
+    require("../../core/data/lightroom/LightroomCommands");
+
 
 class KronosDesigner {
 
     constructor() {
 
-        this.controlManager = new ControlManager();
+        // ==========================
+        // Banco de controles
+        // ==========================
 
-        this.canvas = new KronosCanvas(
+        this.controlRepository =
+            new ControlRepository();
 
-            this.controlManager
 
-        );
+        // ==========================
+        // Canvas do hardware
+        // ==========================
 
-        this.selectedControl = null;
+        this.canvas =
+            new KronosCanvas(
+                this.controlRepository
+            );
+
+
+        // ==========================
+        // Estado
+        // ==========================
+
+        this.initialized = false;
 
     }
+
+
+    // =====================================
+    // Renderização
+    // =====================================
 
     render() {
 
@@ -30,47 +52,14 @@ class KronosDesigner {
 
                 </section>
 
+
                 <aside class="designer-sidebar">
 
-                    <div class="designer-card">
+                    ${this.renderSelectedControl()}
 
-                        <h2>Controle Selecionado</h2>
+                    ${this.renderCommandSelector()}
 
-                        <p id="selectedControl">
-
-                            Nenhum controle selecionado
-
-                        </p>
-
-                    </div>
-
-                    <div class="designer-card">
-
-                        <h2>Comando Lightroom</h2>
-
-                        <select id="commandSelect">
-
-                            <option value="">
-
-                                Selecione um comando
-
-                            </option>
-
-                            ${this.renderCommands()}
-
-                        </select>
-
-                    </div>
-
-                    <div class="designer-card">
-
-                        <button id="saveControl">
-
-                            Salvar Configuração
-
-                        </button>
-
-                    </div>
+                    ${this.renderSaveButton()}
 
                 </aside>
 
@@ -80,128 +69,433 @@ class KronosDesigner {
 
     }
 
-    renderCommands() {
 
-        return LightroomCommands.map(command => `
+    // =====================================
+    // Controle selecionado
+    // =====================================
 
-            <option value="${command.id}">
+    renderSelectedControl() {
 
-                ${command.category} • ${command.name}
+        return `
 
-            </option>
+            <div class="designer-card">
 
-        `).join("");
+                <h2>
+
+                    Controle Selecionado
+
+                </h2>
+
+
+                <p id="selectedControl">
+
+                    Nenhum controle selecionado
+
+                </p>
+
+            </div>
+
+        `;
 
     }
+
+
+    // =====================================
+    // Comandos Lightroom
+    // =====================================
+
+    renderCommandSelector() {
+
+        return `
+
+            <div class="designer-card">
+
+                <h2>
+
+                    Comando Lightroom
+
+                </h2>
+
+
+                <select id="commandSelect">
+
+                    <option value="">
+
+                        Selecione um comando
+
+                    </option>
+
+
+                    ${this.renderCommands()}
+
+                </select>
+
+            </div>
+
+        `;
+
+    }
+
+
+    renderCommands() {
+
+        if (!Array.isArray(LightroomCommands)) {
+
+            console.warn(
+
+                "[KRONOS] LightroomCommands não é um array."
+
+            );
+
+            return "";
+
+        }
+
+
+        return LightroomCommands
+
+            .map(command => `
+
+                <option value="${command.id}">
+
+                    ${command.category}
+                    •
+                    ${command.name}
+
+                </option>
+
+            `)
+
+            .join("");
+
+    }
+
+
+    // =====================================
+    // Botão salvar
+    // =====================================
+
+    renderSaveButton() {
+
+        return `
+
+            <div class="designer-card">
+
+                <button
+                    id="saveControl">
+
+                    Salvar Configuração
+
+                </button>
+
+            </div>
+
+        `;
+
+    }
+
+
+    // =====================================
+    // Inicialização
+    // =====================================
 
     async init() {
 
-        await this.controlManager.load();
+        if (this.initialized) {
 
-        this.registerControls();
+            return;
+
+        }
+
+
+        this.canvas.init();
+
+
+        this.registerCanvasEvents();
 
         this.registerSaveButton();
 
-    }
 
-    registerControls() {
-
-        document
-            .querySelectorAll(".kronos-control")
-            .forEach(control => {
-
-                control.addEventListener("click", () => {
-
-                    this.selectControl(control);
-
-                });
-
-            });
+        this.initialized = true;
 
     }
 
-    selectControl(controlElement) {
 
-        document
-            .querySelectorAll(".kronos-control")
-            .forEach(control => {
+    // =====================================
+    // Eventos do Canvas
+    // =====================================
 
-                control.classList.remove("selected");
+    registerCanvasEvents() {
 
-            });
+        const controls =
+            document.querySelectorAll(
+                ".kronos-control"
+            );
 
-        controlElement.classList.add("selected");
 
-        this.selectedControl = controlElement.dataset.id;
+        controls.forEach(control => {
 
-        this.updateSidebar();
+            control.addEventListener(
+                "click",
+                () => {
+
+                    this.updateSidebar();
+
+                }
+            );
+
+        });
 
     }
+
+
+    // =====================================
+    // Atualizar Sidebar
+    // =====================================
 
     updateSidebar() {
 
-        document.getElementById(
-            "selectedControl"
-        ).textContent = this.selectedControl;
+        const control =
+            this.canvas.getSelectedControl();
 
-        const command = this.controlManager.getCommand(
-            this.selectedControl
-        );
 
-        document.getElementById(
-            "commandSelect"
-        ).value = command || "";
+        const selectedElement =
+            document.getElementById(
+                "selectedControl"
+            );
+
+
+        const commandSelect =
+            document.getElementById(
+                "commandSelect"
+            );
+
+
+        if (!selectedElement) {
+
+            return;
+
+        }
+
+
+        if (!control) {
+
+            selectedElement.textContent =
+                "Nenhum controle selecionado";
+
+
+            if (commandSelect) {
+
+                commandSelect.value = "";
+
+            }
+
+            return;
+
+        }
+
+
+        selectedElement.textContent =
+            control.label;
+
+
+        if (commandSelect) {
+
+            commandSelect.value =
+                control.getCommand() || "";
+
+        }
 
     }
+
+
+    // =====================================
+    // Salvar comando
+    // =====================================
+
+    registerSaveButton() {
+
+        const button =
+            document.getElementById(
+                "saveControl"
+            );
+
+
+        if (!button) {
+
+            return;
+
+        }
+
+
+        button.addEventListener(
+            "click",
+            async () => {
+
+                await this.saveControl();
+
+            }
+        );
+
+    }
+
+
+    async saveControl() {
+
+        const control =
+            this.canvas.getSelectedControl();
+
+
+        if (!control) {
+
+            this.showMessage(
+
+                "Selecione um controle."
+
+            );
+
+            return;
+
+        }
+
+
+        if (!control.configurable) {
+
+            this.showMessage(
+
+                "Este controle não pode ser configurado."
+
+            );
+
+            return;
+
+        }
+
+
+        const select =
+            document.getElementById(
+                "commandSelect"
+            );
+
+
+        if (!select) {
+
+            return;
+
+        }
+
+
+        const command =
+            select.value;
+
+
+        if (!command) {
+
+            this.showMessage(
+
+                "Selecione um comando."
+
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            this.controlRepository.setCommand(
+
+                control.id,
+
+                command
+
+            );
+
+
+            this.showMessage(
+
+                `Comando salvo para ${control.label}.`
+
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+
+                "[KRONOS] Erro ao salvar comando:",
+                error
+
+            );
+
+
+            this.showMessage(
+
+                "Não foi possível salvar a configuração."
+
+            );
+
+        }
+
+    }
+
+
+    // =====================================
+    // Mensagem
+    // =====================================
 
     showMessage(message) {
 
         console.log(
 
-            "[KRONOS]",
-
-            message
+            `[KRONOS] ${message}`
 
         );
 
     }
 
-    registerSaveButton() {
 
-        document
-            .getElementById("saveControl")
-            .addEventListener("click", async () => {
+    // =====================================
+    // Acesso ao Repository
+    // =====================================
 
-                if (!this.selectedControl) {
+    getControlRepository() {
 
-                    this.showMessage(
-                        "Selecione um controle."
-                    );
+        return this.controlRepository;
 
-                    return;
+    }
 
-                }
 
-                const command = document
-                    .getElementById("commandSelect")
-                    .value;
+    // =====================================
+    // Acesso ao Canvas
+    // =====================================
 
-                await this.controlManager.setCommand(
+    getCanvas() {
 
-                    this.selectedControl,
+        return this.canvas;
 
-                    command
+    }
 
-                );
 
-                this.showMessage(
-                    "Configuração salva."
-                );
+    // =====================================
+    // Destruição
+    // =====================================
 
-            });
+    destroy() {
+
+        this.canvas.destroy();
+
+        this.controlRepository = null;
+
+        this.canvas = null;
+
+        this.initialized = false;
 
     }
 
 }
+
 
 module.exports = KronosDesigner;

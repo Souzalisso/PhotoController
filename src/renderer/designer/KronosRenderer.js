@@ -1,4 +1,30 @@
+const ButtonRenderer = require("./renderers/ButtonRenderer");
+const EncoderRenderer = require("./renderers/EncoderRenderer");
+const DisplayRenderer = require("./renderers/DisplayRenderer");
+const LedRenderer = require("./renderers/LedRenderer");
+const LabelRenderer = require("./renderers/LabelRenderer");
+
+
 class KronosRenderer {
+
+    constructor() {
+
+        this.buttonRenderer = new ButtonRenderer();
+
+        this.encoderRenderer = new EncoderRenderer();
+
+        this.displayRenderer = new DisplayRenderer();
+
+        this.ledRenderer = new LedRenderer();
+
+        this.labelRenderer = new LabelRenderer();
+
+    }
+
+
+    // =====================================
+    // Renderer principal
+    // =====================================
 
     render(control) {
 
@@ -8,22 +34,29 @@ class KronosRenderer {
 
         }
 
+
         switch (control.type) {
 
             case "button":
+
                 return this.renderButton(control);
 
+
             case "encoder":
+
                 return this.renderEncoder(control);
 
+
             case "display":
+
                 return this.renderDisplay(control);
+
 
             default:
 
                 console.warn(
 
-                    `Tipo de controle desconhecido: ${control.type}`
+                    `[KRONOS] Tipo de controle desconhecido: ${control.type}`
 
                 );
 
@@ -33,140 +66,125 @@ class KronosRenderer {
 
     }
 
+
+    // =====================================
+    // Button
+    // =====================================
+
     renderButton(control) {
 
-        return `
+        return this.buttonRenderer.render(
 
-            <button
+            control
 
-                class="${this.buildClass("button")}"
-
-                ${this.buildDataset(control)}>
-
-                <span class="button-led"></span>
-
-                <span class="button-text">
-
-                    ${control.label}
-
-                </span>
-
-            </button>
-
-        `;
+        );
 
     }
+
+
+    // =====================================
+    // Encoder
+    // =====================================
 
     renderEncoder(control) {
 
-        return `
+        return this.encoderRenderer.render(
 
-            <div
+            control
 
-                class="${this.buildClass("encoder")}"
-
-                ${this.buildDataset(control)}>
-
-                <div class="encoder-ring">
-
-                    <div class="encoder-led"></div>
-
-                    <div class="encoder-cap"></div>
-
-                    <div class="encoder-marker"></div>
-
-                </div>
-
-                <div class="encoder-label">
-
-                    ${control.label}
-
-                </div>
-
-            </div>
-
-        `;
+        );
 
     }
+
+
+    // =====================================
+    // Display
+    // =====================================
 
     renderDisplay(control) {
 
-        return `
+        return this.displayRenderer.render(
 
-            <div
+            control
 
-                class="${this.buildClass("display")}"
-
-                ${this.buildDataset(control)}>
-
-                <div class="oled-header">
-
-                    KRONOS
-
-                </div>
-
-                <div class="oled-body">
-
-                    <div
-                        class="oled-line"
-                        id="oled-line-1">
-
-                        Lightroom
-
-                    </div>
-
-                    <div
-                        class="oled-line"
-                        id="oled-line-2">
-
-                        Ready
-
-                    </div>
-
-                    <div
-                        class="oled-line"
-                        id="oled-line-3">
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        `;
+        );
 
     }
 
-    buildClass(type) {
 
-        return [
+    // =====================================
+    // LED
+    // =====================================
 
-            "kronos-control",
+    renderLed(control) {
 
-            `kronos-${type}`
+        return this.ledRenderer.render(
 
-        ].join(" ");
+            control
+
+        );
 
     }
 
-    buildDataset(control) {
 
-        return `
+    // =====================================
+    // Label
+    // =====================================
 
-            data-id="${control.id}"
+    renderLabel(control) {
 
-            data-type="${control.type}"
+        return this.labelRenderer.render(
 
-            data-command="${control.command ?? ""}"
+            control
 
-            data-configurable="${control.configurable}"
+        );
 
-            data-position="${control.position}"
+    }
 
-        `;
+
+    // =====================================
+    // Atualizar LED
+    // =====================================
+
+    updateLed(control) {
+
+        this.ledRenderer.update(
+
+            control
+
+        );
+
+    }
+
+
+    // =====================================
+    // Atualizar Display
+    // =====================================
+
+    updateDisplay(control, data = {}) {
+
+        this.displayRenderer.update(
+
+            control,
+
+            data
+
+        );
+
+    }
+
+
+    // =====================================
+    // Limpar Display
+    // =====================================
+
+    clearDisplay() {
+
+        this.displayRenderer.clear();
 
     }
 
 }
+
 
 module.exports = KronosRenderer;
