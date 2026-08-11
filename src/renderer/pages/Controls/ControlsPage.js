@@ -1,4 +1,5 @@
-const KronosDesigner = require("../../designer/KronosDesigner");
+const KronosDesigner =
+    require("../../designer/KronosDesigner");
 
 
 class ControlsPage {
@@ -17,6 +18,18 @@ class ControlsPage {
 
     render() {
 
+        // Segurança adicional.
+        // A página deve sempre possuir
+        // um Designer válido.
+
+        if (!this.designer) {
+
+            this.designer =
+                new KronosDesigner();
+
+        }
+
+
         return this.designer.render();
 
     }
@@ -27,6 +40,14 @@ class ControlsPage {
     // =====================================
 
     async init() {
+
+        if (!this.designer) {
+
+            this.designer =
+                new KronosDesigner();
+
+        }
+
 
         await this.designer.init();
 
@@ -39,13 +60,15 @@ class ControlsPage {
 
     destroy() {
 
-        if (this.designer) {
-
-            this.designer.destroy();
-
-        }
-
-        this.designer = null;
+        /*
+         * IMPORTANTE:
+         *
+         * ControlsPage é mantida pelo PageManager
+         * durante toda a execução da aplicação.
+         *
+         * Portanto não devemos destruir o Designer
+         * ao simplesmente trocar de página.
+         */
 
     }
 

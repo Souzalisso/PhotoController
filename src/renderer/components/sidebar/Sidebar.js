@@ -1,70 +1,159 @@
-export default class Sidebar {
+class Sidebar {
+
+    // =====================================
+    // Renderização
+    // =====================================
 
     render() {
 
         return `
 
-        <aside class="sidebar">
+            <aside class="sidebar">
 
-            <div class="logo">
-                <h1>KRONOS</h1>
-                <span>Controller</span>
-            </div>
+                <div class="logo">
 
-            <nav>
+                    <h1>
+                        KRONOS
+                    </h1>
 
-                <button class="menu active" data-page="dashboard">
-                    🏠 Início
-                </button>
+                    <span>
+                        Controller
+                    </span>
 
-                <button class="menu" data-page="controls">
-                    🎛 Controles
-                </button>
+                </div>
 
-                <button class="menu" data-page="hardware">
-                    ⚙ Hardware
-                </button>
 
-                <button class="menu" data-page="display">
-                    🖥 Display
-                </button>
+                <nav>
 
-                <button class="menu" data-page="lightroom">
-                    📷 Lightroom
-                </button>
+                    <button
+                        class="menu active"
+                        data-page="dashboard">
 
-                <button class="menu" data-page="about">
-                    ℹ Sobre
-                </button>
+                        🏠 Início
 
-            </nav>
+                    </button>
 
-        </aside>
+
+                    <button
+                        class="menu"
+                        data-page="controls">
+
+                        🎛 Controles
+
+                    </button>
+
+
+                    <button
+                        class="menu"
+                        data-page="hardware">
+
+                        ⚙ Hardware
+
+                    </button>
+
+
+                    <button
+                        class="menu"
+                        data-page="display">
+
+                        🖥 Display
+
+                    </button>
+
+
+                    <button
+                        class="menu"
+                        data-page="lightroom">
+
+                        📷 Lightroom
+
+                    </button>
+
+
+                    <button
+                        class="menu"
+                        data-page="about">
+
+                        ℹ Sobre
+
+                    </button>
+
+                </nav>
+
+            </aside>
 
         `;
 
     }
 
-   init() {
 
-    const buttons = document.querySelectorAll(".menu");
+    // =====================================
+    // Inicialização
+    // =====================================
 
-    buttons.forEach(button => {
+    init() {
 
-        button.addEventListener("click", () => {
+        const buttons =
+            document.querySelectorAll(
+                ".menu"
+            );
 
-            buttons.forEach(btn => btn.classList.remove("active"));
 
-            button.classList.add("active");
+        buttons.forEach(button => {
 
-            document.dispatchEvent(
-                new CustomEvent("change-page", {
-                    detail: button.dataset.page
-                })
+            button.addEventListener(
+
+                "click",
+
+                () => {
+
+                    buttons.forEach(btn => {
+
+                        btn.classList.remove(
+                            "active"
+                        );
+
+                    });
+
+
+                    button.classList.add(
+                        "active"
+                    );
+
+
+                    document.dispatchEvent(
+
+                        new CustomEvent(
+                            "change-page",
+                            {
+                                detail:
+                                    button.dataset.page
+                            }
+                        )
+
+                    );
+
+                }
+
             );
 
         });
 
-    });
+    }
 
-}}
+
+    // =====================================
+    // Destruição
+    // =====================================
+
+    destroy() {
+
+        // A Sidebar não mantém
+        // recursos externos no momento.
+
+    }
+
+}
+
+
+module.exports = Sidebar;

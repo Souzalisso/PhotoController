@@ -225,88 +225,179 @@ class KronosDesigner {
     // Eventos do Canvas
     // =====================================
 
-    registerCanvasEvents() {
+    // =====================================
+// Eventos do Canvas
+// =====================================
 
-        const controls =
-            document.querySelectorAll(
-                ".kronos-control"
-            );
+registerCanvasEvents() {
+
+    const controls =
+        document.querySelectorAll(
+            ".kronos-control"
+        );
 
 
-        controls.forEach(control => {
+    controls.forEach(controlElement => {
 
-            control.addEventListener(
-                "click",
-                () => {
+        controlElement.addEventListener(
+            "click",
+            () => {
 
-                    this.updateSidebar();
+                const id =
+                    controlElement.dataset.id;
+
+
+                if (!id) {
+
+                    console.warn(
+                        "[KRONOS] Controle clicado sem ID."
+                    );
+
+                    return;
 
                 }
-            );
 
-        });
 
-    }
+                console.log(
+                    `[KRONOS] Controle clicado: ${id}`
+                );
+
+
+                // =====================================
+                // Selecionar no Repository
+                // =====================================
+
+                const control =
+                    this.controlRepository.select(id);
+
+
+                if (!control) {
+
+                    console.warn(
+                        `[KRONOS] Controle não encontrado: ${id}`
+                    );
+
+                    return;
+
+                }
+
+
+                console.log(
+                    "[KRONOS] Controle selecionado:",
+                    control
+                );
+
+
+                // =====================================
+                // Atualizar aparência
+                // =====================================
+
+                document
+                    .querySelectorAll(".kronos-control")
+                    .forEach(element => {
+
+                        element.classList.remove(
+                            "selected"
+                        );
+
+                    });
+
+
+                controlElement.classList.add(
+                    "selected"
+                );
+
+
+                // =====================================
+                // Atualizar painel lateral
+                // =====================================
+
+                this.updateSidebar();
+
+            }
+        );
+
+    });
+
+}
 
 
     // =====================================
     // Atualizar Sidebar
     // =====================================
 
-    updateSidebar() {
+    // =====================================
+// Atualizar Sidebar
+// =====================================
 
-        const control =
-            this.canvas.getSelectedControl();
+updateSidebar() {
 
-
-        const selectedElement =
-            document.getElementById(
-                "selectedControl"
-            );
+    const control =
+        this.controlRepository.getSelected()[0] || null;
 
 
-        const commandSelect =
-            document.getElementById(
-                "commandSelect"
-            );
+    const selectedElement =
+        document.getElementById(
+            "selectedControl"
+        );
 
 
-        if (!selectedElement) {
-
-            return;
-
-        }
-
-
-        if (!control) {
-
-            selectedElement.textContent =
-                "Nenhum controle selecionado";
+    const commandSelect =
+        document.getElementById(
+            "commandSelect"
+        );
 
 
-            if (commandSelect) {
+    if (!selectedElement) {
 
-                commandSelect.value = "";
+        return;
 
-            }
+    }
 
-            return;
 
-        }
+    // =====================================
+    // Nenhum controle
+    // =====================================
 
+    if (!control) {
 
         selectedElement.textContent =
-            control.label;
+            "Nenhum controle selecionado";
 
 
         if (commandSelect) {
 
-            commandSelect.value =
-                control.getCommand() || "";
+            commandSelect.value = "";
 
         }
 
+
+        return;
+
     }
+
+
+    // =====================================
+    // Controle selecionado
+    // =====================================
+
+    selectedElement.textContent =
+        control.label;
+
+
+    if (commandSelect) {
+
+        commandSelect.value =
+            control.getCommand() || "";
+
+    }
+
+
+    console.log(
+        `[KRONOS] Selecionado: ${control.id} - ${control.label}`
+    );
+
+}
 
 
     // =====================================
@@ -485,15 +576,17 @@ class KronosDesigner {
 
     destroy() {
 
-        this.canvas.destroy();
+    /*
+     * O Designer permanece disponível durante
+     * toda a execução da aplicação.
+     *
+     * Não anulamos canvas nem repository,
+     * pois a PageManager reutiliza esta página.
+     */
 
-        this.controlRepository = null;
+    this.initialized = false;
 
-        this.canvas = null;
-
-        this.initialized = false;
-
-    }
+}
 
 }
 

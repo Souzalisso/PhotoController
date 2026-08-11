@@ -20,16 +20,18 @@ function createWindow() {
 
         webPreferences: {
 
-            preload: path.join(
-                __dirname,
-                "../preload/preload.js"
-            ),
+    preload: path.join(
+        __dirname,
+        "../preload/preload.js"
+    ),
 
-            contextIsolation: true,
+    nodeIntegration: true,
 
-            nodeIntegration: false
+    contextIsolation: false,
 
-        }
+    sandbox: false
+
+}
 
     });
 
