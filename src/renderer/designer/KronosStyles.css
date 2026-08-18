@@ -1,522 +1,314 @@
-/* =========================================
+/* =========================================================
    KRONOS DESIGNER
-   ========================================= */
+   Identidade visual baseada no hardware KRONOS
+   ========================================================= */
 
 .designer-page {
 
-    width: 100%;
-    height: 100%;
-
-    min-width: 0;
-    min-height: 0;
-
     display: grid;
 
     grid-template-columns:
         minmax(0, 1fr)
-        300px;
+        320px;
 
-    gap: 20px;
+    width: 100%;
+    height: 100%;
 
-    padding: 20px;
+    background:
+        radial-gradient(
+            circle at center,
+            #252525 0%,
+            #1b1b1b 55%,
+            #151515 100%
+        );
 
-    box-sizing: border-box;
-
-    overflow: hidden;
+    color: #ffffff;
 
 }
 
 
-/* =========================================
-   ÁREA DO HARDWARE
-   ========================================= */
+/* =========================================================
+   WORKSPACE
+   ========================================================= */
 
 .designer-workspace {
 
-    width: 100%;
+    position: relative;
 
     min-width: 0;
     min-height: 0;
-
-    display: flex;
-
-    justify-content: center;
-    align-items: center;
 
     overflow: auto;
 
-    background: #151515;
-
-    border: 1px solid #292929;
-
-    border-radius: 14px;
-
-    box-sizing: border-box;
-
-}
-
-
-/* =========================================
-   CONTAINER KRONOS
-   ========================================= */
-
-.kronos {
-
-    width: 100%;
-    height: 100%;
-
-    min-width: 0;
-    max-width: 100%;
-    min-height: 0;
-
     display: flex;
 
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
 
-    padding: 20px;
-
-    box-sizing: border-box;
+    padding: 30px;
 
 }
 
 
-/* =========================================
-   PAINEL FÍSICO DO KRONOS
-   ========================================= */
-
-.kronos-panel {
-
-    width: 100%;
-    max-width: 1050px;
-
-    min-height: 620px;
-
-    display: grid;
-
-    grid-template-columns:
-        90px
-        minmax(0, 1fr)
-        90px;
-
-    gap: 24px;
-
-    padding: 28px;
-
-    box-sizing: border-box;
-
-    border-radius: var(--panel-radius);
-
-    background: var(--panel-background);
-
-    border: 1px solid var(--panel-border);
-
-    box-shadow: var(--panel-shadow);
-
-}
-
-
-/* =========================================
-   COLUNA ESQUERDA
-   ========================================= */
-
-.left-column {
-
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: flex-start;
-    align-items: center;
-
-    gap: 16px;
-
-}
-
-
-/* =========================================
-   CENTRO
-   ========================================= */
-
-.center-panel {
-
-    min-width: 0;
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 28px;
-
-}
-
-
-/* =========================================
-   COLUNA DIREITA
-   ========================================= */
-
-.right-column {
-
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: flex-start;
-    align-items: center;
-
-    gap: 16px;
-
-}
-
-
-/* =========================================
-   ENCODERS
-   ========================================= */
-
-.encoder-row {
-
-    display: flex;
-
-    justify-content: space-between;
-    align-items: center;
-
-    gap: 20px;
-
-}
-
-
-/* =========================================
-   DISPLAY
-   ========================================= */
-
-.display-area {
-
-    display: flex;
-
-    justify-content: center;
-    align-items: center;
-
-}
-
-
-/* =========================================
-   ÁREA INFERIOR
-   ========================================= */
-
-.bottom-area {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 22px;
-
-}
-
-
-/* =========================================
-   NAVEGAÇÃO
-   ========================================= */
-
-.navigation-section {
-
-    display: flex;
-
-    justify-content: center;
-    align-items: center;
-
-    gap: 32px;
-
-}
-
-
-/* =========================================
-   ESTRELAS
-   ========================================= */
-
-.stars-section {
-
-    display: flex;
-
-    justify-content: center;
-    align-items: center;
-
-    gap: 16px;
-
-}
-
-
-/* =========================================
-   AÇÕES
-   ========================================= */
-
-.actions-section {
-
-    display: flex;
-
-    justify-content: center;
-    align-items: center;
-
-    gap: 16px;
-
-}
-
-
-/* =========================================
-   PAINEL LATERAL DO DESIGNER
-   ========================================= */
+/* =========================================================
+   SIDEBAR DO DESIGNER
+   ========================================================= */
 
 .designer-sidebar {
 
-    width: 300px;
+    width: 320px;
 
-    min-width: 0;
-    min-height: 0;
+    min-height: 100%;
 
-    display: flex;
+    padding: 24px 20px;
 
-    flex-direction: column;
+    background:
+        linear-gradient(
+            180deg,
+            #202020 0%,
+            #181818 100%
+        );
 
-    gap: 16px;
+    border-left:
+        1px solid
+        rgba(255,255,255,.08);
 
-    padding: 18px;
-
-    box-sizing: border-box;
-
-    background: #171717;
-
-    border: 1px solid #292929;
-
-    border-radius: 14px;
-
-    overflow-y: auto;
+    box-shadow:
+        -12px 0 30px
+        rgba(0,0,0,.25);
 
 }
 
 
-/* =========================================
-   CARDS DO DESIGNER
-   ========================================= */
+/* =========================================================
+   CARDS
+   ========================================================= */
 
 .designer-card {
 
-    width: 100%;
+    margin-bottom: 18px;
 
-    padding: 16px;
+    padding: 18px;
 
-    box-sizing: border-box;
+    border-radius: 12px;
 
-    background: #202020;
+    background:
+        linear-gradient(
+            145deg,
+            #292929,
+            #202020
+        );
 
-    border: 1px solid #303030;
+    border:
+        1px solid
+        rgba(255,255,255,.08);
 
-    border-radius: 10px;
+    box-shadow:
+        0 8px 22px
+        rgba(0,0,0,.25);
 
 }
 
+
+/* =========================================================
+   TÍTULOS
+   ========================================================= */
 
 .designer-card h2 {
 
-    margin: 0 0 10px 0;
-
-    font-size: 15px;
-
-    font-weight: 600;
-
-    color: #ffffff;
-
-}
-
-
-.designer-card p {
-
-    margin: 0;
-
-    color: #bdbdbd;
+    margin: 0 0 14px;
 
     font-size: 14px;
 
+    font-weight: 600;
+
+    letter-spacing: .08em;
+
+    text-transform: uppercase;
+
+    color: #bfc3c8;
+
 }
 
 
-/* =========================================
-   SELECT DE COMANDOS
-   ========================================= */
+/* =========================================================
+   CONTROLE SELECIONADO
+   ========================================================= */
 
-.designer-card select {
+#selectedControl {
 
-    width: 100%;
+    margin: 0;
 
-    padding: 10px;
+    font-size: 21px;
 
-    margin-top: 8px;
+    font-weight: 700;
 
-    box-sizing: border-box;
-
-    border: 1px solid #3a3a3a;
-
-    border-radius: 7px;
-
-    background: #111111;
+    letter-spacing: .04em;
 
     color: #ffffff;
 
+}
+
+
+#selectedControlType {
+
+    display: block;
+
+    margin-top: 7px;
+
+    color: #8d939a;
+
+    font-size: 12px;
+
+}
+
+
+/* =========================================================
+   SELECT
+   ========================================================= */
+
+#commandSelect {
+
+    width: 100%;
+
+    min-height: 42px;
+
+    padding:
+        0
+        12px;
+
+    border-radius: 8px;
+
+    border:
+        1px solid
+        #3a3a3a;
+
     outline: none;
 
+    background:
+        #151515;
+
+    color:
+        #ffffff;
+
+    font-size: 13px;
+
+    cursor: pointer;
+
 }
 
 
-.designer-card select:focus {
+#commandSelect:focus {
 
-    border-color: #2563eb;
+    border-color:
+        #2563eb;
+
+    box-shadow:
+        0 0 0 2px
+        rgba(37,99,235,.2);
 
 }
 
 
-/* =========================================
+#commandSelect:disabled {
+
+    opacity: .45;
+
+    cursor: not-allowed;
+
+}
+
+
+/* =========================================================
    BOTÃO SALVAR
-   ========================================= */
+   ========================================================= */
 
 #saveControl {
 
     width: 100%;
 
-    padding: 11px 14px;
+    min-height: 44px;
 
     border: none;
 
-    border-radius: 7px;
+    border-radius: 8px;
 
-    background: #2563eb;
+    background:
+        linear-gradient(
+            180deg,
+            #2563eb,
+            #1d4ed8
+        );
 
     color: #ffffff;
 
-    font-weight: 600;
+    font-size: 13px;
 
-    cursor: pointer;
+    font-weight: 700;
 
-    transition:
-        background .2s ease,
-        transform .15s ease;
-
-}
-
-
-#saveControl:hover {
-
-    background: #1d4ed8;
-
-}
-
-
-#saveControl:active {
-
-    transform: scale(.98);
-
-}
-
-
-/* =========================================
-   CONTROLE SELECIONADO
-   ========================================= */
-
-.kronos-control {
+    letter-spacing: .04em;
 
     cursor: pointer;
 
     transition:
         transform .15s ease,
-        filter .15s ease;
+        box-shadow .15s ease,
+        opacity .15s ease;
 
 }
 
 
-.kronos-control:hover {
+#saveControl:hover:not(:disabled) {
 
-    filter: brightness(1.12);
+    transform:
+        translateY(-1px);
+
+    box-shadow:
+        0 6px 18px
+        rgba(37,99,235,.25);
 
 }
 
+
+#saveControl:active:not(:disabled) {
+
+    transform:
+        translateY(0);
+
+}
+
+
+#saveControl:disabled {
+
+    opacity: .35;
+
+    cursor: not-allowed;
+
+}
+
+
+/* =========================================================
+   ESTADO DO CONTROLE
+   ========================================================= */
 
 .kronos-control.selected {
 
-    filter: brightness(1.2);
+    filter:
+        brightness(1.15);
 
 }
 
 
-/* =========================================
-   BOTÕES
-   ========================================= */
-
-.kronos-button.selected {
-
-    outline: 2px solid #3b82f6;
-
-    outline-offset: 3px;
-
-}
-
-
-/* =========================================
+/* =========================================================
    RESPONSIVIDADE
-   ========================================= */
+   ========================================================= */
 
-@media (max-width: 1100px) {
+@media (max-width: 1000px) {
 
     .designer-page {
 
         grid-template-columns:
-            minmax(0, 1fr)
-            260px;
-
-        gap: 12px;
-
-        padding: 12px;
-
-    }
-
-
-    .designer-sidebar {
-
-        width: 260px;
-
-        padding: 14px;
-
-    }
-
-
-    .kronos-panel {
-
-        grid-template-columns:
-            75px
-            minmax(0, 1fr)
-            75px;
-
-        gap: 16px;
-
-        padding: 20px;
-
-    }
-
-}
-
-
-/* =========================================
-   JANELA PEQUENA
-   ========================================= */
-
-@media (max-width: 800px) {
-
-    .designer-page {
-
-        grid-template-columns: 1fr;
-
-        grid-template-rows:
-            minmax(500px, 1fr)
-            auto;
-
-        overflow-y: auto;
+            1fr;
 
     }
 
@@ -525,12 +317,13 @@
 
         width: 100%;
 
-    }
+        min-height: auto;
 
+        border-left: none;
 
-    .kronos-panel {
-
-        min-height: 580px;
+        border-top:
+            1px solid
+            rgba(255,255,255,.08);
 
     }
 

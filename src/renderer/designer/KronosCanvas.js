@@ -6,11 +6,28 @@ class KronosCanvas {
 
     constructor(controlRepository = null) {
 
+        // =====================================
+        // Dependências
+        // =====================================
+
         this.controlRepository =
             controlRepository ||
             new ControlRepository();
 
-        this.renderer = new KronosRenderer();
+        this.renderer =
+            new KronosRenderer();
+
+
+        // =====================================
+        // Estado
+        // =====================================
+
+        this.container = null;
+
+        this.initialized = false;
+
+        this.boundClickHandler =
+            this.handleClick.bind(this);
 
     }
 
@@ -170,7 +187,7 @@ class KronosCanvas {
 
 
     // =====================================
-    // Display
+    // Display central
     // =====================================
 
     renderDisplayArea() {
@@ -368,65 +385,107 @@ class KronosCanvas {
 
 
     // =====================================
-    // Buscar grupo
+    // Banco visual do KRONOS
     // =====================================
 
     getControlsByGroup(group) {
 
         const groups = {
 
+            // -----------------------------
+            // Lado esquerdo
+            // -----------------------------
+
             left: [
+
                 "undo",
                 "redo",
                 "copy",
                 "paste",
                 "sync",
                 "before-after"
+
             ],
 
+
+            // -----------------------------
+            // Encoders superiores
+            // -----------------------------
+
             top: [
+
                 "exposure",
                 "contrast",
                 "highlights",
                 "shadows",
                 "whites"
+
             ],
 
+
+            // -----------------------------
+            // Encoders inferiores
+            // -----------------------------
+
             bottom: [
+
                 "blacks",
                 "temperature",
                 "tint",
                 "vibrance",
                 "saturation"
+
             ],
 
+
+            // -----------------------------
+            // Lado direito
+            // -----------------------------
+
             right: [
+
                 "p1",
                 "p2",
                 "edit"
+
             ],
 
+
+            // -----------------------------
+            // Avaliação
+            // -----------------------------
+
             stars: [
+
                 "rate-1",
                 "rate-2",
                 "rate-3",
                 "rate-4",
                 "rate-5"
+
             ],
 
+
+            // -----------------------------
+            // Ações inferiores
+            // -----------------------------
+
             actions: [
+
                 "pick",
                 "reject",
                 "previous",
                 "next",
                 "fit",
                 "zoom-1-1"
+
             ]
 
         };
 
 
-        const ids = groups[group] || [];
+        const ids =
+            groups[group] || [];
 
 
         return ids
@@ -446,38 +505,80 @@ class KronosCanvas {
 
     init(container = document) {
 
-        this.bindEvents(container);
+        // Evita registrar eventos duas vezes
 
-        this.updateSelection(container);
+        if (this.initialized) {
+
+            return;
+
+        }
+
+
+        this.container =
+            container;
+
+
+        this.container.addEventListener(
+            "click",
+            this.boundClickHandler
+        );
+
+
+        this.initialized =
+            true;
+
+
+        this.updateSelection(
+            this.container
+        );
 
     }
 
 
     // =====================================
-    // Eventos
+    // Evento de clique
     // =====================================
 
-    bindEvents(container) {
+    handleClick(event) {
 
-        container
+        const element =
+            event.target.closest(
+                ".kronos-control"
+            );
 
-            .querySelectorAll(".kronos-control")
 
-            .forEach(element => {
+        if (!element) {
 
-                element.addEventListener(
-                    "click",
-                    () => {
+            return;
 
-                        this.selectControl(
-                            element.dataset.id,
-                            container
-                        );
+        }
 
-                    }
-                );
 
-            });
+        if (
+            this.container &&
+            !this.container.contains(element)
+        ) {
+
+            return;
+
+        }
+
+
+        const id =
+            element.dataset.id;
+
+
+        if (!id) {
+
+            return;
+
+        }
+
+
+        this.selectControl(
+            id,
+            this.container
+        );
 
     }
 
@@ -488,7 +589,7 @@ class KronosCanvas {
 
     selectControl(
         id,
-        container = document
+        container = this.container || document
     ) {
 
         const control =
@@ -497,37 +598,80 @@ class KronosCanvas {
 
         if (!control) {
 
-            return;
+            console.warn(
+
+                `[KRONOS] Controle não encontrado: ${id}`
+
+            );
+
+            return null;
 
         }
 
 
-        this.updateSelection(container);
+        console.log(
+
+            `[KRONOS] Controle selecionado: ${control.id}`
+
+        );
+
+
+        this.updateSelection(
+            container
+        );
+
+
+        // =================================
+        // Notifica o Designer
+        // =================================
+
+        document.dispatchEvent(
+
+            new CustomEvent(
+                "kronos-control-selected",
+                {
+                    detail: {
+                        control
+                    }
+                }
+            )
+
+        );
+
+
+        return control;
 
     }
 
 
     // =====================================
-    // Atualizar seleção visual
+    // Atualização visual da seleção
     // =====================================
 
     updateSelection(
-        container = document
+        container = this.container || document
     ) {
 
-        container
+        if (!container) {
 
-            .querySelectorAll(
+            return;
+
+        }
+
+
+        const elements =
+            container.querySelectorAll(
                 ".kronos-control"
-            )
+            );
 
-            .forEach(element => {
 
-                element.classList.remove(
-                    "selected"
-                );
+        elements.forEach(element => {
 
-            });
+            element.classList.remove(
+                "selected"
+            );
+
+        });
 
 
         const selected =
@@ -557,7 +701,7 @@ class KronosCanvas {
 
 
     // =====================================
-    // Ativar controle
+    // Ativar controle visualmente
     // =====================================
 
     setControlActive(
@@ -565,8 +709,12 @@ class KronosCanvas {
         active = true
     ) {
 
+        const container =
+            this.container || document;
+
+
         const element =
-            document.querySelector(
+            container.querySelector(
                 `[data-id="${id}"]`
             );
 
@@ -580,20 +728,24 @@ class KronosCanvas {
 
         element.classList.toggle(
             "active",
-            active
+            Boolean(active)
         );
 
     }
 
 
     // =====================================
-    // Conexão
+    // Estado de conexão
     // =====================================
 
     setConnected(connected) {
 
+        const container =
+            this.container || document;
+
+
         const panel =
-            document.querySelector(
+            container.querySelector(
                 ".kronos-panel"
             );
 
@@ -607,14 +759,14 @@ class KronosCanvas {
 
         panel.classList.toggle(
             "connected",
-            connected
+            Boolean(connected)
         );
 
     }
 
 
     // =====================================
-    // Display
+    // Atualização do Display
     // =====================================
 
     updateDisplay({
@@ -639,16 +791,23 @@ class KronosCanvas {
 
 
         this.renderer.updateDisplay(
+
             display,
+
             {
                 title,
                 value,
                 status
             }
+
         );
 
     }
 
+
+    // =====================================
+    // Limpar Display
+    // =====================================
 
     clearDisplay() {
 
@@ -668,9 +827,14 @@ class KronosCanvas {
                 .getSelected();
 
 
-        return selected.length
-            ? selected[0]
-            : null;
+        if (!selected.length) {
+
+            return null;
+
+        }
+
+
+        return selected[0];
 
     }
 
@@ -680,7 +844,7 @@ class KronosCanvas {
     // =====================================
 
     refresh(
-        container = document
+        container = this.container || document
     ) {
 
         this.updateSelection(
@@ -695,6 +859,23 @@ class KronosCanvas {
     // =====================================
 
     destroy() {
+
+        if (
+            this.container &&
+            this.boundClickHandler
+        ) {
+
+            this.container.removeEventListener(
+                "click",
+                this.boundClickHandler
+            );
+
+        }
+
+
+        this.container = null;
+
+        this.initialized = false;
 
         this.controlRepository = null;
 
