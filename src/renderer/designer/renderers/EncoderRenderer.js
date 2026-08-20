@@ -8,23 +8,25 @@ class EncoderRenderer {
 
         }
 
+
+        // =====================================
+        // Classes
+        // =====================================
+
         const classes = [
 
             "kronos-control",
-            "kronos-encoder"
+            "encoder"
 
         ];
 
-
-        // ==========================
-        // Estado
-        // ==========================
 
         if (control.isSelected()) {
 
             classes.push("selected");
 
         }
+
 
         if (!control.isEnabled()) {
 
@@ -33,38 +35,52 @@ class EncoderRenderer {
         }
 
 
-        if (control.supportsLed()) {
+        if (control.supportsPush()) {
 
-            classes.push("has-led");
+            classes.push("pushable");
 
         }
 
 
-        // ==========================
+        // =====================================
+        // Identificação
+        // =====================================
+
+        const id =
+            this.escapeHTML(
+                control.id
+            );
+
+
+        const label =
+            this.escapeHTML(
+                control.label
+            );
+
+
+        const position =
+            this.escapeHTML(
+                control.position
+            );
+
+
+        // =====================================
         // LED
-        // ==========================
+        // =====================================
 
-        const ledClass = control.isLedOn()
-
-            ? "on"
-
-            : "";
+        const hasLed =
+            control.supportsLed();
 
 
-        // ==========================
-        // Push
-        // ==========================
-
-        const pushAttribute = control.supportsPush()
-
-            ? 'data-push="true"'
-
-            : 'data-push="false"';
+        const ledClass =
+            control.isLedOn()
+                ? "active"
+                : "";
 
 
-        // ==========================
-        // HTML
-        // ==========================
+        // =====================================
+        // Renderização
+        // =====================================
 
         return `
 
@@ -72,34 +88,38 @@ class EncoderRenderer {
 
                 class="${classes.join(" ")}"
 
-                data-id="${control.id}"
+                data-id="${id}"
 
-                data-type="${control.type}"
+                data-type="encoder"
 
                 data-configurable="${control.configurable}"
 
-                data-position="${control.position}"
+                data-position="${position}"
 
-                ${pushAttribute}>
+                data-push="${control.supportsPush()}">
 
                 <div class="encoder-ring">
 
                     ${
-                        control.supportsLed()
+                        hasLed
 
                             ? `
+
                                 <div
                                     class="encoder-led ${ledClass}">
                                 </div>
+
                               `
 
                             : ""
+
                     }
+
 
                     <div class="encoder-cap">
 
-                        <div class="encoder-marker">
-
+                        <div
+                            class="encoder-marker">
                         </div>
 
                     </div>
@@ -107,15 +127,177 @@ class EncoderRenderer {
                 </div>
 
 
-                <div class="encoder-label">
+                <span class="encoder-label">
 
-                    ${control.label}
+                    ${label}
 
-                </div>
+                </span>
 
             </div>
 
         `;
+
+    }
+
+
+    // =====================================
+    // Atualização
+    // =====================================
+
+    update(control) {
+
+        if (!control || !control.isEncoder()) {
+
+            return;
+
+        }
+
+
+        const element =
+            document.querySelector(
+                `[data-id="${control.id}"]`
+            );
+
+
+        if (!element) {
+
+            return;
+
+        }
+
+
+        // =================================
+        // Seleção
+        // =================================
+
+        element.classList.toggle(
+
+            "selected",
+
+            control.isSelected()
+
+        );
+
+
+        // =================================
+        // Estado
+        // =================================
+
+        element.classList.toggle(
+
+            "disabled",
+
+            !control.isEnabled()
+
+        );
+
+
+        // =================================
+        // LED
+        // =================================
+
+        const led =
+            element.querySelector(
+                ".encoder-led"
+            );
+
+
+        if (led) {
+
+            led.classList.toggle(
+
+                "active",
+
+                control.isLedOn()
+
+            );
+
+        }
+
+
+        // =================================
+        // Rotação
+        // =================================
+
+        const cap =
+            element.querySelector(
+                ".encoder-cap"
+            );
+
+
+        if (!cap) {
+
+            return;
+
+        }
+
+
+        const value =
+            Number(
+                control.getValue()
+            ) || 0;
+
+
+        const normalized =
+            Math.max(
+
+                -1,
+
+                Math.min(
+
+                    1,
+
+                    value
+
+                )
+
+            );
+
+
+        const rotation =
+            normalized * 135;
+
+
+        cap.style.transform =
+            `rotate(${rotation}deg)`;
+
+    }
+
+
+    // =====================================
+    // Escape HTML
+    // =====================================
+
+    escapeHTML(value) {
+
+        return String(
+            value ?? ""
+        )
+
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+
+            .replace(
+                /</g,
+                "&lt;"
+            )
+
+            .replace(
+                />/g,
+                "&gt;"
+            )
+
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+
+            .replace(
+                /'/g,
+                "&#039;"
+            );
 
     }
 
