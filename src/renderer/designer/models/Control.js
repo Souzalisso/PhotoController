@@ -2,66 +2,106 @@ class Control {
 
     constructor(definition = {}) {
 
-        this.id = definition.id || null;
+        // =====================================
+        // Identificação
+        // =====================================
 
-        this.label = definition.label || "";
+        this.id =
+            definition.id || null;
 
-        this.type = definition.type || null;
+        this.label =
+            definition.label || this.id || "";
 
-        this.configurable =
-            definition.configurable === true;
+        this.type =
+            definition.type || "unknown";
 
-        this.position =
-            definition.position ?? null;
+
+        // =====================================
+        // Hardware
+        // =====================================
 
         this.hardware =
             definition.hardware || null;
 
+
+        // =====================================
+        // Layout
+        // =====================================
+
+        this.position =
+            definition.position ?? null;
+
+        this.section =
+            definition.section || null;
+
+
+        // =====================================
+        // Configuração
+        // =====================================
+
+        this.configurable =
+            Boolean(
+                definition.configurable
+            );
+
+
+        // =====================================
+        // Capacidades
+        // =====================================
+
         this.push =
-            definition.push === true;
+            Boolean(
+                definition.push
+            );
 
         this.led =
-            definition.led ?? false;
+            definition.led || null;
 
-        this.defaultValue =
-            definition.defaultValue ?? 0;
 
-        this.value =
-            this.defaultValue;
+        // =====================================
+        // Estado
+        // =====================================
+
+        this.enabled =
+            definition.enabled !== false;
+
+        this.selected =
+            false;
+
+
+        // =====================================
+        // Comando
+        // =====================================
 
         this.command =
             definition.command || null;
 
-        this.selected = false;
 
-        this.enabled = true;
+        // =====================================
+        // Valor
+        // =====================================
 
-        this.ledOn = false;
+        this.value =
+            definition.value ?? 0;
 
-    }
-
-
-    // =====================================
-    // Identificação
-    // =====================================
-
-    getId() {
-
-        return this.id;
-
-    }
+        this.defaultValue =
+            definition.value ?? 0;
 
 
-    getLabel() {
+        // =====================================
+        // Estado do LED
+        // =====================================
 
-        return this.label;
+        this.ledOn =
+            false;
 
-    }
 
+        // =====================================
+        // Metadados
+        // =====================================
 
-    getType() {
-
-        return this.type;
+        this.metadata =
+            definition.metadata || {};
 
     }
 
@@ -92,44 +132,32 @@ class Control {
 
 
     // =====================================
+    // Push do Encoder
+    // =====================================
+
+    supportsPush() {
+
+        return this.isEncoder() &&
+            this.push === true;
+
+    }
+
+
+    // =====================================
     // Estado
     // =====================================
 
-    isSelected() {
-
-        return this.selected === true;
-
-    }
-
-
-    select() {
-
-        this.selected = true;
-
-        return this;
-
-    }
-
-
-    unselect() {
-
-        this.selected = false;
-
-        return this;
-
-    }
-
-
     isEnabled() {
 
-        return this.enabled === true;
+        return this.enabled;
 
     }
 
 
     enable() {
 
-        this.enabled = true;
+        this.enabled =
+            true;
 
         return this;
 
@@ -138,9 +166,115 @@ class Control {
 
     disable() {
 
-        this.enabled = false;
+        this.enabled =
+            false;
 
         return this;
+
+    }
+
+
+    // =====================================
+    // Seleção
+    // =====================================
+
+    isSelected() {
+
+        return this.selected;
+
+    }
+
+
+    select() {
+
+        this.selected =
+            true;
+
+        return this;
+
+    }
+
+
+    unselect() {
+
+        this.selected =
+            false;
+
+        return this;
+
+    }
+
+
+    // =====================================
+    // Configuração
+    // =====================================
+
+    setCommand(command) {
+
+        if (!this.configurable) {
+
+            throw new Error(
+                `Controle não configurável: ${this.id}`
+            );
+
+        }
+
+
+        if (
+            command === null ||
+            command === undefined ||
+            command === ""
+        ) {
+
+            this.command =
+                null;
+
+            return this;
+
+        }
+
+
+        this.command =
+            String(command);
+
+        return this;
+
+    }
+
+
+    getCommand() {
+
+        return this.command;
+
+    }
+
+
+    hasCommand() {
+
+        return Boolean(
+            this.command
+        );
+
+    }
+
+
+    // =====================================
+    // Valor
+    // =====================================
+
+    setValue(value) {
+
+        this.value =
+            value;
+
+        return this;
+
+    }
+
+
+    getValue() {
+
+        return this.value;
 
     }
 
@@ -151,12 +285,8 @@ class Control {
 
     supportsLed() {
 
-        return (
-
-            this.led === true ||
-
-            typeof this.led === "string"
-
+        return Boolean(
+            this.led
         );
 
     }
@@ -164,7 +294,7 @@ class Control {
 
     isLedOn() {
 
-        return this.ledOn === true;
+        return this.ledOn;
 
     }
 
@@ -177,7 +307,9 @@ class Control {
 
         }
 
-        this.ledOn = true;
+
+        this.ledOn =
+            true;
 
         return this;
 
@@ -186,7 +318,8 @@ class Control {
 
     turnLedOff() {
 
-        this.ledOn = false;
+        this.ledOn =
+            false;
 
         return this;
 
@@ -201,90 +334,9 @@ class Control {
 
         }
 
-        this.ledOn = !this.ledOn;
 
-        return this;
-
-    }
-
-
-    // =====================================
-    // Encoder
-    // =====================================
-
-    supportsPush() {
-
-        return this.push === true;
-
-    }
-
-
-    // =====================================
-    // Comando Lightroom
-    // =====================================
-
-    getCommand() {
-
-        return this.command;
-
-    }
-
-
-    setCommand(command) {
-
-        if (!this.configurable) {
-
-            throw new Error(
-
-                `Controle não configurável: ${this.id}`
-
-            );
-
-        }
-
-
-        this.command =
-            command || null;
-
-
-        return this;
-
-    }
-
-
-    clearCommand() {
-
-        this.command = null;
-
-        return this;
-
-    }
-
-
-    // =====================================
-    // Valor
-    // =====================================
-
-    getValue() {
-
-        return this.value;
-
-    }
-
-
-    setValue(value) {
-
-        this.value = value;
-
-        return this;
-
-    }
-
-
-    resetValue() {
-
-        this.value =
-            this.defaultValue;
+        this.ledOn =
+            !this.ledOn;
 
         return this;
 
@@ -297,16 +349,15 @@ class Control {
 
     reset() {
 
-        this.selected = false;
-
-        this.enabled = true;
-
-        this.ledOn = false;
-
-        this.command = null;
+        this.selected =
+            false;
 
         this.value =
             this.defaultValue;
+
+        this.ledOn =
+            false;
+
 
         return this;
 
@@ -321,33 +372,52 @@ class Control {
 
         return {
 
-            id: this.id,
+            id:
+                this.id,
 
-            label: this.label,
+            label:
+                this.label,
 
-            type: this.type,
+            type:
+                this.type,
 
-            configurable: this.configurable,
+            hardware:
+                this.hardware,
 
-            position: this.position,
+            position:
+                this.position,
 
-            hardware: this.hardware,
+            section:
+                this.section,
 
-            push: this.push,
+            configurable:
+                this.configurable,
 
-            led: this.led,
+            push:
+                this.push,
 
-            defaultValue: this.defaultValue,
+            enabled:
+                this.enabled,
 
-            value: this.value,
+            selected:
+                this.selected,
 
-            command: this.command,
+            command:
+                this.command,
 
-            selected: this.selected,
+            value:
+                this.value,
 
-            enabled: this.enabled,
+            led:
+                this.led,
 
-            ledOn: this.ledOn
+            ledOn:
+                this.ledOn,
+
+            metadata:
+                {
+                    ...this.metadata
+                }
 
         };
 

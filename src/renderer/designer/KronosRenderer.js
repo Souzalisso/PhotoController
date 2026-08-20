@@ -1,23 +1,41 @@
-const ButtonRenderer = require("./renderers/ButtonRenderer");
-const EncoderRenderer = require("./renderers/EncoderRenderer");
-const DisplayRenderer = require("./renderers/DisplayRenderer");
-const LedRenderer = require("./renderers/LedRenderer");
-const LabelRenderer = require("./renderers/LabelRenderer");
+const ButtonRenderer =
+    require("./renderers/ButtonRenderer");
+
+const EncoderRenderer =
+    require("./renderers/EncoderRenderer");
+
+const DisplayRenderer =
+    require("./renderers/DisplayRenderer");
+
+const LedRenderer =
+    require("./renderers/LedRenderer");
+
+const LabelRenderer =
+    require("./renderers/LabelRenderer");
 
 
 class KronosRenderer {
 
     constructor() {
 
-        this.buttonRenderer = new ButtonRenderer();
+        // =====================================
+        // Renderers
+        // =====================================
 
-        this.encoderRenderer = new EncoderRenderer();
+        this.buttonRenderer =
+            new ButtonRenderer();
 
-        this.displayRenderer = new DisplayRenderer();
+        this.encoderRenderer =
+            new EncoderRenderer();
 
-        this.ledRenderer = new LedRenderer();
+        this.displayRenderer =
+            new DisplayRenderer();
 
-        this.labelRenderer = new LabelRenderer();
+        this.ledRenderer =
+            new LedRenderer();
+
+        this.labelRenderer =
+            new LabelRenderer();
 
     }
 
@@ -39,25 +57,43 @@ class KronosRenderer {
 
             case "button":
 
-                return this.renderButton(control);
+                return this.renderButton(
+                    control
+                );
 
 
             case "encoder":
 
-                return this.renderEncoder(control);
+                return this.renderEncoder(
+                    control
+                );
 
 
             case "display":
 
-                return this.renderDisplay(control);
+                return this.renderDisplay(
+                    control
+                );
+
+
+            case "led":
+
+                return this.renderLed(
+                    control
+                );
+
+
+            case "label":
+
+                return this.renderLabel(
+                    control
+                );
 
 
             default:
 
                 console.warn(
-
                     `[KRONOS] Tipo de controle desconhecido: ${control.type}`
-
                 );
 
                 return "";
@@ -74,9 +110,7 @@ class KronosRenderer {
     renderButton(control) {
 
         return this.buttonRenderer.render(
-
             control
-
         );
 
     }
@@ -89,9 +123,7 @@ class KronosRenderer {
     renderEncoder(control) {
 
         return this.encoderRenderer.render(
-
             control
-
         );
 
     }
@@ -104,9 +136,7 @@ class KronosRenderer {
     renderDisplay(control) {
 
         return this.displayRenderer.render(
-
             control
-
         );
 
     }
@@ -119,9 +149,7 @@ class KronosRenderer {
     renderLed(control) {
 
         return this.ledRenderer.render(
-
             control
-
         );
 
     }
@@ -134,9 +162,7 @@ class KronosRenderer {
     renderLabel(control) {
 
         return this.labelRenderer.render(
-
             control
-
         );
 
     }
@@ -148,10 +174,25 @@ class KronosRenderer {
 
     updateLed(control) {
 
+        if (!control) {
+
+            return;
+
+        }
+
+
+        if (
+            !this.ledRenderer ||
+            typeof this.ledRenderer.update !== "function"
+        ) {
+
+            return;
+
+        }
+
+
         this.ledRenderer.update(
-
             control
-
         );
 
     }
@@ -161,14 +202,31 @@ class KronosRenderer {
     // Atualizar Display
     // =====================================
 
-    updateDisplay(control, data = {}) {
+    updateDisplay(
+        control,
+        data = {}
+    ) {
+
+        if (!control) {
+
+            return;
+
+        }
+
+
+        if (
+            !this.displayRenderer ||
+            typeof this.displayRenderer.update !== "function"
+        ) {
+
+            return;
+
+        }
+
 
         this.displayRenderer.update(
-
             control,
-
             data
-
         );
 
     }
@@ -179,6 +237,16 @@ class KronosRenderer {
     // =====================================
 
     clearDisplay() {
+
+        if (
+            !this.displayRenderer ||
+            typeof this.displayRenderer.clear !== "function"
+        ) {
+
+            return;
+
+        }
+
 
         this.displayRenderer.clear();
 
