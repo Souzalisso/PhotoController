@@ -1,5 +1,9 @@
 class ButtonRenderer {
 
+    // =====================================
+    // Renderização
+    // =====================================
+
     render(control) {
 
         if (!control || !control.isButton()) {
@@ -8,6 +12,11 @@ class ButtonRenderer {
 
         }
 
+
+        // =================================
+        // Classes
+        // =================================
+
         const classes = [
 
             "kronos-control",
@@ -15,11 +24,13 @@ class ButtonRenderer {
 
         ];
 
+
         if (control.isSelected()) {
 
             classes.push("selected");
 
         }
+
 
         if (!control.isEnabled()) {
 
@@ -27,53 +38,232 @@ class ButtonRenderer {
 
         }
 
+
         if (control.supportsLed()) {
 
             classes.push("has-led");
 
         }
 
+
+        if (control.hasCommand()) {
+
+            classes.push("configured");
+
+        }
+
+
+        // =================================
+        // Identificação
+        // =================================
+
+        const id =
+            this.escapeHTML(
+                control.id
+            );
+
+
+        const label =
+            this.escapeHTML(
+                control.label
+            );
+
+
+        const position =
+            this.escapeHTML(
+                control.position
+            );
+
+
+        // =================================
+        // LED
+        // =================================
+
+        const led =
+            control.supportsLed()
+
+                ? `
+
+                    <span
+                        class="button-led ${
+                            control.isLedOn()
+                                ? "on"
+                                : ""
+                        }">
+                    </span>
+
+                  `
+
+                : "";
+
+
+        // =================================
+        // Renderização
+        // =================================
+
         return `
 
             <button
 
+                type="button"
+
                 class="${classes.join(" ")}"
 
-                data-id="${control.id}"
+                data-id="${id}"
 
-                data-type="${control.type}"
+                data-type="button"
 
-                data-configurable="${control.configurable}"
+                data-configurable="${
+                    control.configurable
+                }"
 
-                data-position="${control.position}"
-
-                ${control.isEnabled() ? "" : "disabled"}>
+                data-position="${position}"
 
                 ${
-                    control.supportsLed()
+                    control.isEnabled()
+                        ? ""
+                        : "disabled"
+                }>
 
-                        ? `
-                            <span
-                                class="button-led ${
-                                    control.isLedOn()
-                                        ? "on"
-                                        : ""
-                                }">
-                            </span>
-                          `
-
-                        : ""
-                }
+                ${led}
 
                 <span class="button-text">
 
-                    ${control.label}
+                    ${label}
 
                 </span>
 
             </button>
 
         `;
+
+    }
+
+
+    // =====================================
+    // Atualização
+    // =====================================
+
+    update(control) {
+
+        if (!control || !control.isButton()) {
+
+            return;
+
+        }
+
+
+        const element =
+            document.querySelector(
+                `[data-id="${control.id}"]`
+            );
+
+
+        if (!element) {
+
+            return;
+
+        }
+
+
+        // =================================
+        // Seleção
+        // =================================
+
+        element.classList.toggle(
+
+            "selected",
+
+            control.isSelected()
+
+        );
+
+
+        // =================================
+        // Estado
+        // =================================
+
+        element.classList.toggle(
+
+            "disabled",
+
+            !control.isEnabled()
+
+        );
+
+
+        // =================================
+        // Configuração
+        // =================================
+
+        element.classList.toggle(
+
+            "configured",
+
+            control.hasCommand()
+
+        );
+
+
+        // =================================
+        // LED
+        // =================================
+
+        const led =
+            element.querySelector(
+                ".button-led"
+            );
+
+
+        if (led) {
+
+            led.classList.toggle(
+
+                "on",
+
+                control.isLedOn()
+
+            );
+
+        }
+
+    }
+
+
+    // =====================================
+    // Escape HTML
+    // =====================================
+
+    escapeHTML(value) {
+
+        return String(
+            value ?? ""
+        )
+
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+
+            .replace(
+                /</g,
+                "&lt;"
+            )
+
+            .replace(
+                />/g,
+                "&gt;"
+            )
+
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+
+            .replace(
+                /'/g,
+                "&#039;"
+            );
 
     }
 

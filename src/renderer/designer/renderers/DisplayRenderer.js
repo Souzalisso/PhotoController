@@ -1,5 +1,9 @@
 class DisplayRenderer {
 
+    // =====================================
+    // Renderização
+    // =====================================
+
     render(control) {
 
         if (!control || !control.isDisplay()) {
@@ -7,6 +11,11 @@ class DisplayRenderer {
             return "";
 
         }
+
+
+        // =================================
+        // Classes
+        // =================================
 
         const classes = [
 
@@ -16,15 +25,12 @@ class DisplayRenderer {
         ];
 
 
-        // ==========================
-        // Estado
-        // ==========================
-
         if (control.isSelected()) {
 
             classes.push("selected");
 
         }
+
 
         if (!control.isEnabled()) {
 
@@ -33,9 +39,19 @@ class DisplayRenderer {
         }
 
 
-        // ==========================
+        // =================================
+        // Identificação
+        // =================================
+
+        const id =
+            this.escapeHTML(
+                control.id
+            );
+
+
+        // =================================
         // HTML
-        // ==========================
+        // =================================
 
         return `
 
@@ -43,11 +59,13 @@ class DisplayRenderer {
 
                 class="${classes.join(" ")}"
 
-                data-id="${control.id}"
+                data-id="${id}"
 
-                data-type="${control.type}"
+                data-type="display"
 
-                data-configurable="${control.configurable}">
+                data-configurable="${
+                    control.configurable
+                }">
 
                 <div class="oled-header">
 
@@ -63,8 +81,7 @@ class DisplayRenderer {
                 <div class="oled-screen">
 
                     <div
-                        class="oled-line"
-                        id="oled-line-1">
+                        class="oled-line oled-line-1">
 
                         Lightroom
 
@@ -72,8 +89,7 @@ class DisplayRenderer {
 
 
                     <div
-                        class="oled-line"
-                        id="oled-line-2">
+                        class="oled-line oled-line-2">
 
                         Ready
 
@@ -81,9 +97,7 @@ class DisplayRenderer {
 
 
                     <div
-                        class="oled-line"
-                        id="oled-line-3">
-
+                        class="oled-line oled-line-3">
                     </div>
 
                 </div>
@@ -95,13 +109,18 @@ class DisplayRenderer {
     }
 
 
-    update(control, {
+    // =====================================
+    // Atualização
+    // =====================================
 
-        title = "",
-        value = "",
-        status = ""
-
-    } = {}) {
+    update(
+        control,
+        {
+            title = "",
+            value = "",
+            status = ""
+        } = {}
+    ) {
 
         if (!control || !control.isDisplay()) {
 
@@ -110,76 +129,174 @@ class DisplayRenderer {
         }
 
 
-        const titleElement = document.querySelector(
-            "#oled-line-1"
+        const element =
+            document.querySelector(
+                `[data-id="${control.id}"]`
+            );
+
+
+        if (!element) {
+
+            return;
+
+        }
+
+
+        // =================================
+        // Estado
+        // =================================
+
+        element.classList.toggle(
+
+            "selected",
+
+            control.isSelected()
+
         );
 
-        const valueElement = document.querySelector(
-            "#oled-line-2"
+
+        element.classList.toggle(
+
+            "disabled",
+
+            !control.isEnabled()
+
         );
 
-        const statusElement = document.querySelector(
-            "#oled-line-3"
-        );
+
+        // =================================
+        // Linhas
+        // =================================
+
+        const titleElement =
+            element.querySelector(
+                ".oled-line-1"
+            );
+
+
+        const valueElement =
+            element.querySelector(
+                ".oled-line-2"
+            );
+
+
+        const statusElement =
+            element.querySelector(
+                ".oled-line-3"
+            );
 
 
         if (titleElement) {
 
-            titleElement.textContent = title;
+            titleElement.textContent =
+                title;
 
         }
 
 
         if (valueElement) {
 
-            valueElement.textContent = value;
+            valueElement.textContent =
+                value;
 
         }
 
 
         if (statusElement) {
 
-            statusElement.textContent = status;
+            statusElement.textContent =
+                status;
 
         }
 
     }
 
 
-    clear() {
+    // =====================================
+    // Limpar
+    // =====================================
 
-        const titleElement = document.querySelector(
-            "#oled-line-1"
-        );
+    clear(control = null) {
 
-        const valueElement = document.querySelector(
-            "#oled-line-2"
-        );
-
-        const statusElement = document.querySelector(
-            "#oled-line-3"
-        );
+        let element;
 
 
-        if (titleElement) {
+        if (control) {
 
-            titleElement.textContent = "";
+            element =
+                document.querySelector(
+                    `[data-id="${control.id}"]`
+                );
+
+        }
+        else {
+
+            element =
+                document.querySelector(
+                    ".kronos-display"
+                );
 
         }
 
 
-        if (valueElement) {
+        if (!element) {
 
-            valueElement.textContent = "";
-
-        }
-
-
-        if (statusElement) {
-
-            statusElement.textContent = "";
+            return;
 
         }
+
+
+        const lines =
+            element.querySelectorAll(
+                ".oled-line"
+            );
+
+
+        lines.forEach(
+            (line, index) => {
+
+                line.textContent = "";
+
+            }
+        );
+
+    }
+
+
+    // =====================================
+    // Escape HTML
+    // =====================================
+
+    escapeHTML(value) {
+
+        return String(
+            value ?? ""
+        )
+
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+
+            .replace(
+                /</g,
+                "&lt;"
+            )
+
+            .replace(
+                />/g,
+                "&gt;"
+            )
+
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+
+            .replace(
+                /'/g,
+                "&#039;"
+            );
 
     }
 
