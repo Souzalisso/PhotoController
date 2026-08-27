@@ -1,32 +1,23 @@
 const KronosRenderer = require("./KronosRenderer");
-const ControlRepository = require("./repositories/ControlRepository");
 
 
 class KronosCanvas {
 
-    constructor(controlRepository = null) {
-
-        // =====================================
-        // Dependências
-        // =====================================
+    constructor(controlRepository) {
 
         this.controlRepository =
-            controlRepository ||
-            new ControlRepository();
+            controlRepository;
 
         this.renderer =
             new KronosRenderer();
 
+        this.container =
+            null;
 
-        // =====================================
-        // Estado
-        // =====================================
+        this.initialized =
+            false;
 
-        this.container = null;
-
-        this.initialized = false;
-
-        this.boundClickHandler =
+        this.boundClick =
             this.handleClick.bind(this);
 
     }
@@ -38,34 +29,61 @@ class KronosCanvas {
 
     render() {
 
-        return `
+        const controls =
+            this.controlRepository.getAll();
 
-            <div class="kronos">
-
-                ${this.renderPanel()}
-
-            </div>
-
-        `;
-
-    }
-
-
-    // =====================================
-    // Painel principal
-    // =====================================
-
-    renderPanel() {
 
         return `
 
-            <div class="kronos-panel">
+            <div
+                class="kronos"
+                id="kronosCanvas">
 
-                ${this.renderLeftColumn()}
+                <div class="kronos-panel">
 
-                ${this.renderCenter()}
 
-                ${this.renderRightColumn()}
+                    <!-- ========================= -->
+                    <!-- COLUNA ESQUERDA -->
+                    <!-- ========================= -->
+
+                    <div class="left-column">
+
+                        ${this.renderLeftColumn(controls)}
+
+                    </div>
+
+
+                    <!-- ========================= -->
+                    <!-- CENTRO -->
+                    <!-- ========================= -->
+
+                    <div class="center-panel">
+
+                        ${this.renderTopEncoders(controls)}
+
+                        ${this.renderDisplay(controls)}
+
+                        ${this.renderMiddleEncoders(controls)}
+
+                        ${this.renderBottomEncoders(controls)}
+
+                        ${this.renderBottomArea(controls)}
+
+                    </div>
+
+
+                    <!-- ========================= -->
+                    <!-- COLUNA DIREITA -->
+                    <!-- ========================= -->
+
+                    <div class="right-column">
+
+                        ${this.renderRightColumn(controls)}
+
+                    </div>
+
+
+                </div>
 
             </div>
 
@@ -78,52 +96,31 @@ class KronosCanvas {
     // Coluna esquerda
     // =====================================
 
-    renderLeftColumn() {
+    renderLeftColumn(controls) {
 
-        const controls =
-            this.getControlsByGroup("left");
+        const ids = [
 
+            "undo",
+            "redo",
+            "copy",
+            "paste",
+            "sync",
+            "before"
 
-        return `
-
-            <div class="left-column">
-
-                ${controls
-
-                    .map(control =>
-                        this.renderer.render(control)
-                    )
-
-                    .join("")}
-
-            </div>
-
-        `;
-
-    }
+        ];
 
 
-    // =====================================
-    // Centro
-    // =====================================
+        return controls
 
-    renderCenter() {
+            .filter(control =>
+                ids.includes(control.id)
+            )
 
-        return `
+            .map(control =>
+                this.renderer.render(control)
+            )
 
-            <div class="center-panel">
-
-                ${this.renderTopEncoders()}
-
-                ${this.renderDisplayArea()}
-
-                ${this.renderBottomEncoders()}
-
-                ${this.renderBottomArea()}
-
-            </div>
-
-        `;
+            .join("");
 
     }
 
@@ -132,27 +129,28 @@ class KronosCanvas {
     // Coluna direita
     // =====================================
 
-    renderRightColumn() {
+    renderRightColumn(controls) {
 
-        const controls =
-            this.getControlsByGroup("right");
+        const ids = [
+
+            "p1",
+            "p2",
+            "edit"
+
+        ];
 
 
-        return `
+        return controls
 
-            <div class="right-column">
+            .filter(control =>
+                ids.includes(control.id)
+            )
 
-                ${controls
+            .map(control =>
+                this.renderer.render(control)
+            )
 
-                    .map(control =>
-                        this.renderer.render(control)
-                    )
-
-                    .join("")}
-
-            </div>
-
-        `;
+            .join("");
 
     }
 
@@ -161,23 +159,46 @@ class KronosCanvas {
     // Encoders superiores
     // =====================================
 
-    renderTopEncoders() {
+    renderTopEncoders(controls) {
 
-        const controls =
-            this.getControlsByGroup("top");
+        const ids = [
+
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites"
+
+        ];
+
+
+        const encoders = controls
+
+            .filter(control =>
+                ids.includes(control.id)
+            );
+
+
+        if (!encoders.length) {
+
+            return "";
+
+        }
 
 
         return `
 
             <div class="encoder-row top-encoders">
 
-                ${controls
+                ${encoders
 
                     .map(control =>
                         this.renderer.render(control)
                     )
 
-                    .join("")}
+                    .join("")
+
+                }
 
             </div>
 
@@ -187,32 +208,21 @@ class KronosCanvas {
 
 
     // =====================================
-    // Display central
+    // Display
     // =====================================
 
-    renderDisplayArea() {
+    renderDisplay(controls) {
 
         const display =
-            this.controlRepository.findById(
-                "display"
+            controls.find(control =>
+                control.isDisplay &&
+                control.isDisplay()
             );
 
 
         if (!display) {
 
-            return `
-
-                <div class="display-area">
-
-                    <div class="display-error">
-
-                        DISPLAY NÃO ENCONTRADO
-
-                    </div>
-
-                </div>
-
-            `;
+            return "";
 
         }
 
@@ -231,26 +241,99 @@ class KronosCanvas {
 
 
     // =====================================
+    // Encoders do meio
+    // =====================================
+
+    renderMiddleEncoders(controls) {
+
+        const ids = [
+
+            "blacks",
+            "temperature",
+            "tint",
+            "vibrance",
+            "saturation"
+
+        ];
+
+
+        const encoders = controls
+
+            .filter(control =>
+                ids.includes(control.id)
+            );
+
+
+        if (!encoders.length) {
+
+            return "";
+
+        }
+
+
+        return `
+
+            <div class="encoder-row middle-encoders">
+
+                ${encoders
+
+                    .map(control =>
+                        this.renderer.render(control)
+                    )
+
+                    .join("")
+
+                }
+
+            </div>
+
+        `;
+
+    }
+
+
+    // =====================================
     // Encoders inferiores
     // =====================================
 
-    renderBottomEncoders() {
+    renderBottomEncoders(controls) {
 
-        const controls =
-            this.getControlsByGroup("bottom");
+        const ids = [
+
+            "left",
+            "nav",
+            "right"
+
+        ];
+
+
+        const encoders = controls
+
+            .filter(control =>
+                ids.includes(control.id)
+            );
+
+
+        if (!encoders.length) {
+
+            return "";
+
+        }
 
 
         return `
 
             <div class="encoder-row bottom-encoders">
 
-                ${controls
+                ${encoders
 
                     .map(control =>
                         this.renderer.render(control)
                     )
 
-                    .join("")}
+                    .join("")
+
+                }
 
             </div>
 
@@ -263,61 +346,15 @@ class KronosCanvas {
     // Área inferior
     // =====================================
 
-    renderBottomArea() {
+    renderBottomArea(controls) {
 
         return `
 
             <div class="bottom-area">
 
-                ${this.renderNavigationSection()}
+                ${this.renderStars(controls)}
 
-                ${this.renderStarsSection()}
-
-                ${this.renderActionsSection()}
-
-            </div>
-
-        `;
-
-    }
-
-
-    // =====================================
-    // Navegação
-    // =====================================
-
-    renderNavigationSection() {
-
-        const controls = [
-
-            this.controlRepository.findById(
-                "encoder-left"
-            ),
-
-            this.controlRepository.findById(
-                "encoder-main"
-            ),
-
-            this.controlRepository.findById(
-                "encoder-right"
-            )
-
-        ];
-
-
-        return `
-
-            <div class="navigation-section">
-
-                ${controls
-
-                    .filter(Boolean)
-
-                    .map(control =>
-                        this.renderer.render(control)
-                    )
-
-                    .join("")}
+                ${this.renderActions(controls)}
 
             </div>
 
@@ -330,23 +367,35 @@ class KronosCanvas {
     // Estrelas
     // =====================================
 
-    renderStarsSection() {
+    renderStars(controls) {
 
-        const controls =
-            this.getControlsByGroup("stars");
+        const stars = controls.filter(control =>
+
+            /^star\d+$/i.test(control.id)
+
+        );
+
+
+        if (!stars.length) {
+
+            return "";
+
+        }
 
 
         return `
 
             <div class="stars-section">
 
-                ${controls
+                ${stars
 
                     .map(control =>
                         this.renderer.render(control)
                     )
 
-                    .join("")}
+                    .join("")
+
+                }
 
             </div>
 
@@ -359,23 +408,48 @@ class KronosCanvas {
     // Ações
     // =====================================
 
-    renderActionsSection() {
+    renderActions(controls) {
 
-        const controls =
-            this.getControlsByGroup("actions");
+        const ids = [
+
+            "pick",
+            "reject",
+            "previous",
+            "next",
+            "fit",
+            "oneToOne",
+            "1:1"
+
+        ];
+
+
+        const actions = controls.filter(control =>
+
+            ids.includes(control.id)
+
+        );
+
+
+        if (!actions.length) {
+
+            return "";
+
+        }
 
 
         return `
 
             <div class="actions-section">
 
-                ${controls
+                ${actions
 
                     .map(control =>
                         this.renderer.render(control)
                     )
 
-                    .join("")}
+                    .join("")
+
+                }
 
             </div>
 
@@ -385,127 +459,10 @@ class KronosCanvas {
 
 
     // =====================================
-    // Banco visual do KRONOS
-    // =====================================
-
-    getControlsByGroup(group) {
-
-        const groups = {
-
-            // -----------------------------
-            // Lado esquerdo
-            // -----------------------------
-
-            left: [
-
-                "undo",
-                "redo",
-                "copy",
-                "paste",
-                "sync",
-                "before-after"
-
-            ],
-
-
-            // -----------------------------
-            // Encoders superiores
-            // -----------------------------
-
-            top: [
-
-                "exposure",
-                "contrast",
-                "highlights",
-                "shadows",
-                "whites"
-
-            ],
-
-
-            // -----------------------------
-            // Encoders inferiores
-            // -----------------------------
-
-            bottom: [
-
-                "blacks",
-                "temperature",
-                "tint",
-                "vibrance",
-                "saturation"
-
-            ],
-
-
-            // -----------------------------
-            // Lado direito
-            // -----------------------------
-
-            right: [
-
-                "p1",
-                "p2",
-                "edit"
-
-            ],
-
-
-            // -----------------------------
-            // Avaliação
-            // -----------------------------
-
-            stars: [
-
-                "rate-1",
-                "rate-2",
-                "rate-3",
-                "rate-4",
-                "rate-5"
-
-            ],
-
-
-            // -----------------------------
-            // Ações inferiores
-            // -----------------------------
-
-            actions: [
-
-                "pick",
-                "reject",
-                "previous",
-                "next",
-                "fit",
-                "zoom-1-1"
-
-            ]
-
-        };
-
-
-        const ids =
-            groups[group] || [];
-
-
-        return ids
-
-            .map(id =>
-                this.controlRepository.findById(id)
-            )
-
-            .filter(Boolean);
-
-    }
-
-
-    // =====================================
     // Inicialização
     // =====================================
 
-    init(container = document) {
-
-        // Evita registrar eventos duas vezes
+    init() {
 
         if (this.initialized) {
 
@@ -515,12 +472,25 @@ class KronosCanvas {
 
 
         this.container =
-            container;
+            document.getElementById(
+                "kronosCanvas"
+            );
+
+
+        if (!this.container) {
+
+            console.warn(
+                "[KRONOS] Canvas não encontrado."
+            );
+
+            return;
+
+        }
 
 
         this.container.addEventListener(
             "click",
-            this.boundClickHandler
+            this.boundClick
         );
 
 
@@ -528,15 +498,15 @@ class KronosCanvas {
             true;
 
 
-        this.updateSelection(
-            this.container
+        console.log(
+            "[KRONOS] Canvas inicializado."
         );
 
     }
 
 
     // =====================================
-    // Evento de clique
+    // Clique
     // =====================================
 
     handleClick(event) {
@@ -554,16 +524,6 @@ class KronosCanvas {
         }
 
 
-        if (
-            this.container &&
-            !this.container.contains(element)
-        ) {
-
-            return;
-
-        }
-
-
         const id =
             element.dataset.id;
 
@@ -575,55 +535,57 @@ class KronosCanvas {
         }
 
 
-        this.selectControl(
-            id,
-            this.container
-        );
-
-    }
-
-
-    // =====================================
-    // Seleção
-    // =====================================
-
-    selectControl(
-        id,
-        container = this.container || document
-    ) {
-
         const control =
-            this.controlRepository.select(id);
+            this.controlRepository.findById(
+                id
+            );
 
 
         if (!control) {
 
             console.warn(
-
                 `[KRONOS] Controle não encontrado: ${id}`
-
             );
 
-            return null;
+            return;
 
         }
 
 
+        if (!control.isEnabled()) {
+
+            return;
+
+        }
+
+
+        this.controlRepository.select(id);
+
+
         console.log(
-
-            `[KRONOS] Controle selecionado: ${control.id}`
-
+            `[KRONOS] Controle clicado: ${id}`
         );
 
 
-        this.updateSelection(
-            container
+        console.log(
+            "[KRONOS] Controle selecionado:",
+            control
         );
 
 
-        // =================================
-        // Notifica o Designer
-        // =================================
+        this.refresh();
+
+
+        this.emitSelection(control);
+
+    }
+
+
+    // =====================================
+    // Evento de seleção
+    // =====================================
+
+    emitSelection(control) {
 
         document.dispatchEvent(
 
@@ -638,181 +600,6 @@ class KronosCanvas {
 
         );
 
-
-        return control;
-
-    }
-
-
-    // =====================================
-    // Atualização visual da seleção
-    // =====================================
-
-    updateSelection(
-        container = this.container || document
-    ) {
-
-        if (!container) {
-
-            return;
-
-        }
-
-
-        const elements =
-            container.querySelectorAll(
-                ".kronos-control"
-            );
-
-
-        elements.forEach(element => {
-
-            element.classList.remove(
-                "selected"
-            );
-
-        });
-
-
-        const selected =
-            this.controlRepository
-                .getSelected();
-
-
-        for (const control of selected) {
-
-            const element =
-                container.querySelector(
-                    `[data-id="${control.id}"]`
-                );
-
-
-            if (element) {
-
-                element.classList.add(
-                    "selected"
-                );
-
-            }
-
-        }
-
-    }
-
-
-    // =====================================
-    // Ativar controle visualmente
-    // =====================================
-
-    setControlActive(
-        id,
-        active = true
-    ) {
-
-        const container =
-            this.container || document;
-
-
-        const element =
-            container.querySelector(
-                `[data-id="${id}"]`
-            );
-
-
-        if (!element) {
-
-            return;
-
-        }
-
-
-        element.classList.toggle(
-            "active",
-            Boolean(active)
-        );
-
-    }
-
-
-    // =====================================
-    // Estado de conexão
-    // =====================================
-
-    setConnected(connected) {
-
-        const container =
-            this.container || document;
-
-
-        const panel =
-            container.querySelector(
-                ".kronos-panel"
-            );
-
-
-        if (!panel) {
-
-            return;
-
-        }
-
-
-        panel.classList.toggle(
-            "connected",
-            Boolean(connected)
-        );
-
-    }
-
-
-    // =====================================
-    // Atualização do Display
-    // =====================================
-
-    updateDisplay({
-
-        title = "",
-        value = "",
-        status = ""
-
-    } = {}) {
-
-        const display =
-            this.controlRepository.findById(
-                "display"
-            );
-
-
-        if (!display) {
-
-            return;
-
-        }
-
-
-        this.renderer.updateDisplay(
-
-            display,
-
-            {
-                title,
-                value,
-                status
-            }
-
-        );
-
-    }
-
-
-    // =====================================
-    // Limpar Display
-    // =====================================
-
-    clearDisplay() {
-
-        this.renderer.clearDisplay();
-
     }
 
 
@@ -822,34 +609,64 @@ class KronosCanvas {
 
     getSelectedControl() {
 
-        const selected =
-            this.controlRepository
-                .getSelected();
-
-
-        if (!selected.length) {
-
-            return null;
-
-        }
-
-
-        return selected[0];
+        return this.controlRepository
+            .getSelected()[0] || null;
 
     }
 
 
     // =====================================
-    // Atualização
+    // Atualização visual
     // =====================================
 
-    refresh(
-        container = this.container || document
-    ) {
+    refresh() {
 
-        this.updateSelection(
-            container
-        );
+        if (!this.container) {
+
+            return;
+
+        }
+
+
+        const controls =
+            this.controlRepository.getAll();
+
+
+        this.container.innerHTML = `
+
+            <div class="kronos-panel">
+
+                <div class="left-column">
+
+                    ${this.renderLeftColumn(controls)}
+
+                </div>
+
+
+                <div class="center-panel">
+
+                    ${this.renderTopEncoders(controls)}
+
+                    ${this.renderDisplay(controls)}
+
+                    ${this.renderMiddleEncoders(controls)}
+
+                    ${this.renderBottomEncoders(controls)}
+
+                    ${this.renderBottomArea(controls)}
+
+                </div>
+
+
+                <div class="right-column">
+
+                    ${this.renderRightColumn(controls)}
+
+                </div>
+
+            </div>
+
+        `;
 
     }
 
@@ -862,24 +679,22 @@ class KronosCanvas {
 
         if (
             this.container &&
-            this.boundClickHandler
+            this.boundClick
         ) {
 
             this.container.removeEventListener(
                 "click",
-                this.boundClickHandler
+                this.boundClick
             );
 
         }
 
 
-        this.container = null;
+        this.container =
+            null;
 
-        this.initialized = false;
-
-        this.controlRepository = null;
-
-        this.renderer = null;
+        this.initialized =
+            false;
 
     }
 

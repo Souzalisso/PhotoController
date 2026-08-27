@@ -1,5 +1,9 @@
 class LedRenderer {
 
+    // =====================================
+    // Renderização
+    // =====================================
+
     render(control) {
 
         if (!control || !control.supportsLed()) {
@@ -9,16 +13,16 @@ class LedRenderer {
         }
 
 
+        // =================================
+        // Classes
+        // =================================
+
         const classes = [
 
             "kronos-led"
 
         ];
 
-
-        // ==========================
-        // Estado
-        // ==========================
 
         if (control.isLedOn()) {
 
@@ -34,22 +38,24 @@ class LedRenderer {
         }
 
 
-        // ==========================
-        // Tipo de LED
-        // ==========================
+        // =================================
+        // Tipo do LED
+        // =================================
 
         if (typeof control.led === "string") {
 
             classes.push(
-                `led-${control.led}`
+
+                `led-${this.escapeHTML(control.led)}`
+
             );
 
         }
 
 
-        // ==========================
+        // =================================
         // HTML
-        // ==========================
+        // =================================
 
         return `
 
@@ -57,7 +63,9 @@ class LedRenderer {
 
                 class="${classes.join(" ")}"
 
-                data-led-control="${control.id}"
+                data-led-control="${this.escapeHTML(
+                    control.id
+                )}"
 
                 aria-hidden="true">
 
@@ -69,7 +77,7 @@ class LedRenderer {
 
 
     // =====================================
-    // Atualizar LED
+    // Atualizar
     // =====================================
 
     update(control) {
@@ -81,11 +89,12 @@ class LedRenderer {
         }
 
 
-        const element = document.querySelector(
+        const element =
+            document.querySelector(
 
-            `[data-led-control="${control.id}"]`
+                `[data-led-control="${control.id}"]`
 
-        );
+            );
 
 
         if (!element) {
@@ -102,6 +111,7 @@ class LedRenderer {
             control.isLedOn()
 
         );
+
 
         element.classList.toggle(
 
@@ -170,6 +180,46 @@ class LedRenderer {
         control.toggleLed();
 
         this.update(control);
+
+    }
+
+
+    // =====================================
+    // Escape HTML
+    // =====================================
+
+    escapeHTML(value) {
+
+        return String(
+
+            value ?? ""
+
+        )
+
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+
+            .replace(
+                /</g,
+                "&lt;"
+            )
+
+            .replace(
+                />/g,
+                "&gt;"
+            )
+
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+
+            .replace(
+                /'/g,
+                "&#039;"
+            );
 
     }
 

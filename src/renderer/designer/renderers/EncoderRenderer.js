@@ -3,302 +3,135 @@ class EncoderRenderer {
     render(control) {
 
         if (!control || !control.isEncoder()) {
-
             return "";
-
         }
-
-
-        // =====================================
-        // Classes
-        // =====================================
 
         const classes = [
-
             "kronos-control",
+            "kronos-encoder",
             "encoder"
-
         ];
 
-
         if (control.isSelected()) {
-
             classes.push("selected");
-
         }
-
 
         if (!control.isEnabled()) {
-
             classes.push("disabled");
-
         }
 
-
-        if (control.supportsPush()) {
-
+        if (
+            typeof control.supportsPush === "function" &&
+            control.supportsPush()
+        ) {
             classes.push("pushable");
-
         }
 
+        const id = this.escapeHTML(control.id);
 
-        // =====================================
-        // Identificação
-        // =====================================
+        const label = this.escapeHTML(control.label);
 
-        const id =
-            this.escapeHTML(
-                control.id
-            );
+        const position = this.escapeHTML(control.position);
 
-
-        const label =
-            this.escapeHTML(
-                control.label
-            );
-
-
-        const position =
-            this.escapeHTML(
-                control.position
-            );
-
-
-        // =====================================
-        // LED
-        // =====================================
-
-        const hasLed =
-            control.supportsLed();
-
-
-        const ledClass =
-            control.isLedOn()
-                ? "active"
-                : "";
-
-
-        // =====================================
-        // Renderização
-        // =====================================
+        const supportsPush =
+            typeof control.supportsPush === "function" &&
+            control.supportsPush();
 
         return `
-
             <div
-
                 class="${classes.join(" ")}"
-
                 data-id="${id}"
-
                 data-type="encoder"
-
                 data-configurable="${control.configurable}"
-
                 data-position="${position}"
-
-                data-push="${control.supportsPush()}">
+                data-push="${supportsPush}">
 
                 <div class="encoder-ring">
 
+                    <div class="encoder-cap"></div>
+
+                    <div class="encoder-marker"></div>
+
                     ${
-                        hasLed
-
+                        control.led
                             ? `
-
                                 <div
-                                    class="encoder-led ${ledClass}">
+                                    class="encoder-led">
                                 </div>
-
                               `
-
                             : ""
-
                     }
-
-
-                    <div class="encoder-cap">
-
-                        <div
-                            class="encoder-marker">
-                        </div>
-
-                    </div>
 
                 </div>
 
-
                 <span class="encoder-label">
-
                     ${label}
-
                 </span>
 
             </div>
-
         `;
-
     }
 
-
-    // =====================================
-    // Atualização
-    // =====================================
 
     update(control) {
 
         if (!control || !control.isEncoder()) {
-
             return;
-
         }
 
-
-        const element =
-            document.querySelector(
-                `[data-id="${control.id}"]`
-            );
-
+        const element = document.querySelector(
+            `[data-id="${control.id}"]`
+        );
 
         if (!element) {
-
             return;
-
         }
 
-
-        // =================================
-        // Seleção
-        // =================================
-
         element.classList.toggle(
-
             "selected",
-
             control.isSelected()
-
         );
-
-
-        // =================================
-        // Estado
-        // =================================
 
         element.classList.toggle(
-
             "disabled",
-
             !control.isEnabled()
-
         );
 
+        const indicator =
+            element.querySelector(".encoder-marker");
 
-        // =================================
-        // LED
-        // =================================
-
-        const led =
-            element.querySelector(
-                ".encoder-led"
-            );
-
-
-        if (led) {
-
-            led.classList.toggle(
-
-                "active",
-
-                control.isLedOn()
-
-            );
-
-        }
-
-
-        // =================================
-        // Rotação
-        // =================================
-
-        const cap =
-            element.querySelector(
-                ".encoder-cap"
-            );
-
-
-        if (!cap) {
-
+        if (!indicator) {
             return;
-
         }
-
 
         const value =
-            Number(
-                control.getValue()
-            ) || 0;
-
+            Number(control.getValue()) || 0;
 
         const normalized =
             Math.max(
-
                 -1,
-
                 Math.min(
-
                     1,
-
                     value
-
                 )
-
             );
-
 
         const rotation =
             normalized * 135;
 
-
-        cap.style.transform =
+        indicator.style.transform =
             `rotate(${rotation}deg)`;
-
     }
 
 
-    // =====================================
-    // Escape HTML
-    // =====================================
-
     escapeHTML(value) {
 
-        return String(
-            value ?? ""
-        )
-
-            .replace(
-                /&/g,
-                "&amp;"
-            )
-
-            .replace(
-                /</g,
-                "&lt;"
-            )
-
-            .replace(
-                />/g,
-                "&gt;"
-            )
-
-            .replace(
-                /"/g,
-                "&quot;"
-            )
-
-            .replace(
-                /'/g,
-                "&#039;"
-            );
-
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
     }
 
 }

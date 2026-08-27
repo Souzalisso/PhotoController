@@ -1,5 +1,9 @@
 class LabelRenderer {
 
+    // =====================================
+    // Renderização
+    // =====================================
+
     render(control) {
 
         if (!control) {
@@ -16,9 +20,9 @@ class LabelRenderer {
         ];
 
 
-        // ==========================
+        // =================================
         // Estado
-        // ==========================
+        // =================================
 
         if (control.isSelected()) {
 
@@ -34,9 +38,25 @@ class LabelRenderer {
         }
 
 
-        // ==========================
+        // =================================
+        // Identificação
+        // =================================
+
+        const id =
+            this.escapeHTML(
+                control.id
+            );
+
+
+        const label =
+            this.escapeHTML(
+                control.label
+            );
+
+
+        // =================================
         // HTML
-        // ==========================
+        // =================================
 
         return `
 
@@ -44,9 +64,9 @@ class LabelRenderer {
 
                 class="${classes.join(" ")}"
 
-                data-label-control="${control.id}">
+                data-label-control="${id}">
 
-                ${control.label}
+                ${label}
 
             </span>
 
@@ -54,6 +74,10 @@ class LabelRenderer {
 
     }
 
+
+    // =====================================
+    // Atualização
+    // =====================================
 
     update(control) {
 
@@ -64,11 +88,12 @@ class LabelRenderer {
         }
 
 
-        const element = document.querySelector(
+        const element =
+            document.querySelector(
 
-            `[data-label-control="${control.id}"]`
+                `[data-label-control="${control.id}"]`
 
-        );
+            );
 
 
         if (!element) {
@@ -78,7 +103,8 @@ class LabelRenderer {
         }
 
 
-        element.textContent = control.label;
+        element.textContent =
+            control.label;
 
 
         element.classList.toggle(
@@ -101,6 +127,10 @@ class LabelRenderer {
     }
 
 
+    // =====================================
+    // Alterar texto
+    // =====================================
+
     setText(control, text) {
 
         if (!control) {
@@ -110,9 +140,51 @@ class LabelRenderer {
         }
 
 
-        control.label = text;
+        control.label =
+            String(text ?? "");
+
 
         this.update(control);
+
+    }
+
+
+    // =====================================
+    // Escape HTML
+    // =====================================
+
+    escapeHTML(value) {
+
+        return String(
+
+            value ?? ""
+
+        )
+
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+
+            .replace(
+                /</g,
+                "&lt;"
+            )
+
+            .replace(
+                />/g,
+                "&gt;"
+            )
+
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+
+            .replace(
+                /'/g,
+                "&#039;"
+            );
 
     }
 
