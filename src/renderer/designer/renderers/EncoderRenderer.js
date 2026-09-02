@@ -8,8 +8,7 @@ class EncoderRenderer {
 
         const classes = [
             "kronos-control",
-            "kronos-encoder",
-            "encoder"
+            "kronos-encoder"
         ];
 
         if (control.isSelected()) {
@@ -27,11 +26,14 @@ class EncoderRenderer {
             classes.push("pushable");
         }
 
-        const id = this.escapeHTML(control.id);
+        const id =
+            this.escapeHTML(control.id);
 
-        const label = this.escapeHTML(control.label);
+        const label =
+            this.escapeHTML(control.label);
 
-        const position = this.escapeHTML(control.position);
+        const position =
+            this.escapeHTML(control.position);
 
         const supportsPush =
             typeof control.supportsPush === "function" &&
@@ -46,17 +48,19 @@ class EncoderRenderer {
                 data-position="${position}"
                 data-push="${supportsPush}">
 
-                <div class="encoder-ring">
+                <div class="encoder-body">
 
-                    <div class="encoder-cap"></div>
+                    <div class="encoder-knob">
 
-                    <div class="encoder-marker"></div>
+                        <div class="encoder-indicator"></div>
+
+                    </div>
 
                     ${
-                        control.led
+                        supportsPush
                             ? `
-                                <div
-                                    class="encoder-led">
+                                <div class="encoder-push-area">
+                                    <span>PUSH</span>
                                 </div>
                               `
                             : ""
@@ -79,9 +83,10 @@ class EncoderRenderer {
             return;
         }
 
-        const element = document.querySelector(
-            `[data-id="${control.id}"]`
-        );
+        const element =
+            document.querySelector(
+                `[data-id="${control.id}"]`
+            );
 
         if (!element) {
             return;
@@ -98,7 +103,9 @@ class EncoderRenderer {
         );
 
         const indicator =
-            element.querySelector(".encoder-marker");
+            element.querySelector(
+                ".encoder-indicator"
+            );
 
         if (!indicator) {
             return;
@@ -120,7 +127,7 @@ class EncoderRenderer {
             normalized * 135;
 
         indicator.style.transform =
-            `rotate(${rotation}deg)`;
+            `translateX(-50%) rotate(${rotation}deg)`;
     }
 
 
@@ -133,7 +140,6 @@ class EncoderRenderer {
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
     }
-
 }
 
 

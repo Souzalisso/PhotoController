@@ -298,48 +298,34 @@ class KronosCanvas {
 
     renderBottomEncoders(controls) {
 
-        const ids = [
+    const ids = [
+        "encoder-left",
+        "encoder-main",
+        "encoder-right"
+    ];
 
-            "left",
-            "nav",
-            "right"
+    const encoders = controls
+        .filter(control =>
+            ids.includes(control.id)
+        );
 
-        ];
-
-
-        const encoders = controls
-
-            .filter(control =>
-                ids.includes(control.id)
-            );
-
-
-        if (!encoders.length) {
-
-            return "";
-
-        }
-
-
-        return `
-
-            <div class="encoder-row bottom-encoders">
-
-                ${encoders
-
-                    .map(control =>
-                        this.renderer.render(control)
-                    )
-
-                    .join("")
-
-                }
-
-            </div>
-
-        `;
-
+    if (!encoders.length) {
+        return "";
     }
+
+    return `
+        <div class="encoder-row bottom-encoders">
+
+            ${encoders
+                .map(control =>
+                    this.renderer.render(control)
+                )
+                .join("")
+            }
+
+        </div>
+    `;
+}
 
 
     // =====================================
