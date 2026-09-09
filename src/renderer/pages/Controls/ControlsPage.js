@@ -8,7 +8,6 @@ class ControlsPage {
 
         this.designer =
             new KronosDesigner();
-
     }
 
 
@@ -18,20 +17,13 @@ class ControlsPage {
 
     render() {
 
-        // Segurança adicional.
-        // A página deve sempre possuir
-        // um Designer válido.
-
         if (!this.designer) {
 
             this.designer =
                 new KronosDesigner();
-
         }
 
-
         return this.designer.render();
-
     }
 
 
@@ -45,12 +37,9 @@ class ControlsPage {
 
             this.designer =
                 new KronosDesigner();
-
         }
 
-
         await this.designer.init();
-
     }
 
 
@@ -60,18 +49,16 @@ class ControlsPage {
 
     destroy() {
 
-        /*
-         * IMPORTANTE:
-         *
-         * ControlsPage é mantida pelo PageManager
-         * durante toda a execução da aplicação.
-         *
-         * Portanto não devemos destruir o Designer
-         * ao simplesmente trocar de página.
-         */
+        if (
+            this.designer &&
+            typeof this.designer.destroy === "function"
+        ) {
 
+            this.designer.destroy();
+        }
+
+        this.designer = null;
     }
-
 }
 
 

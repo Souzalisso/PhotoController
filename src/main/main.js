@@ -1,5 +1,11 @@
 const path = require("path");
-const { app, BrowserWindow, ipcMain, globalShortcut } = require("electron");
+
+const {
+    app,
+    BrowserWindow,
+    ipcMain,
+    globalShortcut
+} = require("electron");
 
 const EventBus = require("../core/EventBus");
 const Application = require("../core/Application");
@@ -19,319 +25,249 @@ function createWindow() {
         title: "KRONOS Controller",
 
         webPreferences: {
-
     preload: path.join(
         __dirname,
         "../preload/preload.js"
     ),
-
     nodeIntegration: true,
-
     contextIsolation: false,
-
     sandbox: false
-
 }
-
     });
 
     mainWindow.loadFile(
-
         path.join(
-
             __dirname,
-
             "../renderer/index.html"
-
         )
-
     );
 
     mainWindow.webContents.once(
-
         "did-finish-load",
-
         () => {
 
             mainWindow.webContents.send(
-
                 "hardware-status",
-
                 {
-
                     connected: false,
-
                     port: "COM3"
-
                 }
-
             );
-
         }
-
     );
-
 }
 
+
+/* ================================
+   IPC
+================================ */
+
 ipcMain.handle(
-
     "ping",
-
     async () => {
 
         return "Pong! Electron funcionando.";
-
     }
-
 );
 
+
 ipcMain.handle(
-
     "config:load",
-
     async () => {
 
         return Application
             .getControlManager()
             .configuration
             .getAll();
-
     }
-
 );
 
+
 ipcMain.handle(
-
     "config:saveControl",
-
     async (
-
         event,
-
         controlId,
-
         command
-
     ) => {
 
         await Application
             .getControlManager()
             .setCommand(
-
                 controlId,
-
                 command
-
             );
 
         console.log(
-
             `${controlId} -> ${command}`
-
         );
 
         return true;
-
     }
-
 );
 
+
 ipcMain.handle(
-
     "hardware:simulateButton",
-
     async (
-
         event,
-
         buttonId
-
     ) => {
 
         Application
             .getHardware()
             .simulateButton(
-
                 buttonId
-
             );
 
         return true;
-
     }
-
 );
 
-app.whenReady().then(
 
+/* ================================
+   APPLICATION
+================================ */
+
+app.whenReady().then(
     async () => {
 
         createWindow();
 
         await Application.start(
-
             "COM3"
-
         );
 
+
+        /* ============================
+           GLOBAL SHORTCUT
+        ============================ */
+
         globalShortcut.register(
-
             "CommandOrControl+Shift+T",
-
             () => {
 
                 console.log(
-
                     "===== TESTE KRONOS ====="
-
                 );
 
                 Application
                     .getHardware()
                     .simulateButton(
-
                         1
-
                     );
-
             }
-
         );
 
-        EventBus.on(
 
+        /* ============================
+           HARDWARE CONNECTED
+        ============================ */
+
+        EventBus.on(
             "hardware-connected",
-
             () => {
 
                 if (!mainWindow) {
-
                     return;
-
                 }
 
                 mainWindow.webContents.send(
-
                     "hardware-status",
-
                     {
-
                         connected: true,
-
                         port: "COM3"
-
                     }
-
                 );
-
             }
-
         );
 
+
+        /* ============================
+           HARDWARE DISCONNECTED
+        ============================ */
+
         EventBus.on(
-
             "hardware-disconnected",
-
             () => {
 
                 if (!mainWindow) {
-
                     return;
-
                 }
 
                 mainWindow.webContents.send(
-
                     "hardware-status",
-
                     {
-
                         connected: false,
-
                         port: "--"
-
                     }
-
                 );
-
             }
-
         );
 
+
+        /* ============================
+           HARDWARE EVENT
+        ============================ */
+
         EventBus.on(
-
             "hardware-event",
-
-            event => {
+            (event) => {
 
                 console.log(
-
                     "Evento:",
-
                     event
-
                 );
 
                 if (!mainWindow) {
-
                     return;
-
                 }
 
                 mainWindow.webContents.send(
-
                     "hardware-event",
-
                     event
-
                 );
-
             }
-
         );
-
     }
-
 );
 
+
+/* ================================
+   APPLICATION CLOSE
+================================ */
+
 app.on(
-
     "window-all-closed",
-
     () => {
 
+        globalShortcut.unregisterAll();
+
         if (
-
             process.platform !== "darwin"
-
         ) {
 
             Application.stop();
 
             app.quit();
-
         }
-
     }
-
 );
 
+
+/* ================================
+   MACOS ACTIVATE
+================================ */
+
 app.on(
-
     "activate",
-
     () => {
 
         if (
-
             BrowserWindow.getAllWindows().length === 0
-
         ) {
 
             createWindow();
-
         }
-
     }
-
 );
