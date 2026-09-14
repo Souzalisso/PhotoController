@@ -1,82 +1,215 @@
 const { SerialPort } = require("serialport");
-const { ReadlineParser } = require("@serialport/parser-readline");
+
+const {
+    ReadlineParser
+} = require("@serialport/parser-readline");
+
 
 class ArduinoProvider {
 
     constructor() {
 
         this.port = null;
+
         this.parser = null;
+
         this.connected = false;
 
+        this.dataCallback = null;
     }
 
-    connect(portName = "COM3", baudRate = 115200) {
+
+    // =====================================
+    // Conectar
+    // =====================================
+
+    connect(
+        portName = "COM3",
+        baudRate = 115200
+    ) {
 
         if (this.connected) {
-
             return;
-
         }
 
-        this.port = new SerialPort({
 
-            path: portName,
-            baudRate,
-            autoOpen: true
+        try {
 
-        });
+            this.port =
+                new SerialPort({
+                    path: portName,
+                    baudRate,
+                    autoOpen: true
+                });
 
-        this.parser = this.port.pipe(
 
-            new ReadlineParser({
+            // =================================
+            // Porta aberta
+            // =================================
 
-                delimiter: "\n"
+            this.port.on(
+                "open",
+                () => {
 
-            })
+                    this.connected = true;
 
-        );
+                    console.log(
+                        `[KRONOS] Arduino conectado em ${portName} @ ${baudRate}`
+                    );
+                }
+            );
 
-        this.connected = true;
 
-        console.log(`Arduino conectado em ${portName}`);
+            // =================================
+            // Erro serial
+            // =================================
 
+            this.port.on(
+                "error",
+                error => {
+
+                    console.error(
+                        "[KRONOS] Erro na porta serial:",
+                        error.message
+                    );
+                }
+            );
+
+
+            // =================================
+            // Porta fechada
+            // =================================
+
+            this.port.on(
+                "close",
+                () => {
+
+                    this.connected = false;
+
+                    console.log(
+                        "[KRONOS] Porta serial fechada."
+                    );
+                }
+            );
+
+
+            // =================================
+            // Parser
+            // =================================
+
+            this.parser =
+                this.port.pipe(
+                    new ReadlineParser({
+                        delimiter: "\n"
+                    })
+                );
+
+
+        }
+        catch (error) {
+
+            this.connected = false;
+
+            this.port = null;
+
+            this.parser = null;
+
+            console.error(
+                "[KRONOS] Erro ao criar conexão serial:",
+                error
+            );
+        }
     }
+
+
+    // =====================================
+    // Desconectar
+    // =====================================
 
     disconnect() {
 
         if (!this.port) {
 
-            return;
+            this.connected = false;
 
+            return;
         }
 
-        this.port.close();
+
+        try {
+
+            if (this.port.isOpen) {
+
+                this.port.close();
+            }
+
+        }
+        catch (error) {
+
+            console.error(
+                "[KRONOS] Erro ao fechar porta serial:",
+                error
+            );
+        }
+
 
         this.port = null;
-        this.parser = null;
-        this.connected = false;
 
+        this.parser = null;
+
+        this.connected = false;
     }
+
+
+    // =====================================
+    // Receber dados
+    // =====================================
 
     onData(callback) {
 
-        if (!this.parser) {
+        if (
+            !this.parser ||
+            typeof callback !== "function"
+        ) {
 
             return;
-
         }
 
-        this.parser.on("data", callback);
 
+        this.dataCallback = callback;
+
+
+        this.parser.on(
+            "data",
+            message => {
+
+                const cleanMessage =
+                    String(message).trim();
+
+
+                if (!cleanMessage) {
+                    return;
+                }
+
+
+                callback(
+                    cleanMessage
+                );
+            }
+        );
     }
+
+
+    // =====================================
+    // Status
+    // =====================================
 
     isConnected() {
 
         return this.connected;
-
     }
-
 }
 
-module.exports = new ArduinoProvider();
+
+module.exports =
+    new ArduinoProvider();

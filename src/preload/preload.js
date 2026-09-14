@@ -8,6 +8,13 @@ window.photoController = {
             buttonId
         ),
 
+    simulateEncoder: (encoderId, value) =>
+        ipcRenderer.invoke(
+            "hardware:simulateEncoder",
+            encoderId,
+            value
+        ),
+
     ping: () =>
         ipcRenderer.invoke("ping"),
 
@@ -45,5 +52,4 @@ window.photoController = {
             }
         );
     }
-
 };

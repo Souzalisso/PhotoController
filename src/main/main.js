@@ -152,10 +152,10 @@ app.whenReady().then(
                 );
 
                 Application
-                    .getHardware()
-                    .simulateButton(
-                        1
-                    );
+    .getHardware()
+    .simulateButton(
+        15
+    );
             }
         );
 

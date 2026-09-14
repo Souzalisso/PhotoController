@@ -1,4 +1,8 @@
-const { keyboard, Key } = require("@nut-tree-fork/nut-js");
+const {
+    keyboard,
+    Key
+} = require("@nut-tree-fork/nut-js");
+
 
 class KeyboardService {
 
@@ -14,6 +18,7 @@ class KeyboardService {
             SPACE: Key.Space,
             TAB: Key.Tab,
             ESC: Key.Escape,
+
             DELETE: Key.Delete,
             BACKSPACE: Key.Backspace,
 
@@ -21,63 +26,152 @@ class KeyboardService {
             ARROWRIGHT: Key.Right,
             ARROWUP: Key.Up,
             ARROWDOWN: Key.Down
-
         };
-
     }
+
+
+    // =====================================
+    // Executar atalho
+    // =====================================
 
     async execute(shortcut) {
 
         if (!shortcut) {
-
-            return;
-
+            return false;
         }
 
-        const keys = shortcut
-            .split("+")
-            .map(key => key.trim().toUpperCase());
+
+        const keys =
+            String(shortcut)
+                .split("+")
+                .map(
+                    key =>
+                        key.trim().toUpperCase()
+                )
+                .filter(Boolean);
+
+
+        if (keys.length === 0) {
+            return false;
+        }
+
 
         const nutKeys = [];
 
-        for (const key of keys) {
 
-            nutKeys.push(
+        try {
 
-                this.resolveKey(key)
+            // =================================
+            // Resolve todas as teclas primeiro
+            // =================================
 
+            for (const key of keys) {
+
+                nutKeys.push(
+                    this.resolveKey(key)
+                );
+            }
+
+
+            // =================================
+            // Pressiona
+            // =================================
+
+            await keyboard.pressKey(
+                ...nutKeys
             );
 
+
+            // =================================
+            // Libera na ordem inversa
+            // =================================
+
+            await keyboard.releaseKey(
+                ...[...nutKeys].reverse()
+            );
+
+
+            console.log(
+                `[KRONOS] Atalho executado: ${shortcut}`
+            );
+
+
+            return true;
+
         }
+        catch (error) {
 
-        await keyboard.pressKey(...nutKeys);
+            console.error(
+                `[KRONOS] Erro ao executar atalho "${shortcut}":`,
+                error
+            );
 
-        await keyboard.releaseKey(...nutKeys.reverse());
 
+            return false;
+        }
     }
 
+
+    // =====================================
+    // Resolver tecla
+    // =====================================
+
     resolveKey(key) {
+
+        if (!key) {
+
+            throw new Error(
+                "Tecla vazia."
+            );
+        }
+
+
+        // =================================
+        // Teclas especiais
+        // =================================
 
         if (this.keyMap[key]) {
 
             return this.keyMap[key];
-
         }
+
+
+        // =================================
+        // Teclas de função
+        // =================================
+
+        if (/^F([1-9]|1[0-2])$/.test(key)) {
+
+            const functionKey =
+                Key[key];
+
+            if (functionKey) {
+                return functionKey;
+            }
+        }
+
+
+        // =================================
+        // Teclas simples
+        // =================================
 
         if (key.length === 1) {
 
-            return Key[key.toUpperCase()];
+            const simpleKey =
+                Key[key];
 
+            if (simpleKey) {
+                return simpleKey;
+            }
         }
 
+
         throw new Error(
-
             `Tecla não suportada: ${key}`
-
         );
-
     }
-
 }
 
-module.exports = new KeyboardService();
+
+module.exports =
+    new KeyboardService();
