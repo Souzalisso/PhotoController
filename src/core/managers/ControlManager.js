@@ -66,21 +66,32 @@ class ControlManager {
 
     getCommand(controlId) {
 
-        return this.configuration.get(
-            controlId
-        );
+        const command =
+            this.configuration.get(controlId);
+
+
+        if (
+            command &&
+            typeof command === "object"
+        ) {
+
+            return null;
+        }
+
+
+        return command;
     }
 
 
     getCommandForControl(controlId) {
 
         if (!controlId) {
+
             return null;
         }
 
-        return this.configuration.get(
-            controlId
-        );
+
+        return this.getCommand(controlId);
     }
 
 
@@ -94,6 +105,7 @@ class ControlManager {
             commandId
         );
 
+
         await this.configuration.save();
     }
 
@@ -104,21 +116,86 @@ class ControlManager {
             controlId
         );
 
+
         await this.configuration.save();
     }
 
 
     hasCommand(controlId) {
 
-        return this.configuration.has(
-            controlId
-        );
+        const command =
+            this.getCommand(controlId);
+
+
+        return Boolean(command);
     }
 
 
-    async resetConfiguration() {
+    // =====================================
+    // Encoder - horário
+    // =====================================
 
-        await this.configuration.reset();
+    getClockwiseCommand(controlId) {
+
+        if (!controlId) {
+
+            return null;
+        }
+
+
+        return this.configuration
+            .getClockwiseCommand(controlId);
+    }
+
+
+    async setClockwiseCommand(
+        controlId,
+        commandId
+    ) {
+
+        this.configuration
+            .setClockwiseCommand(
+                controlId,
+                commandId
+            );
+
+
+        await this.configuration.save();
+    }
+
+
+    // =====================================
+    // Encoder - anti-horário
+    // =====================================
+
+    getCounterClockwiseCommand(controlId) {
+
+        if (!controlId) {
+
+            return null;
+        }
+
+
+        return this.configuration
+            .getCounterClockwiseCommand(
+                controlId
+            );
+    }
+
+
+    async setCounterClockwiseCommand(
+        controlId,
+        commandId
+    ) {
+
+        this.configuration
+            .setCounterClockwiseCommand(
+                controlId,
+                commandId
+            );
+
+
+        await this.configuration.save();
     }
 
 
@@ -158,12 +235,24 @@ class ControlManager {
     getSelectedControl() {
 
         if (!this.selectedControl) {
+
             return null;
         }
+
 
         return this.getControl(
             this.selectedControl
         );
+    }
+
+
+    // =====================================
+    // Configuração geral
+    // =====================================
+
+    async resetConfiguration() {
+
+        await this.configuration.reset();
     }
 }
 

@@ -39,28 +39,24 @@ class HardwareService {
     // =====================================
 
     connect(port = "COM3") {
+    try {
+        this.provider.connect(port);
+        this.attachProviderListeners();
 
-        try {
+        this.provider.onData(
+            message => this.receive(message)
+        );
 
-            this.attachProviderListeners();
+    } catch (error) {
 
-            this.provider.connect(port);
+        this.connected = false;
 
-            this.provider.onData(
-                message => this.receive(message)
-            );
-
-        }
-        catch (error) {
-
-            this.connected = false;
-
-            console.error(
-                "Erro ao conectar hardware:",
-                error
-            );
-        }
+        console.error(
+            "Erro ao conectar hardware:",
+            error
+        );
     }
+}
 
 
     // =====================================
@@ -208,11 +204,49 @@ class HardwareService {
         }
 
 
-        const commandId =
-            this.controlManager.getCommand(
-                control.id
-            );
+        let commandId = null;
 
+
+        // =================================
+        // Encoder
+        // =================================
+
+        if (event.type === "ENC") {
+
+            if (Number(event.value) > 0) {
+
+                commandId =
+                    this.controlManager.getClockwiseCommand(
+                        control.id
+                    );
+
+            }
+            else if (Number(event.value) < 0) {
+
+                commandId =
+                    this.controlManager.getCounterClockwiseCommand(
+                        control.id
+                    );
+            }
+        }
+
+
+        // =================================
+        // Botão
+        // =================================
+
+        else if (event.type === "BTN") {
+
+            commandId =
+                this.controlManager.getCommand(
+                    control.id
+                );
+        }
+
+
+        // =================================
+        // Sem comando
+        // =================================
 
         if (!commandId) {
             return;
@@ -261,30 +295,31 @@ class HardwareService {
     // =====================================
 
     simulateEncoder(
-    id,
-    value
-) {
-
-    console.log(
-        "[KRONOS] Encoder simulado:",
-        {
-            id,
-            value
-        }
-    );
-
-    this.process({
-
-        device: "SIM",
-
-        type: "ENC",
-
         id,
-
         value
+    ) {
 
-    });
-}
+        console.log(
+            "[KRONOS] Encoder simulado:",
+            {
+                id,
+                value
+            }
+        );
+
+
+        this.process({
+
+            device: "SIM",
+
+            type: "ENC",
+
+            id,
+
+            value
+
+        });
+    }
 
 
     // =====================================

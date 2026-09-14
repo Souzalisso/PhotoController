@@ -16,7 +16,6 @@ class ControlRepository {
         this.controls = [];
 
         this.load();
-
     }
 
 
@@ -29,32 +28,23 @@ class ControlRepository {
         const definitions = [
 
             ...left,
-
             ...top,
-
             ...bottom,
 
             center.display,
-
             center.leftEncoder,
-
             center.mainEncoder,
-
             center.rightEncoder,
 
             ...right,
-
             ...stars,
-
             ...actions
 
         ];
 
 
         this.controls = definitions.map(
-
             definition => new Control(definition)
-
         );
 
 
@@ -62,7 +52,6 @@ class ControlRepository {
 
 
         return this.controls;
-
     }
 
 
@@ -73,7 +62,6 @@ class ControlRepository {
     validate() {
 
         const ids = new Set();
-
         const hardware = new Set();
 
 
@@ -88,7 +76,6 @@ class ControlRepository {
                 throw new Error(
                     "Controle encontrado sem ID."
                 );
-
             }
 
 
@@ -97,7 +84,6 @@ class ControlRepository {
                 throw new Error(
                     `Controle duplicado: ${control.id}`
                 );
-
             }
 
 
@@ -116,11 +102,8 @@ class ControlRepository {
                 ) {
 
                     throw new Error(
-
                         `Hardware inválido no controle: ${control.id}`
-
                     );
-
                 }
 
 
@@ -131,23 +114,17 @@ class ControlRepository {
                 if (hardware.has(key)) {
 
                     throw new Error(
-
                         `Hardware duplicado: ${key}`
-
                     );
-
                 }
 
 
                 hardware.add(key);
-
             }
-
         }
 
 
         return true;
-
     }
 
 
@@ -158,11 +135,8 @@ class ControlRepository {
     findById(id) {
 
         return this.controls.find(
-
             control => control.id === id
-
         ) || null;
-
     }
 
 
@@ -173,15 +147,10 @@ class ControlRepository {
     findByHardware(type, id) {
 
         return this.controls.find(
-
             control =>
-
                 control.hardware?.type === type &&
-
                 control.hardware?.id === id
-
         ) || null;
-
     }
 
 
@@ -192,7 +161,6 @@ class ControlRepository {
     getAll() {
 
         return [...this.controls];
-
     }
 
 
@@ -203,11 +171,8 @@ class ControlRepository {
     getButtons() {
 
         return this.controls.filter(
-
             control => control.isButton()
-
         );
-
     }
 
 
@@ -218,11 +183,8 @@ class ControlRepository {
     getEncoders() {
 
         return this.controls.filter(
-
             control => control.isEncoder()
-
         );
-
     }
 
 
@@ -233,11 +195,8 @@ class ControlRepository {
     getDisplays() {
 
         return this.controls.filter(
-
             control => control.isDisplay()
-
         );
-
     }
 
 
@@ -248,11 +207,8 @@ class ControlRepository {
     getConfigurable() {
 
         return this.controls.filter(
-
             control => control.configurable
-
         );
-
     }
 
 
@@ -263,11 +219,8 @@ class ControlRepository {
     getWithLed() {
 
         return this.controls.filter(
-
             control => control.supportsLed()
-
         );
-
     }
 
 
@@ -278,11 +231,8 @@ class ControlRepository {
     getSelected() {
 
         return this.controls.filter(
-
             control => control.isSelected()
-
         );
-
     }
 
 
@@ -292,13 +242,12 @@ class ControlRepository {
 
     select(id) {
 
-        const control = this.findById(id);
+        const control =
+            this.findById(id);
 
 
         if (!control) {
-
             return null;
-
         }
 
 
@@ -308,7 +257,6 @@ class ControlRepository {
 
 
         return control;
-
     }
 
 
@@ -321,9 +269,7 @@ class ControlRepository {
         for (const control of this.controls) {
 
             control.unselect();
-
         }
-
     }
 
 
@@ -333,28 +279,23 @@ class ControlRepository {
 
     setCommand(id, command) {
 
-        const control = this.findById(id);
+        const control =
+            this.findById(id);
 
 
         if (!control) {
 
             throw new Error(
-
                 `Controle não encontrado: ${id}`
-
             );
-
         }
 
 
         if (!control.configurable) {
 
             throw new Error(
-
                 `Controle não configurável: ${id}`
-
             );
-
         }
 
 
@@ -362,24 +303,150 @@ class ControlRepository {
 
 
         return control;
-
     }
 
 
     getCommand(id) {
 
-        const control = this.findById(id);
+        const control =
+            this.findById(id);
 
 
         if (!control) {
-
             return null;
-
         }
 
 
         return control.getCommand();
+    }
 
+
+    // =====================================
+    // Comando horário do Encoder
+    // =====================================
+
+    setClockwiseCommand(id, command) {
+
+        const control =
+            this.findById(id);
+
+
+        if (!control) {
+
+            throw new Error(
+                `Controle não encontrado: ${id}`
+            );
+        }
+
+
+        if (!control.isEncoder()) {
+
+            throw new Error(
+                `Controle não é um encoder: ${id}`
+            );
+        }
+
+
+        if (!control.configurable) {
+
+            throw new Error(
+                `Controle não configurável: ${id}`
+            );
+        }
+
+
+        control.setClockwiseCommand(
+            command
+        );
+
+
+        return control;
+    }
+
+
+    getClockwiseCommand(id) {
+
+        const control =
+            this.findById(id);
+
+
+        if (!control) {
+            return null;
+        }
+
+
+        if (!control.isEncoder()) {
+            return null;
+        }
+
+
+        return control.getClockwiseCommand();
+    }
+
+
+    // =====================================
+    // Comando anti-horário do Encoder
+    // =====================================
+
+    setCounterClockwiseCommand(
+        id,
+        command
+    ) {
+
+        const control =
+            this.findById(id);
+
+
+        if (!control) {
+
+            throw new Error(
+                `Controle não encontrado: ${id}`
+            );
+        }
+
+
+        if (!control.isEncoder()) {
+
+            throw new Error(
+                `Controle não é um encoder: ${id}`
+            );
+        }
+
+
+        if (!control.configurable) {
+
+            throw new Error(
+                `Controle não configurável: ${id}`
+            );
+        }
+
+
+        control.setCounterClockwiseCommand(
+            command
+        );
+
+
+        return control;
+    }
+
+
+    getCounterClockwiseCommand(id) {
+
+        const control =
+            this.findById(id);
+
+
+        if (!control) {
+            return null;
+        }
+
+
+        if (!control.isEncoder()) {
+            return null;
+        }
+
+
+        return control.getCounterClockwiseCommand();
     }
 
 
@@ -389,13 +456,12 @@ class ControlRepository {
 
     setValue(id, value) {
 
-        const control = this.findById(id);
+        const control =
+            this.findById(id);
 
 
         if (!control) {
-
             return null;
-
         }
 
 
@@ -403,24 +469,21 @@ class ControlRepository {
 
 
         return control;
-
     }
 
 
     getValue(id) {
 
-        const control = this.findById(id);
+        const control =
+            this.findById(id);
 
 
         if (!control) {
-
             return null;
-
         }
 
 
         return control.getValue();
-
     }
 
 
@@ -430,13 +493,12 @@ class ControlRepository {
 
     reset(id) {
 
-        const control = this.findById(id);
+        const control =
+            this.findById(id);
 
 
         if (!control) {
-
             return null;
-
         }
 
 
@@ -444,7 +506,6 @@ class ControlRepository {
 
 
         return control;
-
     }
 
 
@@ -453,9 +514,7 @@ class ControlRepository {
         for (const control of this.controls) {
 
             control.reset();
-
         }
-
     }
 
 
@@ -466,13 +525,9 @@ class ControlRepository {
     toJSON() {
 
         return this.controls.map(
-
             control => control.toJSON()
-
         );
-
     }
-
 }
 
 

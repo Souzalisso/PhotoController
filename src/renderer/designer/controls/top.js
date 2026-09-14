@@ -8,7 +8,12 @@ const top = [
         push: true,
         led: "ring",
         defaultValue: 0,
+
+        clockwiseCommand: null,
+        counterClockwiseCommand: null,
+
         position: 1,
+
         hardware: {
             type: "ENC",
             id: 1
@@ -23,7 +28,12 @@ const top = [
         push: true,
         led: "ring",
         defaultValue: 0,
+
+        clockwiseCommand: null,
+        counterClockwiseCommand: null,
+
         position: 2,
+
         hardware: {
             type: "ENC",
             id: 2
@@ -38,7 +48,12 @@ const top = [
         push: true,
         led: "ring",
         defaultValue: 0,
+
+        clockwiseCommand: null,
+        counterClockwiseCommand: null,
+
         position: 3,
+
         hardware: {
             type: "ENC",
             id: 3
@@ -53,7 +68,12 @@ const top = [
         push: true,
         led: "ring",
         defaultValue: 0,
+
+        clockwiseCommand: null,
+        counterClockwiseCommand: null,
+
         position: 4,
+
         hardware: {
             type: "ENC",
             id: 4
@@ -68,7 +88,12 @@ const top = [
         push: true,
         led: "ring",
         defaultValue: 0,
+
+        clockwiseCommand: null,
+        counterClockwiseCommand: null,
+
         position: 5,
+
         hardware: {
             type: "ENC",
             id: 5

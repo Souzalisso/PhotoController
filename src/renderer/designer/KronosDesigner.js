@@ -1,7 +1,5 @@
 const KronosCanvas = require("./KronosCanvas");
-
 const ControlRepository = require("./repositories/ControlRepository");
-
 const LightroomCommands =
     require("../../core/data/lightroom/LightroomCommands");
 
@@ -52,11 +50,8 @@ class KronosDesigner {
             <main class="designer-page">
 
                 <section class="designer-workspace">
-
                     ${this.canvas.render()}
-
                 </section>
-
 
                 <aside class="designer-sidebar">
 
@@ -106,23 +101,82 @@ class KronosDesigner {
     renderCommandSelector() {
 
         return `
-            <div class="designer-card">
+            <div
+                class="designer-card"
+                id="commandCard"
+            >
 
                 <h2>
                     Comando Lightroom
                 </h2>
 
-                <select
-                    id="commandSelect"
-                    disabled>
+                <div
+                    id="buttonCommandContainer"
+                >
 
-                    <option value="">
-                        Selecione um controle
-                    </option>
+                    <label for="commandSelect">
+                        Comando
+                    </label>
 
-                    ${this.renderCommands()}
+                    <select
+                        id="commandSelect"
+                        disabled
+                    >
 
-                </select>
+                        <option value="">
+                            Selecione um controle
+                        </option>
+
+                        ${this.renderCommands()}
+
+                    </select>
+
+                </div>
+
+
+                <div
+                    id="encoderCommandContainer"
+                    style="display: none;"
+                >
+
+                    <label for="clockwiseCommandSelect">
+                        ↻ Horário
+                    </label>
+
+                    <select
+                        id="clockwiseCommandSelect"
+                        disabled
+                    >
+
+                        <option value="">
+                            Selecione o comando
+                        </option>
+
+                        ${this.renderCommands()}
+
+                    </select>
+
+
+                    <label
+                        for="counterClockwiseCommandSelect"
+                    >
+                        ↺ Anti-horário
+                    </label>
+
+                    <select
+                        id="counterClockwiseCommandSelect"
+                        disabled
+                    >
+
+                        <option value="">
+                            Selecione o comando
+                        </option>
+
+                        ${this.renderCommands()}
+
+                    </select>
+
+                </div>
 
             </div>
         `;
@@ -142,7 +196,6 @@ class KronosDesigner {
 
 
         return LightroomCommands
-
             .map(command => {
 
                 const id =
@@ -151,23 +204,22 @@ class KronosDesigner {
                     );
 
                 const category =
-                    command.category || "Geral";
+                    command.category ||
+                    "Geral";
 
                 const name =
-                    command.name || command.id;
+                    command.name ||
+                    command.id;
 
 
                 return `
                     <option value="${id}">
-
                         ${this.escapeHTML(category)}
                         •
                         ${this.escapeHTML(name)}
-
                     </option>
                 `;
             })
-
             .join("");
     }
 
@@ -183,10 +235,9 @@ class KronosDesigner {
 
                 <button
                     id="saveControl"
-                    disabled>
-
+                    disabled
+                >
                     Salvar Configuração
-
                 </button>
 
             </div>
@@ -259,8 +310,8 @@ class KronosDesigner {
 
             if (
                 !window.photoController ||
-                typeof window.photoController.loadConfiguration !==
-                    "function"
+                typeof window.photoController
+                    .loadConfiguration !== "function"
             ) {
 
                 console.warn(
@@ -286,11 +337,14 @@ class KronosDesigner {
 
 
             for (
-                const [controlId, commandId]
+                const [
+                    controlId,
+                    configurationValue
+                ]
                 of Object.entries(configuration)
             ) {
 
-                if (!commandId) {
+                if (!configurationValue) {
                     continue;
                 }
 
@@ -312,15 +366,60 @@ class KronosDesigner {
 
 
                 if (!control.configurable) {
+                    continue;
+                }
+
+
+                // =================================
+                // Encoder
+                // =================================
+
+                if (
+                    control.isEncoder() &&
+                    typeof configurationValue === "object"
+                ) {
+
+                    if (
+                        configurationValue.clockwise
+                    ) {
+
+                        this.controlRepository
+                            .setClockwiseCommand(
+                                controlId,
+                                configurationValue.clockwise
+                            );
+                    }
+
+
+                    if (
+                        configurationValue.counterClockwise
+                    ) {
+
+                        this.controlRepository
+                            .setCounterClockwiseCommand(
+                                controlId,
+                                configurationValue.counterClockwise
+                            );
+                    }
+
 
                     continue;
                 }
 
 
-                this.controlRepository.setCommand(
-                    controlId,
-                    commandId
-                );
+                // =================================
+                // Comando normal
+                // =================================
+
+                if (
+                    typeof configurationValue === "string"
+                ) {
+
+                    this.controlRepository.setCommand(
+                        controlId,
+                        configurationValue
+                    );
+                }
             }
 
 
@@ -328,8 +427,8 @@ class KronosDesigner {
                 "[KRONOS] Configuração carregada:",
                 configuration
             );
-
         }
+
         catch (error) {
 
             console.error(
@@ -393,6 +492,30 @@ class KronosDesigner {
             );
 
 
+        const clockwiseSelect =
+            document.getElementById(
+                "clockwiseCommandSelect"
+            );
+
+
+        const counterClockwiseSelect =
+            document.getElementById(
+                "counterClockwiseCommandSelect"
+            );
+
+
+        const buttonContainer =
+            document.getElementById(
+                "buttonCommandContainer"
+            );
+
+
+        const encoderContainer =
+            document.getElementById(
+                "encoderCommandContainer"
+            );
+
+
         const saveButton =
             document.getElementById(
                 "saveControl"
@@ -419,17 +542,52 @@ class KronosDesigner {
             }
 
 
+            if (buttonContainer) {
+
+                buttonContainer.style.display =
+                    "block";
+            }
+
+
+            if (encoderContainer) {
+
+                encoderContainer.style.display =
+                    "none";
+            }
+
+
             if (commandSelect) {
 
                 commandSelect.value = "";
 
-                commandSelect.disabled = true;
+                commandSelect.disabled =
+                    true;
+            }
+
+
+            if (clockwiseSelect) {
+
+                clockwiseSelect.value = "";
+
+                clockwiseSelect.disabled =
+                    true;
+            }
+
+
+            if (counterClockwiseSelect) {
+
+                counterClockwiseSelect.value =
+                    "";
+
+                counterClockwiseSelect.disabled =
+                    true;
             }
 
 
             if (saveButton) {
 
-                saveButton.disabled = true;
+                saveButton.disabled =
+                    true;
             }
 
 
@@ -444,7 +602,8 @@ class KronosDesigner {
         if (selectedElement) {
 
             selectedElement.textContent =
-                control.label || control.id;
+                control.label ||
+                control.id;
         }
 
 
@@ -459,28 +618,96 @@ class KronosDesigner {
         }
 
 
-        // =================================
-        // Configuração
-        // =================================
-
         const configurable =
             Boolean(
                 control.configurable
             );
 
 
-        if (commandSelect) {
+        // =================================
+        // Encoder
+        // =================================
 
-            commandSelect.disabled =
-                !configurable;
+        if (control.isEncoder()) {
+
+            if (buttonContainer) {
+
+                buttonContainer.style.display =
+                    "none";
+            }
 
 
-            commandSelect.value =
-                configurable
-                    ? (
-                        control.getCommand() || ""
-                    )
-                    : "";
+            if (encoderContainer) {
+
+                encoderContainer.style.display =
+                    "block";
+            }
+
+
+            if (clockwiseSelect) {
+
+                clockwiseSelect.disabled =
+                    !configurable;
+
+                clockwiseSelect.value =
+                    configurable
+                        ? (
+                            control.getClockwiseCommand() ||
+                            ""
+                        )
+                        : "";
+            }
+
+
+            if (counterClockwiseSelect) {
+
+                counterClockwiseSelect.disabled =
+                    !configurable;
+
+                counterClockwiseSelect.value =
+                    configurable
+                        ? (
+                            control.getCounterClockwiseCommand() ||
+                            ""
+                        )
+                        : "";
+            }
+
+        }
+
+        // =================================
+        // Botão
+        // =================================
+
+        else {
+
+            if (buttonContainer) {
+
+                buttonContainer.style.display =
+                    "block";
+            }
+
+
+            if (encoderContainer) {
+
+                encoderContainer.style.display =
+                    "none";
+            }
+
+
+            if (commandSelect) {
+
+                commandSelect.disabled =
+                    !configurable;
+
+                commandSelect.value =
+                    configurable
+                        ? (
+                            control.getCommand() ||
+                            ""
+                        )
+                        : "";
+            }
         }
 
 
@@ -493,7 +720,7 @@ class KronosDesigner {
 
 
     // =====================================
-    // Salvar comando
+    // Salvar configuração
     // =====================================
 
     async handleSaveControl() {
@@ -528,41 +755,188 @@ class KronosDesigner {
         }
 
 
-        const commandSelect =
-            document.getElementById(
-                "commandSelect"
-            );
-
-
-        if (!commandSelect) {
-            return;
-        }
-
-
-        const command =
-            commandSelect.value;
-
-
-        if (!command) {
-
-            this.showMessage(
-                "Selecione um comando."
-            );
-
-            return;
-        }
-
-
         try {
 
             // =================================
-            // Salva no processo principal
+            // Encoder
             // =================================
+
+            if (control.isEncoder()) {
+
+                const clockwiseSelect =
+                    document.getElementById(
+                        "clockwiseCommandSelect"
+                    );
+
+
+                const counterClockwiseSelect =
+                    document.getElementById(
+                        "counterClockwiseCommandSelect"
+                    );
+
+
+                if (
+                    !clockwiseSelect ||
+                    !counterClockwiseSelect
+                ) {
+
+                    return;
+                }
+
+
+                const clockwiseCommand =
+                    clockwiseSelect.value;
+
+
+                const counterClockwiseCommand =
+                    counterClockwiseSelect.value;
+
+
+                if (
+                    !clockwiseCommand &&
+                    !counterClockwiseCommand
+                ) {
+
+                    this.showMessage(
+                        "Selecione pelo menos um comando do encoder."
+                    );
+
+                    return;
+                }
+
+
+                // =================================
+                // API - horário
+                // =================================
+
+                if (
+                    clockwiseCommand &&
+                    (
+                        !window.photoController ||
+                        typeof window.photoController
+                            .saveClockwiseCommand !==
+                            "function"
+                    )
+                ) {
+
+                    throw new Error(
+                        "API de comando horário não disponível."
+                    );
+                }
+
+
+                // =================================
+                // API - anti-horário
+                // =================================
+
+                if (
+                    counterClockwiseCommand &&
+                    (
+                        !window.photoController ||
+                        typeof window.photoController
+                            .saveCounterClockwiseCommand !==
+                            "function"
+                    )
+                ) {
+
+                    throw new Error(
+                        "API de comando anti-horário não disponível."
+                    );
+                }
+
+
+                if (clockwiseCommand) {
+
+                    await window.photoController
+                        .saveClockwiseCommand(
+                            control.id,
+                            clockwiseCommand
+                        );
+
+                    this.controlRepository
+                        .setClockwiseCommand(
+                            control.id,
+                            clockwiseCommand
+                        );
+                }
+
+
+                if (counterClockwiseCommand) {
+
+                    await window.photoController
+                        .saveCounterClockwiseCommand(
+                            control.id,
+                            counterClockwiseCommand
+                        );
+
+                    this.controlRepository
+                        .setCounterClockwiseCommand(
+                            control.id,
+                            counterClockwiseCommand
+                        );
+                }
+
+
+                this.canvas.refresh();
+
+                this.updateSidebar(
+                    control
+                );
+
+
+                this.showMessage(
+                    `Comandos do encoder ${control.label} salvos.`
+                );
+
+
+                console.log(
+                    "[KRONOS] Configuração do encoder salva:",
+                    {
+                        control: control.id,
+                        clockwise: clockwiseCommand,
+                        counterClockwise:
+                            counterClockwiseCommand
+                    }
+                );
+
+
+                return;
+            }
+
+
+            // =================================
+            // Botão
+            // =================================
+
+            const commandSelect =
+                document.getElementById(
+                    "commandSelect"
+                );
+
+
+            if (!commandSelect) {
+                return;
+            }
+
+
+            const command =
+                commandSelect.value;
+
+
+            if (!command) {
+
+                this.showMessage(
+                    "Selecione um comando."
+                );
+
+                return;
+            }
+
 
             if (
                 !window.photoController ||
-                typeof window.photoController.saveControl !==
-                    "function"
+                typeof window.photoController
+                    .saveControl !== "function"
             ) {
 
                 throw new Error(
@@ -571,15 +945,12 @@ class KronosDesigner {
             }
 
 
-            await window.photoController.saveControl(
-                control.id,
-                command
-            );
+            await window.photoController
+                .saveControl(
+                    control.id,
+                    command
+                );
 
-
-            // =================================
-            // Atualiza o estado local
-            // =================================
 
             this.controlRepository.setCommand(
                 control.id,
@@ -587,12 +958,7 @@ class KronosDesigner {
             );
 
 
-            // =================================
-            // Atualiza o estado visual
-            // =================================
-
             this.canvas.refresh();
-
 
             this.updateSidebar(
                 control
@@ -611,8 +977,8 @@ class KronosDesigner {
                     command
                 }
             );
-
         }
+
         catch (error) {
 
             console.error(
@@ -667,15 +1033,10 @@ class KronosDesigner {
     escapeHTML(value) {
 
         return String(value ?? "")
-
             .replace(/&/g, "&amp;")
-
             .replace(/</g, "&lt;")
-
             .replace(/>/g, "&gt;")
-
             .replace(/"/g, "&quot;")
-
             .replace(/'/g, "&#039;");
     }
 
@@ -722,10 +1083,8 @@ class KronosDesigner {
         this.controlRepository =
             null;
 
-
         this.canvas =
             null;
-
 
         this.initialized =
             false;

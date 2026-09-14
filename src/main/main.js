@@ -71,6 +71,7 @@ function createWindow() {
    IPC
 ================================ */
 
+
 ipcMain.handle(
     "ping",
     async () => {
@@ -107,9 +108,73 @@ ipcMain.handle(
                 command
             );
 
+
         console.log(
             `${controlId} -> ${command}`
         );
+
+
+        return true;
+    }
+);
+
+
+/* ================================
+   IPC - ENCODER HORÁRIO
+================================ */
+
+
+ipcMain.handle(
+    "config:saveClockwiseCommand",
+    async (
+        event,
+        controlId,
+        command
+    ) => {
+
+        await Application
+            .getControlManager()
+            .setClockwiseCommand(
+                controlId,
+                command
+            );
+
+
+        console.log(
+            `[KRONOS] ${controlId} horário -> ${command}`
+        );
+
+
+        return true;
+    }
+);
+
+
+/* ================================
+   IPC - ENCODER ANTI-HORÁRIO
+================================ */
+
+
+ipcMain.handle(
+    "config:saveCounterClockwiseCommand",
+    async (
+        event,
+        controlId,
+        command
+    ) => {
+
+        await Application
+            .getControlManager()
+            .setCounterClockwiseCommand(
+                controlId,
+                command
+            );
+
+
+        console.log(
+            `[KRONOS] ${controlId} anti-horário -> ${command}`
+        );
+
 
         return true;
     }
@@ -128,6 +193,7 @@ ipcMain.handle(
             .simulateButton(
                 buttonId
             );
+
 
         return true;
     }
@@ -149,6 +215,7 @@ ipcMain.handle(
                 value
             );
 
+
         return true;
     }
 );
@@ -158,10 +225,12 @@ ipcMain.handle(
    APPLICATION
 ================================ */
 
+
 app.whenReady().then(
     async () => {
 
         createWindow();
+
 
         await Application.start(
             "COM3"
@@ -172,6 +241,7 @@ app.whenReady().then(
            GLOBAL SHORTCUT
         ============================ */
 
+
         globalShortcut.register(
             "CommandOrControl+Shift+T",
             () => {
@@ -180,6 +250,7 @@ app.whenReady().then(
                     "===== TESTE KRONOS ====="
                 );
 
+
                 Application
                     .getHardware()
                     .simulateButton(
@@ -187,26 +258,40 @@ app.whenReady().then(
                     );
             }
         );
-        globalShortcut.register(
-    "CommandOrControl+Shift+E",
-    () => {
-        Application.getHardware()
-            .simulateEncoder(1, 1);
-    }
-);
 
-globalShortcut.register(
-    "CommandOrControl+Shift+Q",
-    () => {
-        Application.getHardware()
-            .simulateEncoder(1, -1);
-    }
-);
+
+        globalShortcut.register(
+            "CommandOrControl+Shift+E",
+            () => {
+
+                Application
+                    .getHardware()
+                    .simulateEncoder(
+                        1,
+                        1
+                    );
+            }
+        );
+
+
+        globalShortcut.register(
+            "CommandOrControl+Shift+Q",
+            () => {
+
+                Application
+                    .getHardware()
+                    .simulateEncoder(
+                        1,
+                        -1
+                    );
+            }
+        );
 
 
         /* ============================
            HARDWARE CONNECTED
         ============================ */
+
 
         EventBus.on(
             "hardware-connected",
@@ -217,8 +302,10 @@ globalShortcut.register(
                     mainWindow.isDestroyed() ||
                     mainWindow.webContents.isDestroyed()
                 ) {
+
                     return;
                 }
+
 
                 mainWindow.webContents.send(
                     "hardware-status",
@@ -235,6 +322,7 @@ globalShortcut.register(
            HARDWARE DISCONNECTED
         ============================ */
 
+
         EventBus.on(
             "hardware-disconnected",
             () => {
@@ -244,8 +332,10 @@ globalShortcut.register(
                     mainWindow.isDestroyed() ||
                     mainWindow.webContents.isDestroyed()
                 ) {
+
                     return;
                 }
+
 
                 mainWindow.webContents.send(
                     "hardware-status",
@@ -262,6 +352,7 @@ globalShortcut.register(
            HARDWARE EVENT
         ============================ */
 
+
         EventBus.on(
             "hardware-event",
             (event) => {
@@ -271,13 +362,16 @@ globalShortcut.register(
                     event
                 );
 
+
                 if (
                     !mainWindow ||
                     mainWindow.isDestroyed() ||
                     mainWindow.webContents.isDestroyed()
                 ) {
+
                     return;
                 }
+
 
                 mainWindow.webContents.send(
                     "hardware-event",
@@ -293,11 +387,13 @@ globalShortcut.register(
    APPLICATION CLOSE
 ================================ */
 
+
 app.on(
     "window-all-closed",
     () => {
 
         globalShortcut.unregisterAll();
+
 
         if (
             process.platform !== "darwin"
@@ -314,6 +410,7 @@ app.on(
 /* ================================
    MACOS ACTIVATE
 ================================ */
+
 
 app.on(
     "activate",

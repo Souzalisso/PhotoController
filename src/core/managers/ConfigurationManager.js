@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const { app } = require("electron");
 
+
 class ConfigurationManager {
 
     constructor() {
@@ -10,8 +11,8 @@ class ConfigurationManager {
             "kronos-configuration.json";
 
         this.controls = {};
-
     }
+
 
     getFilePath() {
 
@@ -19,8 +20,8 @@ class ConfigurationManager {
             app.getPath("userData"),
             this.fileName
         );
-
     }
+
 
     async load() {
 
@@ -29,13 +30,14 @@ class ConfigurationManager {
             const filePath =
                 this.getFilePath();
 
+
             if (!fs.existsSync(filePath)) {
 
                 this.controls = {};
 
                 return;
-
             }
+
 
             const json =
                 await fs.promises.readFile(
@@ -43,12 +45,13 @@ class ConfigurationManager {
                     "utf8"
                 );
 
+
             this.controls =
                 json
                     ? JSON.parse(json)
                     : {};
-
         }
+
         catch (error) {
 
             console.error(
@@ -57,10 +60,9 @@ class ConfigurationManager {
             );
 
             this.controls = {};
-
         }
-
     }
+
 
     async save() {
 
@@ -72,12 +74,14 @@ class ConfigurationManager {
             const directory =
                 path.dirname(filePath);
 
+
             await fs.promises.mkdir(
                 directory,
                 {
                     recursive: true
                 }
             );
+
 
             await fs.promises.writeFile(
                 filePath,
@@ -88,18 +92,21 @@ class ConfigurationManager {
                 ),
                 "utf8"
             );
-
         }
+
         catch (error) {
 
             console.error(
                 "[KRONOS] Erro ao salvar configuração:",
                 error
             );
-
         }
-
     }
+
+
+    // =====================================
+    // Comando normal
+    // =====================================
 
     get(controlId) {
 
@@ -107,15 +114,109 @@ class ConfigurationManager {
             this.controls[controlId] ||
             null
         );
-
     }
+
 
     set(controlId, commandId) {
 
         this.controls[controlId] =
             commandId;
-
     }
+
+
+    // =====================================
+    // Encoder - horário
+    // =====================================
+
+    getClockwiseCommand(controlId) {
+
+        const configuration =
+            this.controls[controlId];
+
+
+        if (
+            !configuration ||
+            typeof configuration !== "object"
+        ) {
+
+            return null;
+        }
+
+
+        return (
+            configuration.clockwise ||
+            null
+        );
+    }
+
+
+    setClockwiseCommand(
+        controlId,
+        commandId
+    ) {
+
+        if (
+            !this.controls[controlId] ||
+            typeof this.controls[controlId] !== "object"
+        ) {
+
+            this.controls[controlId] = {};
+        }
+
+
+        this.controls[controlId].clockwise =
+            commandId || null;
+    }
+
+
+    // =====================================
+    // Encoder - anti-horário
+    // =====================================
+
+    getCounterClockwiseCommand(controlId) {
+
+        const configuration =
+            this.controls[controlId];
+
+
+        if (
+            !configuration ||
+            typeof configuration !== "object"
+        ) {
+
+            return null;
+        }
+
+
+        return (
+            configuration.counterClockwise ||
+            null
+        );
+    }
+
+
+    setCounterClockwiseCommand(
+        controlId,
+        commandId
+    ) {
+
+        if (
+            !this.controls[controlId] ||
+            typeof this.controls[controlId] !== "object"
+        ) {
+
+            this.controls[controlId] = {};
+        }
+
+
+        this.controls[controlId].counterClockwise =
+            commandId || null;
+    }
+
+
+    // =====================================
+    // Verificação
+    // =====================================
 
     has(controlId) {
 
@@ -123,22 +224,26 @@ class ConfigurationManager {
             controlId in
             this.controls
         );
-
     }
+
 
     remove(controlId) {
 
         delete this.controls[controlId];
-
     }
+
 
     getAll() {
 
         return {
             ...this.controls
         };
-
     }
+
+
+    // =====================================
+    // Reset
+    // =====================================
 
     async reset() {
 
@@ -149,26 +254,24 @@ class ConfigurationManager {
             const filePath =
                 this.getFilePath();
 
+
             if (fs.existsSync(filePath)) {
 
                 await fs.promises.unlink(
                     filePath
                 );
-
             }
-
         }
+
         catch (error) {
 
             console.error(
                 "[KRONOS] Erro ao resetar configuração:",
                 error
             );
-
         }
-
     }
-
 }
+
 
 module.exports = ConfigurationManager;
