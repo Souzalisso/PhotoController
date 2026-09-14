@@ -237,7 +237,7 @@ class HardwareService {
 
 
     // =====================================
-    // Simulação
+    // Simular botão
     // =====================================
 
     simulateButton(id) {
@@ -254,6 +254,37 @@ class HardwareService {
 
         });
     }
+
+
+    // =====================================
+    // Simular encoder
+    // =====================================
+
+    simulateEncoder(
+    id,
+    value
+) {
+
+    console.log(
+        "[KRONOS] Encoder simulado:",
+        {
+            id,
+            value
+        }
+    );
+
+    this.process({
+
+        device: "SIM",
+
+        type: "ENC",
+
+        id,
+
+        value
+
+    });
+}
 
 
     // =====================================

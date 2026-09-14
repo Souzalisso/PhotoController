@@ -78,6 +78,17 @@ class Control {
 
 
         // =====================================
+        // Comandos do Encoder
+        // =====================================
+
+        this.clockwiseCommand =
+            definition.clockwiseCommand || null;
+
+        this.counterClockwiseCommand =
+            definition.counterClockwiseCommand || null;
+
+
+        // =====================================
         // Valor
         // =====================================
 
@@ -102,7 +113,6 @@ class Control {
 
         this.metadata =
             definition.metadata || {};
-
     }
 
 
@@ -113,21 +123,18 @@ class Control {
     isButton() {
 
         return this.type === "button";
-
     }
 
 
     isEncoder() {
 
         return this.type === "encoder";
-
     }
 
 
     isDisplay() {
 
         return this.type === "display";
-
     }
 
 
@@ -139,7 +146,6 @@ class Control {
 
         return this.isEncoder() &&
             this.push === true;
-
     }
 
 
@@ -150,7 +156,6 @@ class Control {
     isEnabled() {
 
         return this.enabled;
-
     }
 
 
@@ -160,7 +165,6 @@ class Control {
             true;
 
         return this;
-
     }
 
 
@@ -170,7 +174,6 @@ class Control {
             false;
 
         return this;
-
     }
 
 
@@ -181,7 +184,6 @@ class Control {
     isSelected() {
 
         return this.selected;
-
     }
 
 
@@ -191,7 +193,6 @@ class Control {
             true;
 
         return this;
-
     }
 
 
@@ -201,7 +202,6 @@ class Control {
             false;
 
         return this;
-
     }
 
 
@@ -216,7 +216,6 @@ class Control {
             throw new Error(
                 `Controle não configurável: ${this.id}`
             );
-
         }
 
 
@@ -230,7 +229,6 @@ class Control {
                 null;
 
             return this;
-
         }
 
 
@@ -238,14 +236,12 @@ class Control {
             String(command);
 
         return this;
-
     }
 
 
     getCommand() {
 
         return this.command;
-
     }
 
 
@@ -254,7 +250,98 @@ class Control {
         return Boolean(
             this.command
         );
+    }
 
+
+    // =====================================
+    // Comando do Encoder
+    // =====================================
+
+    setClockwiseCommand(command) {
+
+        if (!this.configurable) {
+
+            throw new Error(
+                `Controle não configurável: ${this.id}`
+            );
+        }
+
+
+        if (
+            command === null ||
+            command === undefined ||
+            command === ""
+        ) {
+
+            this.clockwiseCommand =
+                null;
+
+            return this;
+        }
+
+
+        this.clockwiseCommand =
+            String(command);
+
+        return this;
+    }
+
+
+    getClockwiseCommand() {
+
+        return this.clockwiseCommand;
+    }
+
+
+    hasClockwiseCommand() {
+
+        return Boolean(
+            this.clockwiseCommand
+        );
+    }
+
+
+    setCounterClockwiseCommand(command) {
+
+        if (!this.configurable) {
+
+            throw new Error(
+                `Controle não configurável: ${this.id}`
+            );
+        }
+
+
+        if (
+            command === null ||
+            command === undefined ||
+            command === ""
+        ) {
+
+            this.counterClockwiseCommand =
+                null;
+
+            return this;
+        }
+
+
+        this.counterClockwiseCommand =
+            String(command);
+
+        return this;
+    }
+
+
+    getCounterClockwiseCommand() {
+
+        return this.counterClockwiseCommand;
+    }
+
+
+    hasCounterClockwiseCommand() {
+
+        return Boolean(
+            this.counterClockwiseCommand
+        );
     }
 
 
@@ -268,14 +355,12 @@ class Control {
             value;
 
         return this;
-
     }
 
 
     getValue() {
 
         return this.value;
-
     }
 
 
@@ -288,23 +373,19 @@ class Control {
         return Boolean(
             this.led
         );
-
     }
 
 
     isLedOn() {
 
         return this.ledOn;
-
     }
 
 
     turnLedOn() {
 
         if (!this.supportsLed()) {
-
             return this;
-
         }
 
 
@@ -312,7 +393,6 @@ class Control {
             true;
 
         return this;
-
     }
 
 
@@ -322,16 +402,13 @@ class Control {
             false;
 
         return this;
-
     }
 
 
     toggleLed() {
 
         if (!this.supportsLed()) {
-
             return this;
-
         }
 
 
@@ -339,7 +416,6 @@ class Control {
             !this.ledOn;
 
         return this;
-
     }
 
 
@@ -358,9 +434,7 @@ class Control {
         this.ledOn =
             false;
 
-
         return this;
-
     }
 
 
@@ -405,6 +479,12 @@ class Control {
             command:
                 this.command,
 
+            clockwiseCommand:
+                this.clockwiseCommand,
+
+            counterClockwiseCommand:
+                this.counterClockwiseCommand,
+
             value:
                 this.value,
 
@@ -420,9 +500,7 @@ class Control {
                 }
 
         };
-
     }
-
 }
 
 

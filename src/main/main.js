@@ -12,28 +12,36 @@ const Application = require("../core/Application");
 
 let mainWindow;
 
+
 function createWindow() {
 
     mainWindow = new BrowserWindow({
 
         width: 1400,
+
         height: 900,
 
         minWidth: 1200,
+
         minHeight: 700,
 
         title: "KRONOS Controller",
 
         webPreferences: {
-    preload: path.join(
-        __dirname,
-        "../preload/preload.js"
-    ),
-    nodeIntegration: true,
-    contextIsolation: false,
-    sandbox: false
-}
+
+            preload: path.join(
+                __dirname,
+                "../preload/preload.js"
+            ),
+
+            nodeIntegration: true,
+
+            contextIsolation: false,
+
+            sandbox: false
+        }
     });
+
 
     mainWindow.loadFile(
         path.join(
@@ -41,6 +49,7 @@ function createWindow() {
             "../renderer/index.html"
         )
     );
+
 
     mainWindow.webContents.once(
         "did-finish-load",
@@ -125,6 +134,26 @@ ipcMain.handle(
 );
 
 
+ipcMain.handle(
+    "hardware:simulateEncoder",
+    async (
+        event,
+        encoderId,
+        value
+    ) => {
+
+        Application
+            .getHardware()
+            .simulateEncoder(
+                encoderId,
+                value
+            );
+
+        return true;
+    }
+);
+
+
 /* ================================
    APPLICATION
 ================================ */
@@ -152,12 +181,27 @@ app.whenReady().then(
                 );
 
                 Application
-    .getHardware()
-    .simulateButton(
-        15
-    );
+                    .getHardware()
+                    .simulateButton(
+                        15
+                    );
             }
         );
+        globalShortcut.register(
+    "CommandOrControl+Shift+E",
+    () => {
+        Application.getHardware()
+            .simulateEncoder(1, 1);
+    }
+);
+
+globalShortcut.register(
+    "CommandOrControl+Shift+Q",
+    () => {
+        Application.getHardware()
+            .simulateEncoder(1, -1);
+    }
+);
 
 
         /* ============================
@@ -168,7 +212,11 @@ app.whenReady().then(
             "hardware-connected",
             () => {
 
-                if (!mainWindow) {
+                if (
+                    !mainWindow ||
+                    mainWindow.isDestroyed() ||
+                    mainWindow.webContents.isDestroyed()
+                ) {
                     return;
                 }
 
@@ -187,39 +235,56 @@ app.whenReady().then(
            HARDWARE DISCONNECTED
         ============================ */
 
-        EventBus.on("hardware-disconnected", () => {
-    if (
-        !mainWindow ||
-        mainWindow.isDestroyed() ||
-        mainWindow.webContents.isDestroyed()
-    ) {
-        return;
-    }
+        EventBus.on(
+            "hardware-disconnected",
+            () => {
 
-    mainWindow.webContents.send("hardware-status", {
-        connected: false,
-        port: "--"
-    });
-});
+                if (
+                    !mainWindow ||
+                    mainWindow.isDestroyed() ||
+                    mainWindow.webContents.isDestroyed()
+                ) {
+                    return;
+                }
+
+                mainWindow.webContents.send(
+                    "hardware-status",
+                    {
+                        connected: false,
+                        port: "--"
+                    }
+                );
+            }
+        );
 
 
         /* ============================
            HARDWARE EVENT
         ============================ */
 
-        EventBus.on("hardware-event", (event) => {
-    console.log("Evento:", event);
+        EventBus.on(
+            "hardware-event",
+            (event) => {
 
-    if (
-        !mainWindow ||
-        mainWindow.isDestroyed() ||
-        mainWindow.webContents.isDestroyed()
-    ) {
-        return;
-    }
+                console.log(
+                    "Evento:",
+                    event
+                );
 
-    mainWindow.webContents.send("hardware-event", event);
-});
+                if (
+                    !mainWindow ||
+                    mainWindow.isDestroyed() ||
+                    mainWindow.webContents.isDestroyed()
+                ) {
+                    return;
+                }
+
+                mainWindow.webContents.send(
+                    "hardware-event",
+                    event
+                );
+            }
+        );
     }
 );
 
@@ -255,7 +320,9 @@ app.on(
     () => {
 
         if (
-            BrowserWindow.getAllWindows().length === 0
+            BrowserWindow
+                .getAllWindows()
+                .length === 0
         ) {
 
             createWindow();
