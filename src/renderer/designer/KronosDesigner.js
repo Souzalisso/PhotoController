@@ -1,4 +1,5 @@
 const KronosCanvas = require("./KronosCanvas");
+
 const ControlRepository = require("./repositories/ControlRepository");
 
 const LightroomCommands =
@@ -38,7 +39,6 @@ class KronosDesigner {
 
         this.boundSaveControl =
             this.handleSaveControl.bind(this);
-
     }
 
 
@@ -49,7 +49,6 @@ class KronosDesigner {
     render() {
 
         return `
-
             <main class="designer-page">
 
                 <section class="designer-workspace">
@@ -70,9 +69,7 @@ class KronosDesigner {
                 </aside>
 
             </main>
-
         `;
-
     }
 
 
@@ -83,7 +80,6 @@ class KronosDesigner {
     renderSelectedControl() {
 
         return `
-
             <div class="designer-card">
 
                 <h2>
@@ -91,21 +87,15 @@ class KronosDesigner {
                 </h2>
 
                 <p id="selectedControl">
-
                     Nenhum controle selecionado
-
                 </p>
 
                 <small id="selectedControlType">
-
                     --
-
                 </small>
 
             </div>
-
         `;
-
     }
 
 
@@ -116,7 +106,6 @@ class KronosDesigner {
     renderCommandSelector() {
 
         return `
-
             <div class="designer-card">
 
                 <h2>
@@ -128,9 +117,7 @@ class KronosDesigner {
                     disabled>
 
                     <option value="">
-
                         Selecione um controle
-
                     </option>
 
                     ${this.renderCommands()}
@@ -138,9 +125,7 @@ class KronosDesigner {
                 </select>
 
             </div>
-
         `;
-
     }
 
 
@@ -153,7 +138,6 @@ class KronosDesigner {
             );
 
             return "";
-
         }
 
 
@@ -174,7 +158,6 @@ class KronosDesigner {
 
 
                 return `
-
                     <option value="${id}">
 
                         ${this.escapeHTML(category)}
@@ -182,13 +165,10 @@ class KronosDesigner {
                         ${this.escapeHTML(name)}
 
                     </option>
-
                 `;
-
             })
 
             .join("");
-
     }
 
 
@@ -199,7 +179,6 @@ class KronosDesigner {
     renderSaveButton() {
 
         return `
-
             <div class="designer-card">
 
                 <button
@@ -211,9 +190,7 @@ class KronosDesigner {
                 </button>
 
             </div>
-
         `;
-
     }
 
 
@@ -224,9 +201,7 @@ class KronosDesigner {
     async init() {
 
         if (this.initialized) {
-
             return;
-
         }
 
 
@@ -253,15 +228,115 @@ class KronosDesigner {
                 "click",
                 this.boundSaveControl
             );
-
         }
 
 
         this.initialized = true;
 
 
-        this.updateSidebar();
+        // =================================
+        // Carrega configuração salva
+        // =================================
 
+        await this.loadConfiguration();
+
+
+        // =================================
+        // Atualiza sidebar
+        // =================================
+
+        this.updateSidebar();
+    }
+
+
+    // =====================================
+    // Carregar configuração
+    // =====================================
+
+    async loadConfiguration() {
+
+        try {
+
+            if (
+                !window.photoController ||
+                typeof window.photoController.loadConfiguration !==
+                    "function"
+            ) {
+
+                console.warn(
+                    "[KRONOS] API de configuração não disponível."
+                );
+
+                return;
+            }
+
+
+            const configuration =
+                await window.photoController
+                    .loadConfiguration();
+
+
+            if (
+                !configuration ||
+                typeof configuration !== "object"
+            ) {
+
+                return;
+            }
+
+
+            for (
+                const [controlId, commandId]
+                of Object.entries(configuration)
+            ) {
+
+                if (!commandId) {
+                    continue;
+                }
+
+
+                const control =
+                    this.controlRepository.findById(
+                        controlId
+                    );
+
+
+                if (!control) {
+
+                    console.warn(
+                        `[KRONOS] Controle salvo não encontrado: ${controlId}`
+                    );
+
+                    continue;
+                }
+
+
+                if (!control.configurable) {
+
+                    continue;
+                }
+
+
+                this.controlRepository.setCommand(
+                    controlId,
+                    commandId
+                );
+            }
+
+
+            console.log(
+                "[KRONOS] Configuração carregada:",
+                configuration
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                "[KRONOS] Erro ao carregar configuração:",
+                error
+            );
+        }
     }
 
 
@@ -284,7 +359,6 @@ class KronosDesigner {
         this.updateSidebar(
             control
         );
-
     }
 
 
@@ -298,7 +372,6 @@ class KronosDesigner {
 
             control =
                 this.canvas.getSelectedControl();
-
         }
 
 
@@ -336,7 +409,6 @@ class KronosDesigner {
 
                 selectedElement.textContent =
                     "Nenhum controle selecionado";
-
             }
 
 
@@ -344,7 +416,6 @@ class KronosDesigner {
 
                 typeElement.textContent =
                     "--";
-
             }
 
 
@@ -353,19 +424,16 @@ class KronosDesigner {
                 commandSelect.value = "";
 
                 commandSelect.disabled = true;
-
             }
 
 
             if (saveButton) {
 
                 saveButton.disabled = true;
-
             }
 
 
             return;
-
         }
 
 
@@ -377,7 +445,6 @@ class KronosDesigner {
 
             selectedElement.textContent =
                 control.label || control.id;
-
         }
 
 
@@ -389,7 +456,6 @@ class KronosDesigner {
 
             typeElement.textContent =
                 `Tipo: ${control.type}`;
-
         }
 
 
@@ -415,7 +481,6 @@ class KronosDesigner {
                         control.getCommand() || ""
                     )
                     : "";
-
         }
 
 
@@ -423,9 +488,7 @@ class KronosDesigner {
 
             saveButton.disabled =
                 !configurable;
-
         }
-
     }
 
 
@@ -436,7 +499,6 @@ class KronosDesigner {
     async handleSaveControl() {
 
         await this.saveControl();
-
     }
 
 
@@ -453,7 +515,6 @@ class KronosDesigner {
             );
 
             return;
-
         }
 
 
@@ -464,7 +525,6 @@ class KronosDesigner {
             );
 
             return;
-
         }
 
 
@@ -475,9 +535,7 @@ class KronosDesigner {
 
 
         if (!commandSelect) {
-
             return;
-
         }
 
 
@@ -492,11 +550,36 @@ class KronosDesigner {
             );
 
             return;
-
         }
 
 
         try {
+
+            // =================================
+            // Salva no processo principal
+            // =================================
+
+            if (
+                !window.photoController ||
+                typeof window.photoController.saveControl !==
+                    "function"
+            ) {
+
+                throw new Error(
+                    "API de configuração não disponível."
+                );
+            }
+
+
+            await window.photoController.saveControl(
+                control.id,
+                command
+            );
+
+
+            // =================================
+            // Atualiza o estado local
+            // =================================
 
             this.controlRepository.setCommand(
                 control.id,
@@ -504,7 +587,9 @@ class KronosDesigner {
             );
 
 
+            // =================================
             // Atualiza o estado visual
+            // =================================
 
             this.canvas.refresh();
 
@@ -539,9 +624,7 @@ class KronosDesigner {
             this.showMessage(
                 "Não foi possível salvar a configuração."
             );
-
         }
-
     }
 
 
@@ -554,7 +637,6 @@ class KronosDesigner {
         console.log(
             `[KRONOS] ${message}`
         );
-
     }
 
 
@@ -565,7 +647,6 @@ class KronosDesigner {
     getControlRepository() {
 
         return this.controlRepository;
-
     }
 
 
@@ -576,7 +657,6 @@ class KronosDesigner {
     getCanvas() {
 
         return this.canvas;
-
     }
 
 
@@ -587,19 +667,22 @@ class KronosDesigner {
     escapeHTML(value) {
 
         return String(value ?? "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
 
+            .replace(/&/g, "&amp;")
+
+            .replace(/</g, "&lt;")
+
+            .replace(/>/g, "&gt;")
+
+            .replace(/"/g, "&quot;")
+
+            .replace(/'/g, "&#039;");
     }
 
 
     escapeAttribute(value) {
 
         return this.escapeHTML(value);
-
     }
 
 
@@ -627,28 +710,26 @@ class KronosDesigner {
                 "click",
                 this.boundSaveControl
             );
-
         }
 
 
         if (this.canvas) {
 
             this.canvas.destroy();
-
         }
 
 
         this.controlRepository =
             null;
 
+
         this.canvas =
             null;
 
+
         this.initialized =
             false;
-
     }
-
 }
 
 

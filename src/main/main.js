@@ -187,48 +187,39 @@ app.whenReady().then(
            HARDWARE DISCONNECTED
         ============================ */
 
-        EventBus.on(
-            "hardware-disconnected",
-            () => {
+        EventBus.on("hardware-disconnected", () => {
+    if (
+        !mainWindow ||
+        mainWindow.isDestroyed() ||
+        mainWindow.webContents.isDestroyed()
+    ) {
+        return;
+    }
 
-                if (!mainWindow) {
-                    return;
-                }
-
-                mainWindow.webContents.send(
-                    "hardware-status",
-                    {
-                        connected: false,
-                        port: "--"
-                    }
-                );
-            }
-        );
+    mainWindow.webContents.send("hardware-status", {
+        connected: false,
+        port: "--"
+    });
+});
 
 
         /* ============================
            HARDWARE EVENT
         ============================ */
 
-        EventBus.on(
-            "hardware-event",
-            (event) => {
+        EventBus.on("hardware-event", (event) => {
+    console.log("Evento:", event);
 
-                console.log(
-                    "Evento:",
-                    event
-                );
+    if (
+        !mainWindow ||
+        mainWindow.isDestroyed() ||
+        mainWindow.webContents.isDestroyed()
+    ) {
+        return;
+    }
 
-                if (!mainWindow) {
-                    return;
-                }
-
-                mainWindow.webContents.send(
-                    "hardware-event",
-                    event
-                );
-            }
-        );
+    mainWindow.webContents.send("hardware-event", event);
+});
     }
 );
 

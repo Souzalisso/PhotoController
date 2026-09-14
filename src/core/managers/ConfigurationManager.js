@@ -1,10 +1,24 @@
+const fs = require("fs");
+const path = require("path");
+const { app } = require("electron");
+
 class ConfigurationManager {
 
     constructor() {
 
-        this.storageKey = "kronos-configuration";
+        this.fileName =
+            "kronos-configuration.json";
 
         this.controls = {};
+
+    }
+
+    getFilePath() {
+
+        return path.join(
+            app.getPath("userData"),
+            this.fileName
+        );
 
     }
 
@@ -12,16 +26,33 @@ class ConfigurationManager {
 
         try {
 
-            const json = localStorage.getItem(this.storageKey);
+            const filePath =
+                this.getFilePath();
 
-            this.controls = json ? JSON.parse(json) : {};
+            if (!fs.existsSync(filePath)) {
+
+                this.controls = {};
+
+                return;
+
+            }
+
+            const json =
+                await fs.promises.readFile(
+                    filePath,
+                    "utf8"
+                );
+
+            this.controls =
+                json
+                    ? JSON.parse(json)
+                    : {};
 
         }
-
         catch (error) {
 
             console.error(
-                "Erro ao carregar configuração:",
+                "[KRONOS] Erro ao carregar configuração:",
                 error
             );
 
@@ -35,28 +66,34 @@ class ConfigurationManager {
 
         try {
 
-            localStorage.setItem(
+            const filePath =
+                this.getFilePath();
 
-                this.storageKey,
+            const directory =
+                path.dirname(filePath);
 
+            await fs.promises.mkdir(
+                directory,
+                {
+                    recursive: true
+                }
+            );
+
+            await fs.promises.writeFile(
+                filePath,
                 JSON.stringify(
-
                     this.controls,
-
                     null,
-
                     4
-
-                )
-
+                ),
+                "utf8"
             );
 
         }
-
         catch (error) {
 
             console.error(
-                "Erro ao salvar configuração:",
+                "[KRONOS] Erro ao salvar configuração:",
                 error
             );
 
@@ -66,19 +103,26 @@ class ConfigurationManager {
 
     get(controlId) {
 
-        return this.controls[controlId] || null;
+        return (
+            this.controls[controlId] ||
+            null
+        );
 
     }
 
     set(controlId, commandId) {
 
-        this.controls[controlId] = commandId;
+        this.controls[controlId] =
+            commandId;
 
     }
 
     has(controlId) {
 
-        return controlId in this.controls;
+        return (
+            controlId in
+            this.controls
+        );
 
     }
 
@@ -90,7 +134,9 @@ class ConfigurationManager {
 
     getAll() {
 
-        return this.controls;
+        return {
+            ...this.controls
+        };
 
     }
 
@@ -98,7 +144,28 @@ class ConfigurationManager {
 
         this.controls = {};
 
-        localStorage.removeItem(this.storageKey);
+        try {
+
+            const filePath =
+                this.getFilePath();
+
+            if (fs.existsSync(filePath)) {
+
+                await fs.promises.unlink(
+                    filePath
+                );
+
+            }
+
+        }
+        catch (error) {
+
+            console.error(
+                "[KRONOS] Erro ao resetar configuração:",
+                error
+            );
+
+        }
 
     }
 
