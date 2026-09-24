@@ -98,89 +98,89 @@ class KronosDesigner {
     // Comandos Lightroom
     // =====================================
 
-    renderCommandSelector() {
+ renderCommandSelector() {
 
-        return `
+    return `
+        <div
+            class="designer-card"
+            id="commandCard"
+        >
+
+            <h2>
+                Comando Lightroom
+            </h2>
+
             <div
-                class="designer-card"
-                id="commandCard"
+                id="buttonCommandContainer"
             >
 
-                <h2>
-                    Comando Lightroom
-                </h2>
+                <label for="commandSelect">
+                    Comando
+                </label>
 
-                <div
-                    id="buttonCommandContainer"
+                <select
+                    id="commandSelect"
+                    disabled
                 >
 
-                    <label for="commandSelect">
-                        Comando
-                    </label>
+                    <option value="">
+                        Selecione um controle
+                    </option>
 
-                    <select
-                        id="commandSelect"
-                        disabled
-                    >
+                    ${this.renderCommands()}
 
-                        <option value="">
-                            Selecione um controle
-                        </option>
-
-                        ${this.renderCommands()}
-
-                    </select>
-
-                </div>
-
-
-                <div
-                    id="encoderCommandContainer"
-                    style="display: none;"
-                >
-
-                    <label for="clockwiseCommandSelect">
-                        ↻ Horário
-                    </label>
-
-                    <select
-                        id="clockwiseCommandSelect"
-                        disabled
-                    >
-
-                        <option value="">
-                            Selecione o comando
-                        </option>
-
-                        ${this.renderCommands()}
-
-                    </select>
-
-
-                    <label
-                        for="counterClockwiseCommandSelect"
-                    >
-                        ↺ Anti-horário
-                    </label>
-
-                    <select
-                        id="counterClockwiseCommandSelect"
-                        disabled
-                    >
-
-                        <option value="">
-                            Selecione o comando
-                        </option>
-
-                        ${this.renderCommands()}
-
-                    </select>
-
-                </div>
+                </select>
 
             </div>
-        `;
-    }
+
+
+            <div
+                id="encoderCommandContainer"
+                style="display: none;"
+            >
+
+                <label for="clockwiseCommandSelect">
+                    ↻ Horário
+                </label>
+
+                <select
+                    id="clockwiseCommandSelect"
+                    disabled
+                >
+
+                    <option value="">
+                        Selecione o comando
+                    </option>
+
+                    ${this.renderCommands()}
+
+                </select>
+
+
+                <label
+                    for="counterClockwiseCommandSelect"
+                >
+                    ↺ Anti-horário
+                </label>
+
+                <select
+                    id="counterClockwiseCommandSelect"
+                    disabled
+                >
+
+                    <option value="">
+                        Selecione o comando
+                    </option>
+
+                    ${this.renderCommands()}
+
+                </select>
+
+            </div>
+
+        </div>
+    `;
+}
 
 
     renderCommands() {

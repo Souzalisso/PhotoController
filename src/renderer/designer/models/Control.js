@@ -2,52 +2,35 @@ class Control {
 
     constructor(definition = {}) {
 
-        // =====================================
-        // Identificação
-        // =====================================
-
         this.id =
-            definition.id || null;
+            definition.id ||
+            null;
 
         this.label =
-            definition.label || this.id || "";
+            definition.label ||
+            this.id ||
+            "";
 
         this.type =
-            definition.type || "unknown";
-
-
-        // =====================================
-        // Hardware
-        // =====================================
+            definition.type ||
+            "unknown";
 
         this.hardware =
-            definition.hardware || null;
-
-
-        // =====================================
-        // Layout
-        // =====================================
+            definition.hardware ||
+            null;
 
         this.position =
-            definition.position ?? null;
+            definition.position ??
+            null;
 
         this.section =
-            definition.section || null;
-
-
-        // =====================================
-        // Configuração
-        // =====================================
+            definition.section ||
+            null;
 
         this.configurable =
             Boolean(
                 definition.configurable
             );
-
-
-        // =====================================
-        // Capacidades
-        // =====================================
 
         this.push =
             Boolean(
@@ -55,12 +38,8 @@ class Control {
             );
 
         this.led =
-            definition.led || null;
-
-
-        // =====================================
-        // Estado
-        // =====================================
+            definition.led ||
+            null;
 
         this.enabled =
             definition.enabled !== false;
@@ -68,169 +47,101 @@ class Control {
         this.selected =
             false;
 
-
-        // =====================================
-        // Comando
-        // =====================================
-
         this.command =
-            definition.command || null;
-
-
-        // =====================================
-        // Comandos do Encoder
-        // =====================================
+            definition.command ||
+            null;
 
         this.clockwiseCommand =
-            definition.clockwiseCommand || null;
+            definition.clockwiseCommand ||
+            null;
 
         this.counterClockwiseCommand =
-            definition.counterClockwiseCommand || null;
+            definition.counterClockwiseCommand ||
+            null;
 
-
-        // =====================================
-        // Valor
-        // =====================================
+        this.pushCommand =
+            definition.pushCommand ||
+            null;
 
         this.value =
-            definition.value ?? 0;
+            definition.value ??
+            0;
 
         this.defaultValue =
-            definition.value ?? 0;
-
-
-        // =====================================
-        // Estado do LED
-        // =====================================
+            definition.value ??
+            0;
 
         this.ledOn =
             false;
 
-
-        // =====================================
-        // Metadados
-        // =====================================
-
         this.metadata =
-            definition.metadata || {};
+            definition.metadata ||
+            {};
     }
 
-
-    // =====================================
-    // Tipo
-    // =====================================
-
     isButton() {
-
         return this.type === "button";
     }
 
-
     isEncoder() {
-
         return this.type === "encoder";
     }
 
-
     isDisplay() {
-
         return this.type === "display";
     }
 
-
-    // =====================================
-    // Push do Encoder
-    // =====================================
-
     supportsPush() {
-
-        return this.isEncoder() &&
-            this.push === true;
+        return (
+            this.isEncoder() &&
+            this.push === true
+        );
     }
 
-
-    // =====================================
-    // Estado
-    // =====================================
-
     isEnabled() {
-
         return this.enabled;
     }
 
-
     enable() {
-
-        this.enabled =
-            true;
-
+        this.enabled = true;
         return this;
     }
-
 
     disable() {
-
-        this.enabled =
-            false;
-
+        this.enabled = false;
         return this;
     }
 
-
-    // =====================================
-    // Seleção
-    // =====================================
-
     isSelected() {
-
         return this.selected;
     }
 
-
     select() {
-
-        this.selected =
-            true;
-
+        this.selected = true;
         return this;
     }
-
 
     unselect() {
-
-        this.selected =
-            false;
-
+        this.selected = false;
         return this;
     }
-
-
-    // =====================================
-    // Configuração
-    // =====================================
 
     setCommand(command) {
 
         if (!this.configurable) {
-
             throw new Error(
                 `Controle não configurável: ${this.id}`
             );
         }
-
 
         if (
             command === null ||
             command === undefined ||
             command === ""
         ) {
-
-            this.command =
-                null;
-
+            this.command = null;
             return this;
         }
-
 
         this.command =
             String(command);
@@ -238,47 +149,32 @@ class Control {
         return this;
     }
 
-
     getCommand() {
-
         return this.command;
     }
 
-
     hasCommand() {
-
         return Boolean(
             this.command
         );
     }
 
-
-    // =====================================
-    // Comando do Encoder
-    // =====================================
-
     setClockwiseCommand(command) {
 
         if (!this.configurable) {
-
             throw new Error(
                 `Controle não configurável: ${this.id}`
             );
         }
-
 
         if (
             command === null ||
             command === undefined ||
             command === ""
         ) {
-
-            this.clockwiseCommand =
-                null;
-
+            this.clockwiseCommand = null;
             return this;
         }
-
 
         this.clockwiseCommand =
             String(command);
@@ -286,43 +182,32 @@ class Control {
         return this;
     }
 
-
     getClockwiseCommand() {
-
         return this.clockwiseCommand;
     }
 
-
     hasClockwiseCommand() {
-
         return Boolean(
             this.clockwiseCommand
         );
     }
 
-
     setCounterClockwiseCommand(command) {
 
         if (!this.configurable) {
-
             throw new Error(
                 `Controle não configurável: ${this.id}`
             );
         }
-
 
         if (
             command === null ||
             command === undefined ||
             command === ""
         ) {
-
-            this.counterClockwiseCommand =
-                null;
-
+            this.counterClockwiseCommand = null;
             return this;
         }
-
 
         this.counterClockwiseCommand =
             String(command);
@@ -330,57 +215,65 @@ class Control {
         return this;
     }
 
-
     getCounterClockwiseCommand() {
-
         return this.counterClockwiseCommand;
     }
 
-
     hasCounterClockwiseCommand() {
-
         return Boolean(
             this.counterClockwiseCommand
         );
     }
 
+    setPushCommand(command) {
 
-    // =====================================
-    // Valor
-    // =====================================
+        if (!this.configurable) {
+            throw new Error(
+                `Controle não configurável: ${this.id}`
+            );
+        }
 
-    setValue(value) {
+        if (
+            command === null ||
+            command === undefined ||
+            command === ""
+        ) {
+            this.pushCommand = null;
+            return this;
+        }
 
-        this.value =
-            value;
+        this.pushCommand =
+            String(command);
 
         return this;
     }
 
-
-    getValue() {
-
-        return this.value;
+    getPushCommand() {
+        return this.pushCommand;
     }
 
-
-    // =====================================
-    // LED
-    // =====================================
-
-    supportsLed() {
-
+    hasPushCommand() {
         return Boolean(
-            this.led
+            this.pushCommand
         );
     }
 
-
-    isLedOn() {
-
-        return this.ledOn;
+    setValue(value) {
+        this.value = value;
+        return this;
     }
 
+    getValue() {
+        return this.value;
+    }
+
+    supportsLed() {
+        return Boolean(this.led);
+    }
+
+    isLedOn() {
+        return this.ledOn;
+    }
 
     turnLedOn() {
 
@@ -388,22 +281,17 @@ class Control {
             return this;
         }
 
-
-        this.ledOn =
-            true;
+        this.ledOn = true;
 
         return this;
     }
-
 
     turnLedOff() {
 
-        this.ledOn =
-            false;
+        this.ledOn = false;
 
         return this;
     }
-
 
     toggleLed() {
 
@@ -411,58 +299,39 @@ class Control {
             return this;
         }
 
-
         this.ledOn =
             !this.ledOn;
 
         return this;
     }
 
-
-    // =====================================
-    // Reset
-    // =====================================
-
     reset() {
 
-        this.selected =
-            false;
+        this.selected = false;
 
         this.value =
             this.defaultValue;
 
-        this.ledOn =
-            false;
+        this.ledOn = false;
 
         return this;
     }
-
-
-    // =====================================
-    // Serialização
-    // =====================================
 
     toJSON() {
 
         return {
 
-            id:
-                this.id,
+            id: this.id,
 
-            label:
-                this.label,
+            label: this.label,
 
-            type:
-                this.type,
+            type: this.type,
 
-            hardware:
-                this.hardware,
+            hardware: this.hardware,
 
-            position:
-                this.position,
+            position: this.position,
 
-            section:
-                this.section,
+            section: this.section,
 
             configurable:
                 this.configurable,
@@ -485,6 +354,9 @@ class Control {
             counterClockwiseCommand:
                 this.counterClockwiseCommand,
 
+            pushCommand:
+                this.pushCommand,
+
             value:
                 this.value,
 
@@ -498,10 +370,8 @@ class Control {
                 {
                     ...this.metadata
                 }
-
         };
     }
 }
-
 
 module.exports = Control;
